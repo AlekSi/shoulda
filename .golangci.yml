@@ -1,0 +1,83 @@
+# yaml-language-server: $schema=https://golangci-lint.run/jsonschema/golangci.jsonschema.json
+#
+# https://golangci-lint.run/docs/configuration/file/
+# https://golangci-lint.run/docs/linters/configuration/
+# https://golangci-lint.run/docs/formatters/configuration/
+---
+version: "2"
+
+run:
+  timeout: 5m
+
+linters:
+  default: none
+  enable:
+    - errorlint
+    - godoclint
+    - godot
+    - godox
+    - govet
+    - modernize
+    - nolintlint
+
+  settings:
+    errorlint:
+      allowed-errors: []
+
+    godoclint:
+      default: all
+      options:
+        max-len:
+          length: 120
+        require-doc:
+          ignore-unexported: false
+        start-with-name:
+          include-unexported: true
+
+    godot:
+      scope: toplevel
+      period: true
+      capital: false # for unexported identifiers
+      exclude:
+        - check interfaces
+
+    godox:
+      keywords:
+        - FIXME
+        - HACK
+
+    govet:
+      enable-all: true
+      settings:
+        shadow:
+          strict: true
+
+    nolintlint:
+      require-explanation: true
+      require-specific: true
+
+  exclusions:
+    generated: strict
+    warn-unused: true
+    rules:
+      # do not required godoc for func TestXXX/BenchmarkXXX/FuzzXXX/ExampleXXX
+      - path: _test\.go$
+        linters: [godoclint]
+        text: ^symbol should have a godoc \("(Test|Benchmark|Fuzz|Example)\w+"\)$
+
+formatters:
+  enable:
+    - gci
+    - gofmt
+    - gofumpt
+
+  settings:
+    gci:
+      sections:
+        - standard
+        - default
+        - localmodule
+
+issues:
+  max-issues-per-linter: 0
+  max-same-issues: 0

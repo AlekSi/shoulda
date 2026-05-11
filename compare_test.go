@@ -1,0 +1,263 @@
+package shoulda
+
+import (
+	"bytes"
+	"strings"
+	"testing"
+	"time"
+
+	"github.com/AlekSi/shoulda/cmp"
+	"github.com/AlekSi/shoulda/internal"
+)
+
+// setup returns an [internal.TestTB] and a function to get the output lines
+// for the given test.
+func setup(t *testing.T) (internal.TestTB, func() []string) {
+	t.Helper()
+
+	var buf bytes.Buffer
+	tt := internal.TestTB{
+		W: &buf,
+	}
+	f := func() []string {
+		s := strings.TrimRight(buf.String(), "\n")
+		return strings.Split(s, "\n")
+	}
+	return tt, f
+}
+
+func TestBeNil(t *testing.T) {
+	t.Run("Untyped", func(t *testing.T) {
+		tt, actual := setup(t)
+		BeNil(tt, 13)
+
+		BeDeepEqual(t, actual(), []string{
+			"actual: 13 (int)",
+			"is not nil",
+			"FAIL",
+		})
+	})
+
+	t.Run("Typed", func(t *testing.T) {
+		tt, actual := setup(t)
+		BeNil(tt, (*int)(nil))
+
+		BeDeepEqual(t, actual(), []string{
+			"actual: <nil> (*int)",
+			"is not nil",
+			"FAIL",
+		})
+	})
+}
+
+func TestBeZero(t *testing.T) {
+	t.Run("Simple", func(t *testing.T) {
+		tt, actual := setup(t)
+		BeZero(tt, 13)
+
+		BeDeepEqual(t, actual(), []string{
+			"actual: 13 (int)",
+			"is not zero",
+			"FAIL",
+		})
+	})
+}
+
+func TestBeFalse(t *testing.T) {
+	t.Run("Simple", func(t *testing.T) {
+		tt, lines := setup(t)
+		actual := time.Date(2026, time.April, 9, 17, 32, 42, 123, time.UTC)
+		expected := time.Date(2026, time.April, 9, 21, 32, 42, 123, time.FixedZone("My", 4*int(time.Hour.Seconds())))
+		BeFalse(tt, time.Time.Equal(actual, expected))
+
+		BeDeepEqual(t, lines(), []string{
+			"is not false",
+			"FAIL",
+		})
+	})
+}
+
+func TestBeTrue(t *testing.T) {
+	t.Run("Simple", func(t *testing.T) {
+		tt, lines := setup(t)
+		actual := time.Date(2026, time.April, 9, 17, 32, 42, 123, time.UTC)
+		expected := time.Date(2026, time.April, 9, 17, 32, 42, 123, time.FixedZone("My", 4*int(time.Hour.Seconds())))
+		BeTrue(tt, time.Time.Equal(actual, expected))
+
+		BeDeepEqual(t, lines(), []string{
+			"is not true",
+			"FAIL",
+		})
+	})
+}
+
+func TestBeDeepEqual(t *testing.T) {
+	t.Run("Simple", func(t *testing.T) {
+		tt, lines := setup(t)
+		BeDeepEqual(tt, []int{13}, []int64{13})
+
+		BeDeepEqual(t, lines(), []string{
+			"Values are not deep equal:",
+			"actual:   []int{13}",
+			"expected: []int64{13}",
+			"FAIL",
+		})
+	})
+}
+
+func TestBeEqual(t *testing.T) {
+	t.Run("Simple", func(t *testing.T) {
+		tt, lines := setup(t)
+		BeEqual(tt, 13, 42)
+
+		BeDeepEqual(t, lines(), []string{
+			"Values are not equal:",
+			"actual:   13",
+			"expected: 42",
+			"FAIL",
+		})
+	})
+}
+
+func TestBeLess(t *testing.T) {
+	t.Run("Simple", func(t *testing.T) {
+		tt, lines := setup(t)
+		BeLess(tt, 42, 13)
+
+		BeDeepEqual(t, lines(), []string{
+			"actual:   42",
+			"is not less than",
+			"expected: 13",
+			"FAIL",
+		})
+	})
+}
+
+func TestBeGreater(t *testing.T) {
+	t.Run("Simple", func(t *testing.T) {
+		tt, lines := setup(t)
+		BeGreater(tt, 13, 42)
+
+		BeDeepEqual(t, lines(), []string{
+			"actual:   13",
+			"is not greater than",
+			"expected: 42",
+			"FAIL",
+		})
+	})
+}
+
+func TestSatisfy(t *testing.T) {
+	t.Run("Inline", func(t *testing.T) {
+		tt, lines := setup(t)
+		Satisfy(tt, 13, func(v int) bool { return v > 42 })
+
+		BeDeepEqual(t, lines(), []string{
+			"predicate is not satisfied for",
+			"actual:   13",
+			"FAIL",
+		})
+	})
+}
+
+func TestSatisfyWith(t *testing.T) {
+	t.Run("Inline", func(t *testing.T) {
+		tt, lines := setup(t)
+		SatisfyWith(tt, 13, 42, func(x, y int) bool { return x > y })
+
+		BeDeepEqual(t, lines(), []string{
+			"predicate is not satisfied with",
+			"actual:   13",
+			"expected: 42",
+			"FAIL",
+		})
+	})
+
+	t.Run("Function", func(t *testing.T) {
+		tt, lines := setup(t)
+		SatisfyWith(tt, 13, 42, cmp.Greater)
+
+		BeDeepEqual(t, lines(), []string{
+			"predicate is not satisfied with",
+			"actual:   13",
+			"expected: 42",
+			"FAIL",
+		})
+	})
+
+	t.Run("MethodExpression", func(t *testing.T) {
+		tt, lines := setup(t)
+		actual := time.Date(2026, time.April, 9, 17, 32, 42, 123, time.UTC)
+		expected := time.Date(2026, time.April, 9, 17, 32, 42, 123, time.FixedZone("My", 4*int(time.Hour.Seconds())))
+		SatisfyWith(tt, actual, expected, time.Time.Before)
+
+		BeDeepEqual(t, lines(), []string{
+			"predicate is not satisfied with",
+			"actual:   2026-04-09 17:32:42.000000123 +0000 UTC",
+			"expected: 2026-04-09 17:32:42.000000123 +0400 My",
+			"FAIL",
+		})
+	})
+}
+
+func TestCompareWith(t *testing.T) {
+	t.Run("Function", func(t *testing.T) {
+		tt, lines := setup(t)
+		CompareWith(tt, 42, 13, cmp.OrderLess, cmp.Compare[int])
+
+		BeDeepEqual(t, lines(), []string{
+			"comparison result is not -1 for",
+			"actual:   42",
+			"expected: 13",
+			"FAIL",
+		})
+	})
+}
+
+func TestCompareEqual(t *testing.T) {
+	t.Run("MethodExpression", func(t *testing.T) {
+		tt, lines := setup(t)
+		actual := time.Date(2026, time.April, 9, 17, 32, 42, 123, time.UTC)
+		expected := time.Date(2026, time.April, 9, 17, 32, 42, 123, time.FixedZone("My", 4*int(time.Hour.Seconds())))
+		CompareEqual(tt, actual, expected, time.Time.Compare)
+
+		BeDeepEqual(t, lines(), []string{
+			"comparison result is greater, not equal for",
+			"actual:   2026-04-09 17:32:42.000000123 +0000 UTC",
+			"expected: 2026-04-09 17:32:42.000000123 +0400 My",
+			"FAIL",
+		})
+	})
+}
+
+func TestCompareLess(t *testing.T) {
+	t.Run("MethodExpression", func(t *testing.T) {
+		tt, lines := setup(t)
+		actual := time.Date(2026, time.April, 9, 17, 32, 42, 123, time.UTC)
+		expected := time.Date(2026, time.April, 9, 17, 32, 42, 123, time.FixedZone("My", 4*int(time.Hour.Seconds())))
+		CompareLess(tt, actual, expected, time.Time.Compare)
+
+		BeDeepEqual(t, lines(), []string{
+			"comparison result is greater, not less for",
+			"actual:   2026-04-09 17:32:42.000000123 +0000 UTC",
+			"expected: 2026-04-09 17:32:42.000000123 +0400 My",
+			"FAIL",
+		})
+	})
+}
+
+func TestCompareGreater(t *testing.T) {
+	t.Run("MethodExpression", func(t *testing.T) {
+		tt, lines := setup(t)
+		actual := time.Date(2026, time.April, 9, 17, 32, 42, 123, time.FixedZone("My", 4*int(time.Hour.Seconds())))
+		expected := time.Date(2026, time.April, 9, 17, 32, 42, 123, time.UTC)
+		CompareGreater(tt, actual, expected, time.Time.Compare)
+
+		BeDeepEqual(t, lines(), []string{
+			"comparison result is less, not greater for",
+			"actual:   2026-04-09 17:32:42.000000123 +0400 My",
+			"expected: 2026-04-09 17:32:42.000000123 +0000 UTC",
+			"FAIL",
+		})
+	})
+}
