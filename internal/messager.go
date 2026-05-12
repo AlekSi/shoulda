@@ -9,16 +9,16 @@ type Messager interface {
 	Message() string
 }
 
-// MsgString implements [messager] for a simple string message.
+// MsgString implements [Messager] for a simple string message.
 type MsgString string
 
-// Message implements [messager].
+// Message implements [Messager].
 func (m MsgString) Message() string { return string(m) }
 
-// msgFunc implements [messager] for a function that constructs a message.
+// msgFunc implements [Messager] for a function that constructs a message.
 type msgFunc func() string
 
-// Message implements [messager].
+// Message implements [Messager].
 func (m msgFunc) Message() string { return m() }
 
 // MsgFmt constructs a message from [fmt.Sprintf]-like arguments.

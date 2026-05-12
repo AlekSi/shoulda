@@ -6,9 +6,6 @@
 ---
 version: "2"
 
-run:
-  timeout: 5m
-
 linters:
   default: none
   enable:
@@ -78,6 +75,14 @@ formatters:
         - default
         - localmodule
 
+  exclusions:
+    warn-unused: true
+    generated: disable
+
 issues:
   max-issues-per-linter: 0
   max-same-issues: 0
+
+run:
+  timeout: 5m
+  build-tags: [gen]
