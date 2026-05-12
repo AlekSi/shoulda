@@ -1,0 +1,35 @@
+---
+name: Go
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  schedule:
+    - cron: "12 3 * * *"
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup Go
+        uses: actions/setup-go@v6
+
+      - name: Download dependencies
+        run: go mod tidy
+
+      - name: Run tests
+        run: go test -race -count=1 ./...
+
+      - name: Check dirtiness
+        run: |
+          git status
+          git diff --exit-code
