@@ -63,18 +63,12 @@ type functionData struct {
 func main() {
 	flag.Parse()
 
-	data, err := parseCompare(filepath.Join("..", "..", "compare.go"))
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	src, err := render(data)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	if err := os.WriteFile("compare.go", src, 0o644); err != nil {
-		log.Fatal(err)
+	for _, srcFile := range []string{
+		"compare.go",
+	} {
+		if err := rewriteFile(filepath.Join("..", "..", srcFile)); err != nil {
+			log.Fatal(err)
+		}
 	}
 
 	for _, testFile := range []string{
@@ -85,6 +79,25 @@ func main() {
 			log.Fatal(err)
 		}
 	}
+}
+
+// rewriteFile rewrites a shoulda source file as its musta analogue.
+func rewriteFile(srcPath string) error {
+	data, err := parseCompare(srcPath)
+	if err != nil {
+		return err
+	}
+
+	src, err := render(data)
+	if err != nil {
+		return err
+	}
+
+	if err := os.WriteFile("compare.go", src, 0o644); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // parseCompare collects exported compare helpers that should be wrapped by musta.
