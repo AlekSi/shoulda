@@ -85,7 +85,7 @@ func SatisfyWith[T any](tb TB, actual, expected T, predicate func(_, _ T) bool) 
 	return assert(tb, predicate(actual, expected), msg)
 }
 
-// CompareWith checks that compare(actual, expected) returns int(order).
+// CompareWith checks that compare(actual, expected) returns order.
 func CompareWith[T any](tb TB, actual, expected T, order cmp.Order, compare func(_, _ T) int) bool {
 	tb.Helper()
 
@@ -93,7 +93,7 @@ func CompareWith[T any](tb TB, actual, expected T, order cmp.Order, compare func
 	return assert(tb, compare(actual, expected) == int(order), msg)
 }
 
-// CompareEqual checks that compare(actual, expected) returns 0 (int([cmp.OrderEqual])).
+// CompareEqual checks that compare(actual, expected) returns 0 ([cmp.OrderEqual]).
 func CompareEqual[T any](tb TB, actual, expected T, compare func(_, _ T) int) bool {
 	tb.Helper()
 
@@ -105,7 +105,7 @@ func CompareEqual[T any](tb TB, actual, expected T, compare func(_, _ T) int) bo
 	return assert(tb, res == 0, msg)
 }
 
-// CompareLess checks that compare(actual, expected) returns -1 (int([cmp.OrderLess])).
+// CompareLess checks that compare(actual, expected) returns -1 ([cmp.OrderLess]).
 func CompareLess[T any](tb TB, actual, expected T, compare func(_, _ T) int) bool {
 	tb.Helper()
 
@@ -117,7 +117,7 @@ func CompareLess[T any](tb TB, actual, expected T, compare func(_, _ T) int) boo
 	return assert(tb, res == -1, msg)
 }
 
-// CompareGreater checks that compare(actual, expected) returns 1 (int([cmp.OrderGreater])).
+// CompareGreater checks that compare(actual, expected) returns 1 ([cmp.OrderGreater]).
 func CompareGreater[T any](tb TB, actual, expected T, compare func(_, _ T) int) bool {
 	tb.Helper()
 
