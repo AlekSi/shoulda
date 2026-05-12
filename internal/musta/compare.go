@@ -4,7 +4,6 @@ package musta
 
 import (
 	"github.com/AlekSi/shoulda"
-
 	"github.com/AlekSi/shoulda/cmp"
 )
 
