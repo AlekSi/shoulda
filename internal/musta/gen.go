@@ -13,9 +13,6 @@ import (
 	"go/token"
 	"log"
 	"os"
-	"path"
-	"sort"
-	"strconv"
 	"strings"
 	"text/template"
 )
@@ -26,9 +23,9 @@ const compareTemplate = `
 package musta
 
 import (
-{{range .Imports}}
-	{{.}}
-{{end}}
+	"github.com/AlekSi/shoulda"
+
+	"github.com/AlekSi/shoulda/cmp"
 )
 
 {{range .Functions}}
@@ -48,7 +45,6 @@ func {{.Name}}{{.TypeParams}}({{.Params}}) {
 
 // templateData contains data for compare.go template.
 type templateData struct {
-	Imports   []string
 	Functions []functionData
 }
 
@@ -88,16 +84,14 @@ func parseCompare(comparePath string) (templateData, error) {
 		return templateData{}, fmt.Errorf("parse %s: %w", comparePath, err)
 	}
 
-	imports, err := availableImports(fset, file)
-	if err != nil {
-		return templateData{}, err
-	}
-
 	var functions []functionData
-	var signatures strings.Builder
 	for _, decl := range file.Decls {
 		fn, ok := decl.(*ast.FuncDecl)
 		if !ok {
+			continue
+		}
+
+		if !fn.Name.IsExported() {
 			continue
 		}
 
@@ -107,50 +101,13 @@ func parseCompare(comparePath string) (templateData, error) {
 		}
 
 		functions = append(functions, data)
-		signatures.WriteString(data.TypeParams)
-		signatures.WriteByte(' ')
-		signatures.WriteString(data.Params)
-		signatures.WriteByte(' ')
 	}
 
 	if len(functions) == 0 {
 		return templateData{}, fmt.Errorf("no wrapper candidates found in %s", comparePath)
 	}
 
-	rawImports := []string{`"github.com/AlekSi/shoulda"`}
-	for name, spec := range imports {
-		if strings.Contains(signatures.String(), name+".") {
-			rawImports = append(rawImports, spec)
-		}
-	}
-	sort.Strings(rawImports)
-
-	return templateData{Imports: rawImports, Functions: functions}, nil
-}
-
-// availableImports maps import names referenced in syntax to rendered import specs.
-func availableImports(fset *token.FileSet, file *ast.File) (map[string]string, error) {
-	imports := make(map[string]string, len(file.Imports))
-	for _, spec := range file.Imports {
-		importPath, err := strconv.Unquote(spec.Path.Value)
-		if err != nil {
-			return nil, err
-		}
-
-		name := path.Base(importPath)
-		if spec.Name != nil {
-			name = spec.Name.Name
-		}
-
-		raw, err := renderNode(fset, spec)
-		if err != nil {
-			return nil, err
-		}
-
-		imports[name] = raw
-	}
-
-	return imports, nil
+	return templateData{Functions: functions}, nil
 }
 
 // collectFunction builds template data for a wrapped function.
@@ -230,13 +187,13 @@ func renderParams(fset *token.FileSet, fields *ast.FieldList) (string, string, e
 
 // renderField renders a single parameter field and the argument names it contributes.
 func renderField(fset *token.FileSet, field *ast.Field) (string, []string, error) {
+	if len(field.Names) == 0 {
+		return "", nil, fmt.Errorf("unnamed parameters are not supported")
+	}
+
 	typeSrc, err := renderNode(fset, field.Type)
 	if err != nil {
 		return "", nil, err
-	}
-
-	if len(field.Names) == 0 {
-		return typeSrc, nil, nil
 	}
 
 	names := make([]string, 0, len(field.Names))
