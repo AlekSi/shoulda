@@ -31,6 +31,14 @@ func BeZero[T cmp.Ordered](tb TB, actual T) bool {
 	return assert(tb, actual == zero, msg)
 }
 
+// NotBeZero checks that actual is not the zero value of its type.
+func NotBeZero[T cmp.Ordered](tb TB, actual T) bool {
+	tb.Helper()
+
+	var zero T
+	return assert(tb, actual != zero, internal.MsgString("is zero"))
+}
+
 // BeFalse checks that actual is false.
 func BeFalse(tb TB, actual bool) bool {
 	tb.Helper()

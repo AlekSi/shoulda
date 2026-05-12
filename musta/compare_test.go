@@ -84,6 +84,18 @@ func TestBeZero(t *testing.T) {
 	})
 }
 
+func TestNotBeZero(t *testing.T) {
+	t.Run("Simple", func(t *testing.T) {
+		tt, actual := setup(t)
+		NotBeZero(tt, 0)
+
+		BeDeepEqual(t, actual(), []string{
+			"is zero",
+			"FAIL",
+		})
+	})
+}
+
 func TestBeFalse(t *testing.T) {
 	t.Run("Simple", func(t *testing.T) {
 		tt, lines := setup(t)
