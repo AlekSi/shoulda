@@ -117,9 +117,19 @@ func collectFunction(fset *token.FileSet, fn *ast.FuncDecl) (functionData, error
 		return functionData{}, err
 	}
 
-	typeParams, err := renderTypeParams(fset, fn.Type.TypeParams)
-	if err != nil {
-		return functionData{}, err
+	typeParams := ""
+	if fields := fn.Type.TypeParams; fields != nil && len(fields.List) != 0 {
+		parts := make([]string, 0, len(fields.List))
+		for _, field := range fields.List {
+			part, _, err := renderField(fset, field)
+			if err != nil {
+				return functionData{}, err
+			}
+
+			parts = append(parts, part)
+		}
+
+		typeParams = "[" + strings.Join(parts, ", ") + "]"
 	}
 
 	params, args, err := renderParams(fset, fn.Type.Params)
@@ -150,20 +160,6 @@ func collectCommentLines(fn *ast.FuncDecl) ([]string, error) {
 	return strings.Split(text, "\n"), nil
 }
 
-// renderTypeParams renders function type parameters.
-func renderTypeParams(fset *token.FileSet, fields *ast.FieldList) (string, error) {
-	if fields == nil || len(fields.List) == 0 {
-		return "", nil
-	}
-
-	params, err := renderFieldList(fset, fields)
-	if err != nil {
-		return "", err
-	}
-
-	return "[" + params + "]", nil
-}
-
 // renderParams renders the wrapper parameter list and call arguments.
 func renderParams(fset *token.FileSet, fields *ast.FieldList) (string, string, error) {
 	if fields == nil || len(fields.List) == 0 {
@@ -191,8 +187,8 @@ func renderField(fset *token.FileSet, field *ast.Field) (string, []string, error
 		return "", nil, fmt.Errorf("unnamed parameters are not supported")
 	}
 
-	typeSrc, err := renderNode(fset, field.Type)
-	if err != nil {
+	var typeBuf bytes.Buffer
+	if err := printer.Fprint(&typeBuf, fset, field.Type); err != nil {
 		return "", nil, err
 	}
 
@@ -201,32 +197,7 @@ func renderField(fset *token.FileSet, field *ast.Field) (string, []string, error
 		names = append(names, ident.Name)
 	}
 
-	return strings.Join(names, ", ") + " " + typeSrc, names, nil
-}
-
-// renderFieldList renders a list of fields without surrounding delimiters.
-func renderFieldList(fset *token.FileSet, fields *ast.FieldList) (string, error) {
-	parts := make([]string, 0, len(fields.List))
-	for _, field := range fields.List {
-		part, _, err := renderField(fset, field)
-		if err != nil {
-			return "", err
-		}
-
-		parts = append(parts, part)
-	}
-
-	return strings.Join(parts, ", "), nil
-}
-
-// renderNode renders node back to Go source without type checking.
-func renderNode(fset *token.FileSet, node any) (string, error) {
-	var buf bytes.Buffer
-	if err := printer.Fprint(&buf, fset, node); err != nil {
-		return "", err
-	}
-
-	return buf.String(), nil
+	return strings.Join(names, ", ") + " " + typeBuf.String(), names, nil
 }
 
 // render executes the compare template and formats the generated source.
