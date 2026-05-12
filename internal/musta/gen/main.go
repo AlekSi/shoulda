@@ -4,9 +4,7 @@ package main
 import (
 	"bytes"
 	"flag"
-	"fmt"
 	"go/ast"
-	"go/format"
 	"go/parser"
 	"go/printer"
 	"go/token"
@@ -47,16 +45,16 @@ func {{.Name}}{{.TypeParams}}({{.Params}}) {
 
 // templateData contains data for compare.go template.
 type templateData struct {
-	Functions []functionData
+	Functions []funcData
 }
 
-// functionData contains data for a single generated wrapper.
-type functionData struct {
-	Name         string
-	TypeParams   string
-	Params       string
-	Args         string
-	CommentLines []string
+// funcData contains data for a single generated wrapper.
+type funcData struct {
+	Name         string   // "BeZero"
+	TypeParams   string   // "[T cmp.Ordered]"
+	Params       string   // "tb TB, actual T"
+	Args         string   // "tb, actual"
+	CommentLines []string // "BeZero checks ..."
 }
 
 // main rewrites compare wrappers and test analogues for the musta package.
@@ -82,14 +80,14 @@ func main() {
 }
 
 // rewriteFile rewrites a shoulda source file as its musta analogue.
-func rewriteFile(srcPath string) (err error) {
+func rewriteFile(path string) (err error) {
 	var data templateData
-	if data, err = parseCompare(srcPath); err != nil {
+	if data, err = parseFile(path); err != nil {
 		return
 	}
 
 	var f *os.File
-	if f, err = os.Create(filepath.Base(srcPath)); err != nil {
+	if f, err = os.Create(filepath.Base(path)); err != nil {
 		return
 	}
 
@@ -102,53 +100,51 @@ func rewriteFile(srcPath string) (err error) {
 	return
 }
 
-// parseCompare collects exported compare helpers that should be wrapped by musta.
-func parseCompare(comparePath string) (templateData, error) {
+// parseFile collects shoulda functions that should be wrapped by musta.
+func parseFile(path string) (templateData, error) {
 	fset := token.NewFileSet()
-	file, err := parser.ParseFile(fset, comparePath, nil, parser.ParseComments)
+	file, err := parser.ParseFile(fset, path, nil, parser.ParseComments)
 	if err != nil {
 		return templateData{}, err
 	}
 
-	var functions []functionData
+	var funcs []funcData
 	for _, decl := range file.Decls {
-		fn, ok := decl.(*ast.FuncDecl)
+		f, ok := decl.(*ast.FuncDecl)
 		if !ok {
 			continue
 		}
 
-		if !fn.Name.IsExported() {
+		if !f.Name.IsExported() {
 			continue
 		}
 
-		fnData, collectErr := collectFunction(fset, fn)
-		if collectErr != nil {
+		var fd funcData
+		if fd, err = extractFunction(fset, f); err != nil {
 			return templateData{}, err
 		}
 
-		functions = append(functions, fnData)
+		funcs = append(funcs, fd)
 	}
 
-	if len(functions) == 0 {
-		return templateData{}, err
-	}
-
-	return templateData{Functions: functions}, nil
+	return templateData{Functions: funcs}, nil
 }
 
-// collectFunction builds template data for a wrapped function.
-func collectFunction(fset *token.FileSet, fn *ast.FuncDecl) (functionData, error) {
-	res := functionData{
+// extractFunction extracts template data from a function function.
+func extractFunction(fset *token.FileSet, fn *ast.FuncDecl) (funcData, error) {
+	res := funcData{
 		CommentLines: strings.Split(strings.TrimSuffix(fn.Doc.Text(), "\n"), "\n"),
 		Name:         fn.Name.Name,
 	}
 
-	if fields := fn.Type.TypeParams; fields != nil && len(fields.List) != 0 {
+	if fields := fn.Type.TypeParams; fields != nil {
 		parts := make([]string, 0, len(fields.List))
+
 		for _, field := range fields.List {
-			part, _, err := renderField(fset, field)
+			part, _, err := extractField(fset, field)
+			log.Printf("TypeParams: part=%q", part)
 			if err != nil {
-				return functionData{}, err
+				return funcData{}, err
 			}
 
 			parts = append(parts, part)
@@ -157,35 +153,30 @@ func collectFunction(fset *token.FileSet, fn *ast.FuncDecl) (functionData, error
 		res.TypeParams = "[" + strings.Join(parts, ", ") + "]"
 	}
 
-	fields := fn.Type.Params
-	if fields == nil || len(fields.List) == 0 {
-		return res, nil
-	}
+	if fields := fn.Type.Params; fields != nil {
+		params := make([]string, 0, len(fields.List))
+		args := make([]string, 0, len(fields.List))
 
-	params := make([]string, 0, len(fields.List))
-	args := make([]string, 0, len(fields.List))
-	for _, field := range fields.List {
-		param, fieldArgs, err := renderField(fset, field)
-		if err != nil {
-			return functionData{}, err
+		for _, field := range fields.List {
+			param, fieldArgs, err := extractField(fset, field)
+			log.Printf("Params: part=%q, fieldArgs=%#v", param, fieldArgs)
+			if err != nil {
+				return funcData{}, err
+			}
+
+			params = append(params, param)
+			args = append(args, fieldArgs...)
 		}
 
-		params = append(params, param)
-		args = append(args, fieldArgs...)
+		res.Params = strings.Join(params, ", ")
+		res.Args = strings.Join(args, ", ")
 	}
-
-	res.Params = strings.Join(params, ", ")
-	res.Args = strings.Join(args, ", ")
 
 	return res, nil
 }
 
-// renderField renders a single parameter field and the argument names it contributes.
-func renderField(fset *token.FileSet, field *ast.Field) (string, []string, error) {
-	if len(field.Names) == 0 {
-		return "", nil, fmt.Errorf("unnamed parameters are not supported")
-	}
-
+// extractField extracts information about a single XXX.
+func extractField(fset *token.FileSet, field *ast.Field) (string, []string, error) {
 	var typeBuf bytes.Buffer
 	if err := printer.Fprint(&typeBuf, fset, field.Type); err != nil {
 		return "", nil, err
@@ -200,18 +191,18 @@ func renderField(fset *token.FileSet, field *ast.Field) (string, []string, error
 }
 
 // rewriteTestFile rewrites a shoulda test file as its musta analogue.
-func rewriteTestFile(srcPath string) (err error) {
+func rewriteTestFile(path string) (err error) {
 	fset := token.NewFileSet()
 
 	var astFile *ast.File
-	astFile, err = parser.ParseFile(fset, srcPath, nil, parser.ParseComments)
+	astFile, err = parser.ParseFile(fset, path, nil, parser.ParseComments)
 	if err != nil {
 		return
 	}
 
 	astFile.Name = ast.NewIdent("musta")
 
-	f, err := os.Create(filepath.Base(srcPath))
+	f, err := os.Create(filepath.Base(path))
 	if err != nil {
 		return
 	}
@@ -226,6 +217,6 @@ func rewriteTestFile(srcPath string) (err error) {
 		return
 	}
 
-	err = format.Node(f, fset, astFile)
+	err = printer.Fprint(f, fset, astFile)
 	return
 }
