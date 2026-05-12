@@ -22,6 +22,8 @@ jobs:
 
       - name: Setup Go
         uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
 
       - name: Download dependencies
         run: go mod tidy
