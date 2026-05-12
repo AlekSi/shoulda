@@ -91,7 +91,7 @@ func parseCompare(comparePath string) (templateData, error) {
 	var signatures strings.Builder
 	for _, decl := range file.Decls {
 		fn, ok := decl.(*ast.FuncDecl)
-		if !ok || !shouldWrap(fn) {
+		if !ok {
 			continue
 		}
 
@@ -145,31 +145,6 @@ func availableImports(fset *token.FileSet, file *ast.File) (map[string]string, e
 	}
 
 	return imports, nil
-}
-
-// shouldWrap reports whether fn should be wrapped in the musta package.
-func shouldWrap(fn *ast.FuncDecl) bool {
-	if fn.Recv != nil || fn.Name == nil || !fn.Name.IsExported() {
-		return false
-	}
-
-	params := fn.Type.Params
-	if params == nil || len(params.List) == 0 {
-		return false
-	}
-
-	first := params.List[0]
-	if len(first.Names) != 1 || first.Names[0].Name != "tb" {
-		return false
-	}
-
-	results := fn.Type.Results
-	if results == nil || len(results.List) != 1 || len(results.List[0].Names) != 0 {
-		return false
-	}
-
-	result, ok := results.List[0].Type.(*ast.Ident)
-	return ok && result.Name == "bool"
 }
 
 // collectFunction builds template data for a wrapped function.
