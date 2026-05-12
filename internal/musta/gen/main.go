@@ -137,45 +137,50 @@ func extractFunction(fset *token.FileSet, fn *ast.FuncDecl) (funcData, error) {
 		Name:         fn.Name.Name,
 	}
 
-	if fields := fn.Type.TypeParams; fields != nil {
-		parts := make([]string, 0, len(fields.List))
-
-		for _, field := range fields.List {
-			part, _, err := extractField(fset, field)
-			log.Printf("TypeParams: part=%q", part)
-			if err != nil {
-				return funcData{}, err
-			}
-
-			parts = append(parts, part)
-		}
-
-		res.TypeParams = "[" + strings.Join(parts, ", ") + "]"
+	typeParams, _, err := extractFields(fset, fn.Type.TypeParams)
+	if err != nil {
+		return funcData{}, err
+	}
+	if typeParams != "" {
+		res.TypeParams = "[" + typeParams + "]"
 	}
 
-	if fields := fn.Type.Params; fields != nil {
-		params := make([]string, 0, len(fields.List))
-		args := make([]string, 0, len(fields.List))
-
-		for _, field := range fields.List {
-			param, fieldArgs, err := extractField(fset, field)
-			log.Printf("Params: part=%q, fieldArgs=%#v", param, fieldArgs)
-			if err != nil {
-				return funcData{}, err
-			}
-
-			params = append(params, param)
-			args = append(args, fieldArgs...)
-		}
-
-		res.Params = strings.Join(params, ", ")
-		res.Args = strings.Join(args, ", ")
+	res.Params, res.Args, err = extractFields(fset, fn.Type.Params)
+	if err != nil {
+		return funcData{}, err
 	}
 
 	return res, nil
 }
 
-// extractField extracts information about a single XXX.
+// extractFields extracts parameter declarations and argument names from a field list.
+func extractFields(fset *token.FileSet, fields *ast.FieldList) (string, string, error) {
+	if fields == nil {
+		return "", "", nil
+	}
+
+	params := make([]string, 0, len(fields.List))
+	args := make([]string, 0, len(fields.List))
+
+	for _, field := range fields.List {
+		fieldType, names, err := extractField(fset, field)
+		if err != nil {
+			return "", "", err
+		}
+
+		param := fieldType
+		if len(names) > 0 {
+			param = strings.Join(names, ", ") + " " + fieldType
+			args = append(args, names...)
+		}
+
+		params = append(params, param)
+	}
+
+	return strings.Join(params, ", "), strings.Join(args, ", "), nil
+}
+
+// extractField extracts information about a single field.
 func extractField(fset *token.FileSet, field *ast.Field) (string, []string, error) {
 	var typeBuf bytes.Buffer
 	if err := printer.Fprint(&typeBuf, fset, field.Type); err != nil {
@@ -187,7 +192,7 @@ func extractField(fset *token.FileSet, field *ast.Field) (string, []string, erro
 		names = append(names, ident.Name)
 	}
 
-	return strings.Join(names, ", ") + " " + typeBuf.String(), names, nil
+	return typeBuf.String(), names, nil
 }
 
 // rewriteTestFile rewrites a shoulda test file as its musta analogue.
