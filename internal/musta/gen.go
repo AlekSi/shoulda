@@ -14,8 +14,6 @@ import (
 	"log"
 	"os"
 	"path"
-	"path/filepath"
-	"runtime"
 	"sort"
 	"strconv"
 	"strings"
@@ -61,17 +59,7 @@ type functionData struct {
 func main() {
 	flag.Parse()
 
-	_, genPath, _, ok := runtime.Caller(0)
-	if !ok {
-		log.Fatal("failed to resolve generator path")
-	}
-
-	genDir := filepath.Dir(genPath)
-	rootDir := filepath.Clean(filepath.Join(genDir, "..", ".."))
-	comparePath := filepath.Join(rootDir, "compare.go")
-	outputPath := filepath.Join(genDir, "compare.go")
-
-	data, err := parseCompare(comparePath)
+	data, err := parseCompare("../../compare.go")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -81,7 +69,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	if err := os.WriteFile(outputPath, src, 0o644); err != nil {
+	if err := os.WriteFile("compare.go", src, 0o644); err != nil {
 		log.Fatal(err)
 	}
 }
@@ -100,9 +88,7 @@ func parseCompare(comparePath string) (templateData, error) {
 	}
 
 	var functions []functionData
-	usedImports := map[string]struct{}{
-		`"github.com/AlekSi/shoulda"`: {},
-	}
+	var signatures strings.Builder
 	for _, decl := range file.Decls {
 		fn, ok := decl.(*ast.FuncDecl)
 		if !ok || !shouldWrap(fn) {
@@ -115,17 +101,21 @@ func parseCompare(comparePath string) (templateData, error) {
 		}
 
 		functions = append(functions, data)
-		collectUsedImports(imports, fn.Type.TypeParams, usedImports)
-		collectUsedImports(imports, fn.Type.Params, usedImports)
+		signatures.WriteString(data.TypeParams)
+		signatures.WriteByte(' ')
+		signatures.WriteString(data.Params)
+		signatures.WriteByte(' ')
 	}
 
 	if len(functions) == 0 {
 		return templateData{}, fmt.Errorf("no wrapper candidates found in %s", comparePath)
 	}
 
-	rawImports := make([]string, 0, len(usedImports))
-	for spec := range usedImports {
-		rawImports = append(rawImports, spec)
+	rawImports := []string{`"github.com/AlekSi/shoulda"`}
+	for name, spec := range imports {
+		if strings.Contains(signatures.String(), name+".") {
+			rawImports = append(rawImports, spec)
+		}
 	}
 	sort.Strings(rawImports)
 
@@ -299,32 +289,6 @@ func renderNode(fset *token.FileSet, node any) (string, error) {
 	}
 
 	return buf.String(), nil
-}
-
-// collectUsedImports records imported package names referenced by fields.
-func collectUsedImports(imports map[string]string, fields *ast.FieldList, used map[string]struct{}) {
-	if fields == nil {
-		return
-	}
-
-	ast.Inspect(fields, func(n ast.Node) bool {
-		selector, ok := n.(*ast.SelectorExpr)
-		if !ok {
-			return true
-		}
-
-		ident, ok := selector.X.(*ast.Ident)
-		if !ok {
-			return true
-		}
-
-		spec, ok := imports[ident.Name]
-		if ok {
-			used[spec] = struct{}{}
-		}
-
-		return true
-	})
 }
 
 // render executes the compare template and formats the generated source.
