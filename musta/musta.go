@@ -8,7 +8,7 @@ import (
 	"github.com/AlekSi/shoulda/internal"
 )
 
-//go:generate go run ./gen
+//go:generate go run ../internal/mustagen
 
 // TB is a subset of [testing.TB] that is sufficient for assertions.
 type TB interface {
