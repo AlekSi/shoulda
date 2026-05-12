@@ -2,6 +2,7 @@ package shoulda
 
 import (
 	"bytes"
+	"math"
 	"strings"
 	"testing"
 	"time"
@@ -134,9 +135,20 @@ func TestBeDeepEqual(t *testing.T) {
 			"FAIL",
 		})
 	})
+
+	t.Run("NaN", func(t *testing.T) {
+		tt, lines := setup(t)
+		BeDeepEqual(tt, []float64{math.NaN()}, []float64{math.NaN()})
+
+		BeDeepEqual(t, lines(), []string{
+			"Values are not deep equal:",
+			"actual:   []float64{NaN}",
+			"expected: []float64{NaN}",
+			"FAIL",
+		})
+	})
 }
 
-// TestNotBeDeepEqual tests NotBeDeepEqual.
 func TestNotBeDeepEqual(t *testing.T) {
 	t.Run("Simple", func(t *testing.T) {
 		tt, lines := setup(t)
@@ -148,6 +160,13 @@ func TestNotBeDeepEqual(t *testing.T) {
 			"expected: []int{13}",
 			"FAIL",
 		})
+	})
+
+	t.Run("NaN", func(t *testing.T) {
+		tt, lines := setup(t)
+		NotBeDeepEqual(tt, []float64{math.NaN()}, []float64{math.NaN()})
+
+		BeDeepEqual(t, lines(), []string{""})
 	})
 }
 
