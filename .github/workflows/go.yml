@@ -13,8 +13,13 @@ permissions:
 
 jobs:
   test:
-    name: Test
+    name: Test with ${{ matrix.go }}
     runs-on: ubuntu-24.04
+
+    strategy:
+      fail-fast: false
+      matrix:
+        go: ["1.25.x", "1.26.x"]
 
     steps:
       - name: Checkout code
@@ -23,7 +28,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v6
         with:
-          go-version-file: go.mod
+          go-version: ${{ matrix.go }}
 
       - name: Download dependencies
         run: |
