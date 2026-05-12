@@ -64,7 +64,7 @@ func main() {
 	for _, srcFile := range []string{
 		"compare.go",
 	} {
-		if err := rewriteFile(filepath.Join("..", "..", srcFile)); err != nil {
+		if err := rewriteFile(filepath.Join("..", srcFile)); err != nil {
 			log.Fatal(err)
 		}
 	}
@@ -73,7 +73,7 @@ func main() {
 		"compare_test.go",
 		"compare_example_test.go",
 	} {
-		if err := rewriteTestFile(filepath.Join("..", "..", testFile)); err != nil {
+		if err := rewriteTestFile(filepath.Join("..", testFile)); err != nil {
 			log.Fatal(err)
 		}
 	}
