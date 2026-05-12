@@ -63,7 +63,7 @@ type functionData struct {
 func main() {
 	flag.Parse()
 
-	data, err := parseCompare("../../compare.go")
+	data, err := parseCompare(filepath.Join("..", "..", "compare.go"))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -77,12 +77,13 @@ func main() {
 		log.Fatal(err)
 	}
 
-	if err := rewriteFile("../../compare_test.go"); err != nil {
-		log.Fatal(err)
-	}
-
-	if err := rewriteFile("../../compare_example_test.go"); err != nil {
-		log.Fatal(err)
+	for _, testFile := range []string{
+		"compare_test.go",
+		"compare_example_test.go",
+	} {
+		if err := rewriteTestFile(filepath.Join("..", "..", testFile)); err != nil {
+			log.Fatal(err)
+		}
 	}
 }
 
@@ -186,31 +187,6 @@ func renderField(fset *token.FileSet, field *ast.Field) (string, []string, error
 	return strings.Join(names, ", ") + " " + typeBuf.String(), names, nil
 }
 
-// rewriteFile rewrites a shoulda source file as its musta analogue.
-func rewriteFile(srcPath string) error {
-	fset := token.NewFileSet()
-	file, err := parser.ParseFile(fset, srcPath, nil, parser.ParseComments)
-	if err != nil {
-		return fmt.Errorf("parse %s: %w", srcPath, err)
-	}
-
-	file.Name = ast.NewIdent("musta")
-
-	var buf bytes.Buffer
-	buf.WriteString(generatedHeader)
-
-	if err := format.Node(&buf, fset, file); err != nil {
-		return fmt.Errorf("format %s: %w", srcPath, err)
-	}
-
-	dstPath := filepath.Base(srcPath)
-	if err := os.WriteFile(dstPath, buf.Bytes(), 0o644); err != nil {
-		return fmt.Errorf("write %s: %w", dstPath, err)
-	}
-
-	return nil
-}
-
 // render executes the compare template and formats the generated source.
 func render(data templateData) ([]byte, error) {
 	tmpl, err := template.New("compare").Parse(compareTemplate)
@@ -229,4 +205,29 @@ func render(data templateData) ([]byte, error) {
 	}
 
 	return formatted, nil
+}
+
+// rewriteTestFile rewrites a shoulda test file as its musta analogue.
+func rewriteTestFile(srcPath string) error {
+	fset := token.NewFileSet()
+	file, err := parser.ParseFile(fset, srcPath, nil, parser.ParseComments)
+	if err != nil {
+		return fmt.Errorf("rewriteTestFile: parse %s: %w", srcPath, err)
+	}
+
+	file.Name = ast.NewIdent("musta")
+
+	var buf bytes.Buffer
+	buf.WriteString(generatedHeader)
+
+	if err := format.Node(&buf, fset, file); err != nil {
+		return fmt.Errorf("rewriteTestFile: format %s: %w", srcPath, err)
+	}
+
+	dstPath := filepath.Base(srcPath)
+	if err := os.WriteFile(dstPath, buf.Bytes(), 0o644); err != nil {
+		return fmt.Errorf("rewriteTestFile: write %s: %w", dstPath, err)
+	}
+
+	return nil
 }
