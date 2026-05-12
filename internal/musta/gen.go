@@ -4,12 +4,14 @@ package main
 
 import (
 	"bytes"
+	"flag"
 	"fmt"
 	"go/ast"
 	"go/format"
 	"go/parser"
 	"go/printer"
 	"go/token"
+	"log"
 	"os"
 	"path"
 	"path/filepath"
@@ -57,43 +59,31 @@ type functionData struct {
 
 // main rewrites compare.go wrappers for the musta package.
 func main() {
-	if err := generate(); err != nil {
-		_, _ = fmt.Fprintln(os.Stderr, err)
-		os.Exit(1)
-	}
-}
+	flag.Parse()
 
-// generate parses the top-level compare helpers and rewrites musta wrappers.
-func generate() error {
-	comparePath, outputPath, err := paths()
-	if err != nil {
-		return err
-	}
-
-	data, err := parseCompare(comparePath)
-	if err != nil {
-		return err
-	}
-
-	src, err := render(data)
-	if err != nil {
-		return err
-	}
-
-	return os.WriteFile(outputPath, src, 0o644)
-}
-
-// paths resolves source and output paths relative to this generator file.
-func paths() (string, string, error) {
 	_, genPath, _, ok := runtime.Caller(0)
 	if !ok {
-		return "", "", fmt.Errorf("failed to resolve generator path")
+		log.Fatal("failed to resolve generator path")
 	}
 
 	genDir := filepath.Dir(genPath)
 	rootDir := filepath.Clean(filepath.Join(genDir, "..", ".."))
+	comparePath := filepath.Join(rootDir, "compare.go")
+	outputPath := filepath.Join(genDir, "compare.go")
 
-	return filepath.Join(rootDir, "compare.go"), filepath.Join(genDir, "compare.go"), nil
+	data, err := parseCompare(comparePath)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	src, err := render(data)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if err := os.WriteFile(outputPath, src, 0o644); err != nil {
+		log.Fatal(err)
+	}
 }
 
 // parseCompare collects exported compare helpers that should be wrapped by musta.
