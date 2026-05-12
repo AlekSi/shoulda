@@ -69,7 +69,7 @@ func ExampleSatisfyWith_function() {
 	// FAIL
 }
 
-func ExampleSatisfyWith_method() {
+func ExampleSatisfyWith_method_expression() {
 	actual := time.Date(2026, time.April, 9, 17, 32, 42, 123, time.UTC)
 	expected := time.Date(2026, time.April, 9, 17, 32, 42, 123, time.FixedZone("My", 4*int(time.Hour.Seconds())))
 	SatisfyWith(t, actual, expected, time.Time.Before)
