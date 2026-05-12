@@ -50,11 +50,11 @@ type templateData struct {
 
 // funcData contains data for a single generated wrapper.
 type funcData struct {
-	Name         string   // "BeZero"
+	Name         string   // "BeEqual"
 	TypeParams   string   // "[T cmp.Ordered]"
-	Params       string   // "tb TB, actual T"
-	Args         string   // "tb, actual"
-	CommentLines []string // "BeZero checks ..."
+	Params       string   // "tb TB, actual, expected T"
+	Args         string   // "tb, actual, expected"
+	CommentLines []string // "BeEqual checks ..."
 }
 
 // main rewrites compare wrappers and test analogues for the musta package.
@@ -137,12 +137,13 @@ func extractFunction(fset *token.FileSet, fn *ast.FuncDecl) (funcData, error) {
 		Name:         fn.Name.Name,
 	}
 
-	typeParams, _, err := extractFields(fset, fn.Type.TypeParams)
+	var err error
+	res.TypeParams, _, err = extractFields(fset, fn.Type.TypeParams)
 	if err != nil {
 		return funcData{}, err
 	}
-	if typeParams != "" {
-		res.TypeParams = "[" + typeParams + "]"
+	if res.TypeParams != "" {
+		res.TypeParams = "[" + res.TypeParams + "]"
 	}
 
 	res.Params, res.Args, err = extractFields(fset, fn.Type.Params)
@@ -153,7 +154,8 @@ func extractFunction(fset *token.FileSet, fn *ast.FuncDecl) (funcData, error) {
 	return res, nil
 }
 
-// extractFields extracts parameter declarations and argument names from a field list.
+// extractFields extracts parameter declarations ("tb TB, actual, expected T")
+// and argument names ("tb, actual, expected") from a field list.
 func extractFields(fset *token.FileSet, fields *ast.FieldList) (string, string, error) {
 	if fields == nil {
 		return "", "", nil
@@ -163,36 +165,21 @@ func extractFields(fset *token.FileSet, fields *ast.FieldList) (string, string, 
 	args := make([]string, 0, len(fields.List))
 
 	for _, field := range fields.List {
-		fieldType, names, err := extractField(fset, field)
-		if err != nil {
+		names := make([]string, len(field.Names))
+		for i, ident := range field.Names {
+			names[i] = ident.Name
+		}
+
+		var typ bytes.Buffer
+		if err := printer.Fprint(&typ, fset, field.Type); err != nil {
 			return "", "", err
 		}
 
-		param := fieldType
-		if len(names) > 0 {
-			param = strings.Join(names, ", ") + " " + fieldType
-			args = append(args, names...)
-		}
-
-		params = append(params, param)
+		args = append(args, names...)
+		params = append(params, strings.Join(names, ", ")+" "+typ.String())
 	}
 
 	return strings.Join(params, ", "), strings.Join(args, ", "), nil
-}
-
-// extractField extracts information about a single field.
-func extractField(fset *token.FileSet, field *ast.Field) (string, []string, error) {
-	var typeBuf bytes.Buffer
-	if err := printer.Fprint(&typeBuf, fset, field.Type); err != nil {
-		return "", nil, err
-	}
-
-	names := make([]string, 0, len(field.Names))
-	for _, ident := range field.Names {
-		names = append(names, ident.Name)
-	}
-
-	return typeBuf.String(), names, nil
 }
 
 // rewriteTestFile rewrites a shoulda test file as its musta analogue.
