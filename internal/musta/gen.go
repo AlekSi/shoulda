@@ -112,12 +112,11 @@ func parseCompare(comparePath string) (templateData, error) {
 
 // collectFunction builds template data for a wrapped function.
 func collectFunction(fset *token.FileSet, fn *ast.FuncDecl) (functionData, error) {
-	commentLines, err := collectCommentLines(fn)
-	if err != nil {
-		return functionData{}, err
+	res := functionData{
+		CommentLines: strings.Split(strings.TrimSuffix(fn.Doc.Text(), "\n"), "\n"),
+		Name:         fn.Name.Name,
 	}
 
-	typeParams := ""
 	if fields := fn.Type.TypeParams; fields != nil && len(fields.List) != 0 {
 		parts := make([]string, 0, len(fields.List))
 		for _, field := range fields.List {
@@ -129,35 +128,12 @@ func collectFunction(fset *token.FileSet, fn *ast.FuncDecl) (functionData, error
 			parts = append(parts, part)
 		}
 
-		typeParams = "[" + strings.Join(parts, ", ") + "]"
+		res.TypeParams = "[" + strings.Join(parts, ", ") + "]"
 	}
 
-	params, args, err := renderParams(fset, fn.Type.Params)
-	if err != nil {
-		return functionData{}, err
-	}
-
-	return functionData{
-		CommentLines: commentLines,
-		Name:         fn.Name.Name,
-		TypeParams:   typeParams,
-		Params:       params,
-		Args:         args,
-	}, nil
-}
-
-// collectCommentLines extracts documentation comment lines for fn.
-func collectCommentLines(fn *ast.FuncDecl) ([]string, error) {
-	if fn.Doc == nil {
-		return nil, fmt.Errorf("missing doc comment")
-	}
-
-	text := strings.TrimSuffix(fn.Doc.Text(), "\n")
-	if text == "" {
-		return nil, fmt.Errorf("empty doc comment")
-	}
-
-	return strings.Split(text, "\n"), nil
+	var err error
+	res.Params, res.Args, err = renderParams(fset, fn.Type.Params)
+	return res, err
 }
 
 // renderParams renders the wrapper parameter list and call arguments.
