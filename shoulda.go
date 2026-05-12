@@ -2,7 +2,6 @@
 package shoulda
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/AlekSi/shoulda/internal"
@@ -15,40 +14,16 @@ type TB interface {
 	Fail()
 }
 
-// messager is an interface for lazy message construction.
-type messager interface {
-	message() string
-}
-
-// msgString implements [messager] for a simple string message.
-type msgString string
-
-// message implements [messager].
-func (m msgString) message() string { return string(m) }
-
-// msgFunc implements [messager] for a function that constructs a message.
-type msgFunc func() string
-
-// message implements [messager].
-func (m msgFunc) message() string { return m() }
-
-// msgFmt constructs a message from [fmt.Sprintf]-like arguments.
-func msgFmt(msg string, args ...any) messager {
-	return msgFunc(func() string {
-		return fmt.Sprintf(msg, args...)
-	})
-}
-
 // assert returns true if condition is true;
 // otherwise it logs msg, fails test, and returns false.
-func assert(tb TB, condition bool, msg messager) bool {
+func assert(tb TB, condition bool, msg internal.Messager) bool {
 	tb.Helper()
 
 	if condition {
 		return true
 	}
 
-	tb.Log(msg.message())
+	tb.Log(msg.Message())
 	tb.Fail()
 	return false
 }
