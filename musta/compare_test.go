@@ -138,6 +138,21 @@ func TestBeDeepEqual(t *testing.T) {
 	})
 }
 
+// TestNotBeDeepEqual tests NotBeDeepEqual.
+func TestNotBeDeepEqual(t *testing.T) {
+	t.Run("Simple", func(t *testing.T) {
+		tt, lines := setup(t)
+		NotBeDeepEqual(tt, []int{13}, []int{13})
+
+		BeDeepEqual(t, lines(), []string{
+			"Values are deep equal:",
+			"actual:   []int{13}",
+			"expected: []int{13}",
+			"FAIL",
+		})
+	})
+}
+
 func TestBeEqual(t *testing.T) {
 	t.Run("Simple", func(t *testing.T) {
 		tt, lines := setup(t)

@@ -61,6 +61,14 @@ func BeDeepEqual(tb TB, actual, expected any) bool {
 	return assert(tb, reflect.DeepEqual(actual, expected), msg)
 }
 
+// NotBeDeepEqual checks that actual and expected are not deeply equal.
+func NotBeDeepEqual(tb TB, actual, expected any) bool {
+	tb.Helper()
+
+	msg := internal.MsgFmt("Values are deep equal:\nactual:   %#v\nexpected: %#v", actual, expected)
+	return assert(tb, !reflect.DeepEqual(actual, expected), msg)
+}
+
 // BeEqual checks that actual and expected are equal.
 func BeEqual[T cmp.Ordered](tb TB, actual, expected T) bool {
 	tb.Helper()

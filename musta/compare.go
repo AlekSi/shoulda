@@ -70,6 +70,15 @@ func BeDeepEqual(tb TB, actual, expected any) {
 	}
 }
 
+// NotBeDeepEqual checks that actual and expected are not deeply equal.
+func NotBeDeepEqual(tb TB, actual, expected any) {
+	tb.Helper()
+
+	if !shoulda.NotBeDeepEqual(tb, actual, expected) {
+		tb.FailNow()
+	}
+}
+
 // BeEqual checks that actual and expected are equal.
 func BeEqual[T cmp.Ordered](tb TB, actual, expected T) {
 	tb.Helper()
