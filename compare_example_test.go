@@ -11,14 +11,12 @@ import (
 var t internal.TestTB
 
 func ExampleBeDeepEqual() {
-	actual := []int{13}
-	expected := []int{42}
-	BeDeepEqual(t, actual, expected)
+	BeDeepEqual(t, []int{13}, []int64{13})
 
 	// Output:
 	// Values are not deep equal:
 	// actual:   []int{13}
-	// expected: []int{42}
+	// expected: []int64{13}
 	// FAIL
 }
 

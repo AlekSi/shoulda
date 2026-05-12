@@ -28,6 +28,9 @@ jobs:
       - name: Download dependencies
         run: go mod tidy
 
+      - name: Generate code
+        run: go generate -x ./...
+
       - name: Run tests
         run: go test -race -count=1 ./...
 

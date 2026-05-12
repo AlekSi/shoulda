@@ -56,9 +56,9 @@ func Greater[T Ordered](x, y T) bool {
 
 // Compare returns
 //
-//	-1 (int([OrderLess])) if x is less than y,
-//	 0 (int([OrderEqual])) if x equals y,
-//	+1 (int([OrderGreater])) if x is greater than y.
+//	-1 ([OrderLess])    if x is less than y,
+//	 0 ([OrderEqual])   if x equals y,
+//	+1 ([OrderGreater]) if x is greater than y.
 //
 // For floating-point types, a NaN is considered less than any non-NaN,
 // a NaN is considered equal to a NaN, and -0.0 is equal to 0.0.
