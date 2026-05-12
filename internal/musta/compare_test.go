@@ -24,8 +24,32 @@ func setup(t *testing.T) (internal.TestTB, func() []string) {
 	return tt, f
 }
 
+func TestBeNil(t *testing.T) {
+	t.Run("Untyped", func(t *testing.T) {
+		tt, actual := setup(t)
+		BeNil(tt, 13)
+
+		BeDeepEqual(t, actual(), []string{
+			"actual: 13 (int)",
+			"is not nil",
+			"FAIL",
+		})
+	})
+
+	t.Run("Typed", func(t *testing.T) {
+		tt, actual := setup(t)
+		BeNil(tt, (*int)(nil))
+
+		BeDeepEqual(t, actual(), []string{
+			"actual: <nil> (*int)",
+			"is not nil",
+			"FAIL",
+		})
+	})
+}
+
 func TestBeDeepEqual(t *testing.T) {
-	t.Run("Fail", func(t *testing.T) {
+	t.Run("Simple", func(t *testing.T) {
 		tt, lines := setup(t)
 		BeDeepEqual(tt, []int{13}, []int64{13})
 
