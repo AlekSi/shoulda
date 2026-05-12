@@ -50,13 +50,32 @@ func TestBeNil(t *testing.T) {
 	})
 }
 
+func TestNotBeNil(t *testing.T) {
+	t.Run("Untyped", func(t *testing.T) {
+		tt, actual := setup(t)
+		NotBeNil(tt, nil)
+
+		BeDeepEqual(t, actual(), []string{
+			"is nil",
+			"FAIL",
+		})
+	})
+
+	t.Run("Typed", func(t *testing.T) {
+		tt, actual := setup(t)
+		NotBeNil(tt, (*int)(nil))
+
+		BeDeepEqual(t, actual(), []string{""})
+	})
+}
+
 func TestBeZero(t *testing.T) {
 	t.Run("Simple", func(t *testing.T) {
 		tt, actual := setup(t)
 		BeZero(tt, 13)
 
 		BeDeepEqual(t, actual(), []string{
-			"actual: 13 (int)",
+			"actual: 13",
 			"is not zero",
 			"FAIL",
 		})

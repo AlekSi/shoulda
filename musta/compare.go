@@ -16,6 +16,15 @@ func BeNil(tb TB, actual any) {
 	}
 }
 
+// NotBeNil checks that actual is not (untyped) nil.
+func NotBeNil(tb TB, actual any) {
+	tb.Helper()
+
+	if !shoulda.NotBeNil(tb, actual) {
+		tb.FailNow()
+	}
+}
+
 // BeZero checks that actual is the zero value of its type.
 func BeZero[T cmp.Ordered](tb TB, actual T) {
 	tb.Helper()

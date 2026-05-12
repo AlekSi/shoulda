@@ -15,11 +15,18 @@ func BeNil(tb TB, actual any) bool {
 	return assert(tb, actual == nil, msg)
 }
 
+// NotBeNil checks that actual is not (untyped) nil.
+func NotBeNil(tb TB, actual any) bool {
+	tb.Helper()
+
+	return assert(tb, actual != nil, internal.MsgString("is nil"))
+}
+
 // BeZero checks that actual is the zero value of its type.
 func BeZero[T cmp.Ordered](tb TB, actual T) bool {
 	tb.Helper()
 
-	msg := internal.MsgFmt("actual: %[1]v (%[1]T)\nis not zero", actual)
+	msg := internal.MsgFmt("actual: %v\nis not zero", actual)
 	var zero T
 	return assert(tb, actual == zero, msg)
 }
