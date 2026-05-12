@@ -130,7 +130,7 @@ func parseFile(path string) (templateData, error) {
 	return templateData{Functions: funcs}, nil
 }
 
-// extractFunction extracts template data from a function function.
+// extractFunction extracts template data from a function.
 func extractFunction(fset *token.FileSet, fn *ast.FuncDecl) (funcData, error) {
 	res := funcData{
 		CommentLines: strings.Split(strings.TrimSuffix(fn.Doc.Text(), "\n"), "\n"),
