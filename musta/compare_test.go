@@ -160,6 +160,30 @@ func TestSatisfy(t *testing.T) {
 			"FAIL",
 		})
 	})
+
+	t.Run("MethodValue", func(t *testing.T) {
+		tt, lines := setup(t)
+		actual := time.Date(2026, time.April, 9, 17, 32, 42, 123, time.UTC)
+		Satisfy(tt, actual, time.Now().Before)
+
+		BeDeepEqual(t, lines(), []string{
+			"predicate is not satisfied for",
+			"actual:   2026-04-09 17:32:42.000000123 +0000 UTC",
+			"FAIL",
+		})
+	})
+
+	t.Run("MethodExpression", func(t *testing.T) {
+		tt, lines := setup(t)
+		actual := time.Date(2026, time.April, 9, 17, 32, 42, 123, time.UTC)
+		Satisfy(tt, actual, time.Time.IsZero)
+
+		BeDeepEqual(t, lines(), []string{
+			"predicate is not satisfied for",
+			"actual:   2026-04-09 17:32:42.000000123 +0000 UTC",
+			"FAIL",
+		})
+	})
 }
 
 func TestSatisfyWith(t *testing.T) {

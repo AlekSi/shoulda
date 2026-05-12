@@ -22,12 +22,32 @@ func ExampleBeDeepEqual() {
 	// FAIL
 }
 
-func ExampleSatisfy() {
+func ExampleSatisfy_inline() {
 	Satisfy(t, 13, func(v int) bool { return v > 42 })
 
 	// Output:
 	// predicate is not satisfied for
 	// actual:   13
+	// FAIL
+}
+
+func ExampleSatisfy_methodValue() {
+	actual := time.Date(2026, time.April, 9, 17, 32, 42, 123, time.UTC)
+	Satisfy(t, actual, time.Now().Before)
+
+	// Output:
+	// predicate is not satisfied for
+	// actual:   2026-04-09 17:32:42.000000123 +0000 UTC
+	// FAIL
+}
+
+func ExampleSatisfy_methodExpression() {
+	actual := time.Date(2026, time.April, 9, 17, 32, 42, 123, time.UTC)
+	Satisfy(t, actual, time.Time.IsZero)
+
+	// Output:
+	// predicate is not satisfied for
+	// actual:   2026-04-09 17:32:42.000000123 +0000 UTC
 	// FAIL
 }
 
