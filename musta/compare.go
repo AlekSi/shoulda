@@ -7,7 +7,16 @@ import (
 	"github.com/AlekSi/shoulda/cmp"
 )
 
-// BeNil checks that actual is (untyped) nil.
+// BeNilf checks that actual is untyped nil.
+func BeNilf(tb TB, actual any, msg string, args ...any) {
+	tb.Helper()
+
+	if !shoulda.BeNilf(tb, actual, msg, args...) {
+		tb.FailNow()
+	}
+}
+
+// BeNil checks that actual is untyped nil.
 func BeNil(tb TB, actual any) {
 	tb.Helper()
 
@@ -16,11 +25,56 @@ func BeNil(tb TB, actual any) {
 	}
 }
 
+// NotBeNilf checks that actual is not (untyped) nil.
+func NotBeNilf(tb TB, actual any, msg string, args ...any) {
+	tb.Helper()
+
+	if !shoulda.NotBeNilf(tb, actual, msg, args...) {
+		tb.FailNow()
+	}
+}
+
+// NotBeNil checks that actual is not (untyped) nil.
+func NotBeNil(tb TB, actual any) {
+	tb.Helper()
+
+	if !shoulda.NotBeNil(tb, actual) {
+		tb.FailNow()
+	}
+}
+
+// BeZerof checks that actual is the zero value of its type.
+func BeZerof[T comparable](tb TB, actual T, msg string, args ...any) {
+	tb.Helper()
+
+	if !shoulda.BeZerof(tb, actual, msg, args...) {
+		tb.FailNow()
+	}
+}
+
 // BeZero checks that actual is the zero value of its type.
-func BeZero[T cmp.Ordered](tb TB, actual T) {
+func BeZero[T comparable](tb TB, actual T) {
 	tb.Helper()
 
 	if !shoulda.BeZero(tb, actual) {
+		tb.FailNow()
+	}
+}
+
+// NotBeZerof checks that actual is not the zero value of its type.
+func NotBeZerof[T comparable](tb TB, actual T, msg string, args ...any) {
+	tb.Helper()
+
+	if !shoulda.NotBeZerof(tb, actual, msg, args...) {
+		tb.FailNow()
+	}
+}
+
+// NotBeZero checks that actual is not the zero value of its type.
+func NotBeZero[T comparable](tb TB, actual T) {
+	tb.Helper()
+
+	if !shoulda.NotBeZero(tb, actual) {
 		tb.FailNow()
 	}
 }
@@ -43,7 +97,7 @@ func BeTrue(tb TB, actual bool) {
 	}
 }
 
-// BeDeepEqual checks that actual and expected are deeply equal.
+// BeDeepEqual checks that actual and expected are equal according to [reflect.DeepEqual].
 func BeDeepEqual(tb TB, actual, expected any) {
 	tb.Helper()
 
@@ -52,7 +106,16 @@ func BeDeepEqual(tb TB, actual, expected any) {
 	}
 }
 
-// BeEqual checks that actual and expected are equal.
+// NotBeDeepEqual checks that actual and expected are not equal according to [reflect.DeepEqual].
+func NotBeDeepEqual(tb TB, actual, expected any) {
+	tb.Helper()
+
+	if !shoulda.NotBeDeepEqual(tb, actual, expected) {
+		tb.FailNow()
+	}
+}
+
+// BeEqual checks that actual and expected are equal according to [cmp.Equal].
 func BeEqual[T cmp.Ordered](tb TB, actual, expected T) {
 	tb.Helper()
 
@@ -61,7 +124,7 @@ func BeEqual[T cmp.Ordered](tb TB, actual, expected T) {
 	}
 }
 
-// BeLess checks that actual is less than expected.
+// BeLess checks that actual is less than expected according to [cmp.Less].
 func BeLess[T cmp.Ordered](tb TB, actual, expected T) {
 	tb.Helper()
 
@@ -70,7 +133,7 @@ func BeLess[T cmp.Ordered](tb TB, actual, expected T) {
 	}
 }
 
-// BeGreater checks that actual is greater than expected.
+// BeGreater checks that actual is greater than expected according to [cmp.Greater].
 func BeGreater[T cmp.Ordered](tb TB, actual, expected T) {
 	tb.Helper()
 

@@ -11,6 +11,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 	"text/template"
 )
@@ -170,12 +171,17 @@ func extractFields(fset *token.FileSet, fields *ast.FieldList) (string, string, 
 			names[i] = ident.Name
 		}
 
+		fieldArgs := slices.Clone(names)
+		if _, ok := field.Type.(*ast.Ellipsis); ok && len(fieldArgs) != 0 {
+			fieldArgs[len(fieldArgs)-1] += "..."
+		}
+
 		var typ bytes.Buffer
 		if err := printer.Fprint(&typ, fset, field.Type); err != nil {
 			return "", "", err
 		}
 
-		args = append(args, names...)
+		args = append(args, fieldArgs...)
 		params = append(params, strings.Join(names, ", ")+" "+typ.String())
 	}
 
