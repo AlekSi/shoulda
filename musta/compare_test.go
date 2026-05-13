@@ -89,6 +89,18 @@ func TestNotBeNil(t *testing.T) {
 
 		BeDeepEqual(t, actual(), []string{""})
 	})
+
+	// FIXME
+	// t.Run("Pointer", func(t *testing.T) {
+	// 	tt, actual := setup(t)
+	// 	BeZero(tt, new(13))
+	//
+	// 	BeDeepEqual(t, actual(), []string{
+	// 		"actual: 0xf53c33d02d8",
+	// 		"is not zero",
+	// 		"FAIL",
+	// 	})
+	// })
 }
 
 func TestBeZero(t *testing.T) {
