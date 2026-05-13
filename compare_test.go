@@ -2,6 +2,7 @@ package shoulda
 
 import (
 	"bytes"
+	"errors"
 	"math"
 	"strings"
 	"testing"
@@ -28,7 +29,7 @@ func setup(t *testing.T) (internal.TestTB, func() []string) {
 }
 
 func TestBeNil(t *testing.T) {
-	t.Run("Untyped", func(t *testing.T) {
+	t.Run("Value", func(t *testing.T) {
 		tt, actual := setup(t)
 		BeNil(tt, 13)
 
@@ -39,7 +40,14 @@ func TestBeNil(t *testing.T) {
 		})
 	})
 
-	t.Run("Typed", func(t *testing.T) {
+	t.Run("UntypedNil", func(t *testing.T) {
+		tt, actual := setup(t)
+		BeNil(tt, nil)
+
+		BeDeepEqual(t, actual(), []string{""})
+	})
+
+	t.Run("TypedNil", func(t *testing.T) {
 		tt, actual := setup(t)
 		BeNil(tt, (*int)(nil))
 
@@ -49,10 +57,21 @@ func TestBeNil(t *testing.T) {
 			"FAIL",
 		})
 	})
+
+	t.Run("Error", func(t *testing.T) {
+		tt, actual := setup(t)
+		BeNil(tt, errors.New("boom"))
+
+		BeDeepEqual(t, actual(), []string{
+			"actual: boom (*errors.errorString)",
+			"is not nil",
+			"FAIL",
+		})
+	})
 }
 
 func TestNotBeNil(t *testing.T) {
-	t.Run("Untyped", func(t *testing.T) {
+	t.Run("UntypedNil", func(t *testing.T) {
 		tt, actual := setup(t)
 		NotBeNil(tt, nil)
 
@@ -62,7 +81,7 @@ func TestNotBeNil(t *testing.T) {
 		})
 	})
 
-	t.Run("Typed", func(t *testing.T) {
+	t.Run("TypedNil", func(t *testing.T) {
 		tt, actual := setup(t)
 		NotBeNil(tt, (*int)(nil))
 
