@@ -1,6 +1,8 @@
 package shoulda
 
-import "github.com/AlekSi/shoulda/internal"
+import (
+	"github.com/AlekSi/shoulda/internal"
+)
 
 // BeNilf checks that actual is untyped nil.
 func BeNilf(tb TB, actual any, msg string, args ...any) bool {
@@ -42,7 +44,7 @@ func BeZerof[T comparable](tb TB, actual T, msg string, args ...any) bool {
 func BeZero[T comparable](tb TB, actual T) bool {
 	tb.Helper()
 
-	return BeZerof(tb, actual, "actual: %v\nis not zero", actual)
+	return BeZerof(tb, actual, "actual: %v\nis not zero", Dump(tb, actual))
 }
 
 // NotBeZerof checks that actual is not the zero value of its type.
