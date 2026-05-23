@@ -1,0 +1,104 @@
+package shoulda
+
+import (
+	"errors"
+	"testing"
+)
+
+func TestBeNil(t *testing.T) {
+	t.Run("Value", func(t *testing.T) {
+		tt, actual := setup(t)
+		BeNil(tt, 13)
+
+		BeDeepEqual(t, actual(), []string{
+			"actual: 13 (int)",
+			"is not nil",
+			"FAIL",
+		})
+	})
+
+	t.Run("UntypedNil", func(t *testing.T) {
+		tt, actual := setup(t)
+		BeNil(tt, nil)
+
+		BeDeepEqual(t, actual(), []string{""})
+	})
+
+	t.Run("TypedNil", func(t *testing.T) {
+		tt, actual := setup(t)
+		BeNil(tt, (*int)(nil))
+
+		BeDeepEqual(t, actual(), []string{
+			"actual: <nil> (*int)",
+			"is not nil",
+			"FAIL",
+		})
+	})
+
+	t.Run("Error", func(t *testing.T) {
+		tt, actual := setup(t)
+		BeNil(tt, errors.New("boom"))
+
+		BeDeepEqual(t, actual(), []string{
+			"actual: boom (*errors.errorString)",
+			"is not nil",
+			"FAIL",
+		})
+	})
+}
+
+func TestNotBeNil(t *testing.T) {
+	t.Run("UntypedNil", func(t *testing.T) {
+		tt, actual := setup(t)
+		NotBeNil(tt, nil)
+
+		BeDeepEqual(t, actual(), []string{
+			"is nil",
+			"FAIL",
+		})
+	})
+
+	t.Run("TypedNil", func(t *testing.T) {
+		tt, actual := setup(t)
+		NotBeNil(tt, (*int)(nil))
+
+		BeDeepEqual(t, actual(), []string{""})
+	})
+
+	// FIXME
+	// t.Run("Pointer", func(t *testing.T) {
+	// 	tt, actual := setup(t)
+	// 	BeZero(tt, new(13))
+	//
+	// 	BeDeepEqual(t, actual(), []string{
+	// 		"actual: 0xf53c33d02d8",
+	// 		"is not zero",
+	// 		"FAIL",
+	// 	})
+	// })
+}
+
+func TestBeZero(t *testing.T) {
+	t.Run("Simple", func(t *testing.T) {
+		tt, actual := setup(t)
+		BeZero(tt, 13)
+
+		BeDeepEqual(t, actual(), []string{
+			"actual: 13",
+			"is not zero",
+			"FAIL",
+		})
+	})
+}
+
+func TestNotBeZero(t *testing.T) {
+	t.Run("Simple", func(t *testing.T) {
+		tt, actual := setup(t)
+		NotBeZero(tt, 0)
+
+		BeDeepEqual(t, actual(), []string{
+			"is zero",
+			"FAIL",
+		})
+	})
+}
