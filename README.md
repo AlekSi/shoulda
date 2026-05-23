@@ -4,4 +4,11 @@
 
 A Go testing library that shoulda be made as simple as possible, but not simpler.
 
-You really _shoulda not_ use it.
+You really _shoulda not_ use it yet.
+
+# License
+
+[The MIT License](LICENSE).
+
+[`cmp/cmp.go`](cmp/cmp.go) and [`internal/diff/diff.go`](internal/diff/diff.go)
+are adapted from the Go source code and distributed under a [similar license](cmp/LICENSE).

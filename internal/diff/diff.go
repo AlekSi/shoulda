@@ -5,7 +5,8 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-package shoulda
+// Package diff implements a diff algorithm.
+package diff
 
 import (
 	"bytes"
@@ -18,9 +19,9 @@ import (
 // It is typically a pair of line indexes.
 type pair struct{ x, y int }
 
-// diff returns an anchored diff of the two texts old and new
+// Diff returns an anchored diff of the two texts old and new
 // in the “unified diff” format. If old and new are identical,
-// diff returns a nil slice (no output).
+// Diff returns a nil slice (no output).
 //
 // Unix diff implementations typically look for a diff with
 // the smallest number of lines inserted and removed,
@@ -46,19 +47,17 @@ type pair struct{ x, y int }
 // Second, the name is frequently interpreted as meaning that you have
 // to wait longer (to be patient) for the diff, meaning that it is a slower algorithm,
 // when in fact the algorithm is faster than the standard one.
-func diff(oldName string, old []byte, newName string, new []byte) []byte {
+func Diff(oldName string, old []byte, newName string, new []byte) []byte {
 	if bytes.Equal(old, new) {
 		return nil
 	}
 	x := lines(old)
 	y := lines(new)
-
 	// Print diff header.
 	var out bytes.Buffer
 	fmt.Fprintf(&out, "diff %s %s\n", oldName, newName)
 	fmt.Fprintf(&out, "--- %s\n", oldName)
 	fmt.Fprintf(&out, "+++ %s\n", newName)
-
 	// Loop over matches to consider,
 	// expanding each match to include surrounding lines,
 	// and then printing diff chunks.
@@ -76,7 +75,6 @@ func diff(oldName string, old []byte, newName string, new []byte) []byte {
 			// Already handled scanning forward from earlier match.
 			continue
 		}
-
 		// Expand matching lines as far as possible,
 		// establishing that x[start.x:end.x] == y[start.y:end.y].
 		// Note that on the first (or last) iteration we may (or definitely do)
@@ -91,7 +89,6 @@ func diff(oldName string, old []byte, newName string, new []byte) []byte {
 			end.x++
 			end.y++
 		}
-
 		// Emit the mismatched lines before start into this chunk.
 		// (No effect on first sentinel iteration, when start = {0,0}.)
 		for _, s := range x[done.x:start.x] {
@@ -102,7 +99,6 @@ func diff(oldName string, old []byte, newName string, new []byte) []byte {
 			ctext = append(ctext, "+"+s)
 			count.y++
 		}
-
 		// If we're not at EOF and have too few common lines,
 		// the chunk includes all the common lines and continues.
 		const C = 3 // number of context lines
@@ -116,7 +112,6 @@ func diff(oldName string, old []byte, newName string, new []byte) []byte {
 			done = end
 			continue
 		}
-
 		// End chunk with common lines for context.
 		if len(ctext) > 0 {
 			n := min(end.x-start.x, C)
@@ -126,7 +121,6 @@ func diff(oldName string, old []byte, newName string, new []byte) []byte {
 				count.y++
 			}
 			done = pair{start.x + n, start.y + n}
-
 			// Format and emit chunk.
 			// Convert line numbers to 1-indexed.
 			// Special case: empty file shows up as 0,0 not 1,0.
@@ -144,12 +138,10 @@ func diff(oldName string, old []byte, newName string, new []byte) []byte {
 			count.y = 0
 			ctext = ctext[:0]
 		}
-
 		// If we reached EOF, we're done.
 		if end.x >= len(x) && end.y >= len(y) {
 			break
 		}
-
 		// Otherwise start a new chunk.
 		chunk = pair{end.x - C, end.y - C}
 		for _, s := range x[chunk.x:end.x] {
@@ -159,7 +151,6 @@ func diff(oldName string, old []byte, newName string, new []byte) []byte {
 		}
 		done = end
 	}
-
 	return out.Bytes()
 }
 
@@ -202,7 +193,6 @@ func tgs(x, y []string) []pair {
 			m[s] = c - 4
 		}
 	}
-
 	// Now unique strings can be identified by m[s] = -1+-4.
 	//
 	// Gather the indexes of those strings in x and y, building:
@@ -222,7 +212,6 @@ func tgs(x, y []string) []pair {
 			inv = append(inv, j)
 		}
 	}
-
 	// Apply Algorithm A from Szymanski's paper.
 	// In those terms, A = J = inv and B = [0, n).
 	// We add sentinel pairs {0,0}, and {len(x),len(y)}

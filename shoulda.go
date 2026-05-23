@@ -7,6 +7,7 @@ import (
 	"github.com/sanity-io/litter"
 
 	"github.com/AlekSi/shoulda/internal"
+	"github.com/AlekSi/shoulda/internal/diff"
 )
 
 // TB is a subset of [testing.TB] that is used by this package.
@@ -44,7 +45,7 @@ var Dump = func(tb TB, v any) string {
 var Diff = func(tb TB, actualName string, actual []byte, expectedName string, expected []byte) []byte {
 	tb.Helper()
 
-	return diff(expectedName, expected, actualName, actual)
+	return diff.Diff(expectedName, expected, actualName, actual)
 }
 
 // assert returns true if condition is true;
