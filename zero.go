@@ -13,7 +13,7 @@ func BeNilf(tb TB, actual any, msg string, args ...any) bool {
 func BeNil(tb TB, actual any) bool {
 	tb.Helper()
 
-	m := dumpf(tb, "actual is not nil, but %T:\n%s", actual)
+	m := dumpf(tb, "actual is not untyped nil, but %T:\n%s", actual)
 
 	return assert(tb, actual == nil, m)
 }
@@ -31,7 +31,7 @@ func NotBeNilf(tb TB, actual any, msg string, args ...any) bool {
 func NotBeNil(tb TB, actual any) bool {
 	tb.Helper()
 
-	m := messagef("actual is nil")
+	m := messagef("actual is untyped nil")
 
 	return assert(tb, actual != nil, m)
 }

@@ -8,11 +8,22 @@ import (
 func TestBeNil(t *testing.T) {
 	t.Run("Value", func(t *testing.T) {
 		tt, actual := setup(t)
-		BeNil(tt, 13)
+		BeNil(tt, uint32(13))
 
 		BeDeepEqual(t, actual(), []string{
-			"actual is not nil, but int:",
+			"actual is not untyped nil, but uint32:",
 			"13",
+			"FAIL",
+		})
+	})
+
+	t.Run("Pointer", func(t *testing.T) {
+		tt, actual := setup(t)
+		BeNil(tt, new(uint32(13)))
+
+		BeDeepEqual(t, actual(), []string{
+			"actual is not untyped nil, but *uint32:",
+			"&13",
 			"FAIL",
 		})
 	})
@@ -26,10 +37,10 @@ func TestBeNil(t *testing.T) {
 
 	t.Run("TypedNil", func(t *testing.T) {
 		tt, actual := setup(t)
-		BeNil(tt, (*int)(nil))
+		BeNil(tt, (*uint32)(nil))
 
 		BeDeepEqual(t, actual(), []string{
-			"actual is not nil, but *int:",
+			"actual is not untyped nil, but *uint32:",
 			"nil",
 			"FAIL",
 		})
@@ -40,7 +51,7 @@ func TestBeNil(t *testing.T) {
 		BeNil(tt, errors.New("boom"))
 
 		BeDeepEqual(t, actual(), []string{
-			"actual is not nil, but *errors.errorString:",
+			"actual is not untyped nil, but *errors.errorString:",
 			`&errors.errorString{`,
 			`  s: "boom",`,
 			`}`,
@@ -50,32 +61,42 @@ func TestBeNil(t *testing.T) {
 }
 
 func TestNotBeNil(t *testing.T) {
-	t.Run("UntypedNil", func(t *testing.T) {
+	t.Run("Value", func(t *testing.T) {
 		tt, actual := setup(t)
-		NotBeNil(tt, nil)
-
-		BeDeepEqual(t, actual(), []string{
-			"actual is nil",
-			"FAIL",
-		})
-	})
-
-	t.Run("TypedNil", func(t *testing.T) {
-		tt, actual := setup(t)
-		NotBeNil(tt, (*int)(nil))
+		NotBeNil(tt, uint32(13))
 
 		BeDeepEqual(t, actual(), []string{""})
 	})
 
 	t.Run("Pointer", func(t *testing.T) {
 		tt, actual := setup(t)
-		BeZero(tt, new(13))
+		NotBeNil(tt, new(uint32(13)))
+
+		BeDeepEqual(t, actual(), []string{""})
+	})
+
+	t.Run("UntypedNil", func(t *testing.T) {
+		tt, actual := setup(t)
+		NotBeNil(tt, nil)
 
 		BeDeepEqual(t, actual(), []string{
-			"actual is not zero, but *int:",
-			"&13",
+			"actual is untyped nil",
 			"FAIL",
 		})
+	})
+
+	t.Run("TypedNil", func(t *testing.T) {
+		tt, actual := setup(t)
+		NotBeNil(tt, (*uint32)(nil))
+
+		BeDeepEqual(t, actual(), []string{""})
+	})
+
+	t.Run("Error", func(t *testing.T) {
+		tt, actual := setup(t)
+		NotBeNil(tt, errors.New("boom"))
+
+		BeDeepEqual(t, actual(), []string{""})
 	})
 }
 
