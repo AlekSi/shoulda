@@ -4,6 +4,7 @@ package musta
 
 import (
 	"bytes"
+	"math"
 	"strings"
 	"testing"
 	"time"
@@ -26,43 +27,6 @@ func setup(t *testing.T) (internal.TestTB, func() []string) {
 		return strings.Split(s, "\n")
 	}
 	return tt, f
-}
-
-func TestBeNil(t *testing.T) {
-	t.Run("Untyped", func(t *testing.T) {
-		tt, actual := setup(t)
-		BeNil(tt, 13)
-
-		BeDeepEqual(t, actual(), []string{
-			"actual: 13 (int)",
-			"is not nil",
-			"FAIL",
-		})
-	})
-
-	t.Run("Typed", func(t *testing.T) {
-		tt, actual := setup(t)
-		BeNil(tt, (*int)(nil))
-
-		BeDeepEqual(t, actual(), []string{
-			"actual: <nil> (*int)",
-			"is not nil",
-			"FAIL",
-		})
-	})
-}
-
-func TestBeZero(t *testing.T) {
-	t.Run("Simple", func(t *testing.T) {
-		tt, actual := setup(t)
-		BeZero(tt, 13)
-
-		BeDeepEqual(t, actual(), []string{
-			"actual: 13 (int)",
-			"is not zero",
-			"FAIL",
-		})
-	})
 }
 
 func TestBeFalse(t *testing.T) {
@@ -104,6 +68,39 @@ func TestBeDeepEqual(t *testing.T) {
 			"expected: []int64{13}",
 			"FAIL",
 		})
+	})
+
+	t.Run("NaN", func(t *testing.T) {
+		tt, lines := setup(t)
+		BeDeepEqual(tt, []float64{math.NaN()}, []float64{math.NaN()})
+
+		BeDeepEqual(t, lines(), []string{
+			"Values are not deep equal:",
+			"actual:   []float64{NaN}",
+			"expected: []float64{NaN}",
+			"FAIL",
+		})
+	})
+}
+
+func TestNotBeDeepEqual(t *testing.T) {
+	t.Run("Simple", func(t *testing.T) {
+		tt, lines := setup(t)
+		NotBeDeepEqual(tt, []int{13}, []int{13})
+
+		BeDeepEqual(t, lines(), []string{
+			"Values are deep equal:",
+			"actual:   []int{13}",
+			"expected: []int{13}",
+			"FAIL",
+		})
+	})
+
+	t.Run("NaN", func(t *testing.T) {
+		tt, lines := setup(t)
+		NotBeDeepEqual(tt, []float64{math.NaN()}, []float64{math.NaN()})
+
+		BeDeepEqual(t, lines(), []string{""})
 	})
 }
 

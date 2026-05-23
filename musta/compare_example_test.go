@@ -22,6 +22,17 @@ func ExampleBeDeepEqual() {
 	// FAIL
 }
 
+// ExampleNotBeDeepEqual demonstrates NotBeDeepEqual.
+func ExampleNotBeDeepEqual() {
+	NotBeDeepEqual(t, []int{13}, []int{13})
+
+	// Output:
+	// Values are deep equal:
+	// actual:   []int{13}
+	// expected: []int{13}
+	// FAIL
+}
+
 func ExampleSatisfy_inline() {
 	Satisfy(t, 13, func(v int) bool { return v > 42 })
 
@@ -71,7 +82,7 @@ func ExampleSatisfyWith_function() {
 	// FAIL
 }
 
-func ExampleSatisfyWith_method_expression() {
+func ExampleSatisfyWith_methodExpression() {
 	actual := time.Date(2026, time.April, 9, 17, 32, 42, 123, time.UTC)
 	expected := time.Date(2026, time.April, 9, 17, 32, 42, 123, time.FixedZone("My", 4*int(time.Hour.Seconds())))
 	SatisfyWith(t, actual, expected, time.Time.Before)

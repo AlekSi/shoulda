@@ -7,24 +7,6 @@ import (
 	"github.com/AlekSi/shoulda/cmp"
 )
 
-// BeNil checks that actual is (untyped) nil.
-func BeNil(tb TB, actual any) {
-	tb.Helper()
-
-	if !shoulda.BeNil(tb, actual) {
-		tb.FailNow()
-	}
-}
-
-// BeZero checks that actual is the zero value of its type.
-func BeZero[T cmp.Ordered](tb TB, actual T) {
-	tb.Helper()
-
-	if !shoulda.BeZero(tb, actual) {
-		tb.FailNow()
-	}
-}
-
 // BeFalse checks that actual is false.
 func BeFalse(tb TB, actual bool) {
 	tb.Helper()
@@ -43,7 +25,7 @@ func BeTrue(tb TB, actual bool) {
 	}
 }
 
-// BeDeepEqual checks that actual and expected are deeply equal.
+// BeDeepEqual checks that actual and expected are equal according to [reflect.DeepEqual].
 func BeDeepEqual(tb TB, actual, expected any) {
 	tb.Helper()
 
@@ -52,7 +34,16 @@ func BeDeepEqual(tb TB, actual, expected any) {
 	}
 }
 
-// BeEqual checks that actual and expected are equal.
+// NotBeDeepEqual checks that actual and expected are not equal according to [reflect.DeepEqual].
+func NotBeDeepEqual(tb TB, actual, expected any) {
+	tb.Helper()
+
+	if !shoulda.NotBeDeepEqual(tb, actual, expected) {
+		tb.FailNow()
+	}
+}
+
+// BeEqual checks that actual and expected are equal according to [cmp.Equal].
 func BeEqual[T cmp.Ordered](tb TB, actual, expected T) {
 	tb.Helper()
 
@@ -61,7 +52,7 @@ func BeEqual[T cmp.Ordered](tb TB, actual, expected T) {
 	}
 }
 
-// BeLess checks that actual is less than expected.
+// BeLess checks that actual is less than expected according to [cmp.Less].
 func BeLess[T cmp.Ordered](tb TB, actual, expected T) {
 	tb.Helper()
 
@@ -70,7 +61,7 @@ func BeLess[T cmp.Ordered](tb TB, actual, expected T) {
 	}
 }
 
-// BeGreater checks that actual is greater than expected.
+// BeGreater checks that actual is greater than expected according to [cmp.Greater].
 func BeGreater[T cmp.Ordered](tb TB, actual, expected T) {
 	tb.Helper()
 

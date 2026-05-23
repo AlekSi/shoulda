@@ -67,6 +67,7 @@ formatters:
     - gci
     - gofmt
     - gofumpt
+    - goimports
 
   settings:
     gci:
@@ -74,6 +75,9 @@ formatters:
         - standard
         - default
         - localmodule
+
+    goimports:
+      local-prefixes: [github.com/AlekSi/shoulda]
 
   exclusions:
     warn-unused: true

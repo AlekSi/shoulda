@@ -1,23 +1,8 @@
-// Package musta provides assertions that fail the test immediately.
 package musta
 
-import (
-	"testing"
-
-	"github.com/AlekSi/shoulda"
-	"github.com/AlekSi/shoulda/internal"
-)
+import "github.com/AlekSi/shoulda"
 
 //go:generate go run ../internal/mustagen
 
-// TB is a subset of [testing.TB] that is sufficient for assertions.
-type TB interface {
-	shoulda.TB
-	FailNow()
-}
-
-// check interfaces
-var (
-	_ TB = (testing.TB)(nil)
-	_ TB = internal.TestTB{}
-)
+// TB is a subset of [testing.TB] that is used by this package.
+type TB = shoulda.TB
