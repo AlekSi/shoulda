@@ -11,4 +11,5 @@ You really _shoulda not_ use it yet.
 [The MIT License](LICENSE).
 
 [`cmp/cmp.go`](cmp/cmp.go) and [`internal/diff/diff.go`](internal/diff/diff.go)
-are adapted from the Go source code and distributed under a [similar license](cmp/LICENSE).
+are adapted from the Go source code and distributed under a similar license
+([`cmp/LICENSE`](cmp/LICENSE), [`internal/diff/LICENSE`](internal/diff/LICENSE)).
