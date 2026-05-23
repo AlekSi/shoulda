@@ -1,4 +1,3 @@
-// Package musta provides assertions that fail the test immediately.
 package musta
 
 import "github.com/AlekSi/shoulda"

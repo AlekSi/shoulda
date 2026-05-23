@@ -4,28 +4,27 @@ import (
 	"reflect"
 
 	"github.com/AlekSi/shoulda/cmp"
-	"github.com/AlekSi/shoulda/internal"
 )
 
 // BeFalse checks that actual is false.
 func BeFalse(tb TB, actual bool) bool {
 	tb.Helper()
 
-	return assert(tb, !actual, internal.F("is not false"))
+	return assert(tb, !actual, messagef("is not false"))
 }
 
 // BeTrue checks that actual is true.
 func BeTrue(tb TB, actual bool) bool {
 	tb.Helper()
 
-	return assert(tb, actual, internal.F("is not true"))
+	return assert(tb, actual, messagef("is not true"))
 }
 
 // BeDeepEqual checks that actual and expected are equal according to [reflect.DeepEqual].
 func BeDeepEqual(tb TB, actual, expected any) bool {
 	tb.Helper()
 
-	msg := internal.F("Values are not deep equal:\nactual:   %#v\nexpected: %#v", actual, expected)
+	msg := messagef("Values are not deep equal:\nactual:   %#v\nexpected: %#v", actual, expected)
 	return assert(tb, reflect.DeepEqual(actual, expected), msg)
 }
 
@@ -33,7 +32,7 @@ func BeDeepEqual(tb TB, actual, expected any) bool {
 func NotBeDeepEqual(tb TB, actual, expected any) bool {
 	tb.Helper()
 
-	msg := internal.F("Values are deep equal:\nactual:   %#v\nexpected: %#v", actual, expected)
+	msg := messagef("Values are deep equal:\nactual:   %#v\nexpected: %#v", actual, expected)
 	return assert(tb, !reflect.DeepEqual(actual, expected), msg)
 }
 
@@ -41,7 +40,7 @@ func NotBeDeepEqual(tb TB, actual, expected any) bool {
 func BeEqual[T cmp.Ordered](tb TB, actual, expected T) bool {
 	tb.Helper()
 
-	msg := internal.F("Values are not equal:\nactual:   %v\nexpected: %v", actual, expected)
+	msg := messagef("Values are not equal:\nactual:   %v\nexpected: %v", actual, expected)
 	return assert(tb, cmp.Equal(actual, expected), msg)
 }
 
@@ -49,7 +48,7 @@ func BeEqual[T cmp.Ordered](tb TB, actual, expected T) bool {
 func BeLess[T cmp.Ordered](tb TB, actual, expected T) bool {
 	tb.Helper()
 
-	msg := internal.F("actual:   %v\nis not less than\nexpected: %v", actual, expected)
+	msg := messagef("actual:   %v\nis not less than\nexpected: %v", actual, expected)
 	return assert(tb, cmp.Less(actual, expected), msg)
 }
 
@@ -57,7 +56,7 @@ func BeLess[T cmp.Ordered](tb TB, actual, expected T) bool {
 func BeGreater[T cmp.Ordered](tb TB, actual, expected T) bool {
 	tb.Helper()
 
-	msg := internal.F("actual:   %v\nis not greater than\nexpected: %v", actual, expected)
+	msg := messagef("actual:   %v\nis not greater than\nexpected: %v", actual, expected)
 	return assert(tb, cmp.Greater(actual, expected), msg)
 }
 
@@ -65,7 +64,7 @@ func BeGreater[T cmp.Ordered](tb TB, actual, expected T) bool {
 func Satisfy[T any](tb TB, actual T, predicate func(_ T) bool) bool {
 	tb.Helper()
 
-	msg := internal.F("predicate is not satisfied for\nactual:   %v", actual)
+	msg := messagef("predicate is not satisfied for\nactual:   %v", actual)
 	return assert(tb, predicate(actual), msg)
 }
 
@@ -73,7 +72,7 @@ func Satisfy[T any](tb TB, actual T, predicate func(_ T) bool) bool {
 func SatisfyWith[T any](tb TB, actual, expected T, predicate func(_, _ T) bool) bool {
 	tb.Helper()
 
-	msg := internal.F("predicate is not satisfied with\nactual:   %v\nexpected: %v", actual, expected)
+	msg := messagef("predicate is not satisfied with\nactual:   %v\nexpected: %v", actual, expected)
 	return assert(tb, predicate(actual, expected), msg)
 }
 
@@ -81,7 +80,7 @@ func SatisfyWith[T any](tb TB, actual, expected T, predicate func(_, _ T) bool) 
 func CompareWith[T any](tb TB, actual, expected T, order cmp.Order, compare func(_, _ T) int) bool {
 	tb.Helper()
 
-	msg := internal.F("comparison result is not %d for\nactual:   %v\nexpected: %v", order, actual, expected)
+	msg := messagef("comparison result is not %d for\nactual:   %v\nexpected: %v", order, actual, expected)
 	return assert(tb, compare(actual, expected) == int(order), msg)
 }
 
@@ -90,7 +89,7 @@ func CompareEqual[T any](tb TB, actual, expected T, compare func(_, _ T) int) bo
 	tb.Helper()
 
 	res := compare(actual, expected)
-	msg := internal.F(
+	msg := messagef(
 		"comparison result is %s, not equal for\nactual:   %v\nexpected: %v",
 		cmp.Order(res), actual, expected,
 	)
@@ -102,7 +101,7 @@ func CompareLess[T any](tb TB, actual, expected T, compare func(_, _ T) int) boo
 	tb.Helper()
 
 	res := compare(actual, expected)
-	msg := internal.F(
+	msg := messagef(
 		"comparison result is %s, not less for\nactual:   %v\nexpected: %v",
 		cmp.Order(res), actual, expected,
 	)
@@ -114,7 +113,7 @@ func CompareGreater[T any](tb TB, actual, expected T, compare func(_, _ T) int) 
 	tb.Helper()
 
 	res := compare(actual, expected)
-	msg := internal.F(
+	msg := messagef(
 		"comparison result is %s, not greater for\nactual:   %v\nexpected: %v",
 		cmp.Order(res), actual, expected,
 	)

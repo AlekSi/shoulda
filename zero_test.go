@@ -11,8 +11,8 @@ func TestBeNil(t *testing.T) {
 		BeNil(tt, 13)
 
 		BeDeepEqual(t, actual(), []string{
-			"actual: 13 (int)",
-			"is not nil",
+			"actual is not nil, but int:",
+			"13",
 			"FAIL",
 		})
 	})
@@ -29,8 +29,8 @@ func TestBeNil(t *testing.T) {
 		BeNil(tt, (*int)(nil))
 
 		BeDeepEqual(t, actual(), []string{
-			"actual: <nil> (*int)",
-			"is not nil",
+			"actual is not nil, but *int:",
+			"nil",
 			"FAIL",
 		})
 	})
@@ -40,8 +40,10 @@ func TestBeNil(t *testing.T) {
 		BeNil(tt, errors.New("boom"))
 
 		BeDeepEqual(t, actual(), []string{
-			"actual: boom (*errors.errorString)",
-			"is not nil",
+			"actual is not nil, but *errors.errorString:",
+			`&errors.errorString{`,
+			`  s: "boom",`,
+			`}`,
 			"FAIL",
 		})
 	})
@@ -53,7 +55,7 @@ func TestNotBeNil(t *testing.T) {
 		NotBeNil(tt, nil)
 
 		BeDeepEqual(t, actual(), []string{
-			"is nil",
+			"actual is nil",
 			"FAIL",
 		})
 	})
@@ -70,8 +72,8 @@ func TestNotBeNil(t *testing.T) {
 		BeZero(tt, new(13))
 
 		BeDeepEqual(t, actual(), []string{
-			"actual: &13",
-			"is not zero",
+			"actual is not zero, but *int:",
+			"&13",
 			"FAIL",
 		})
 	})
@@ -83,8 +85,8 @@ func TestBeZero(t *testing.T) {
 		BeZero(tt, 13)
 
 		BeDeepEqual(t, actual(), []string{
-			"actual: 13",
-			"is not zero",
+			"actual is not zero, but int:",
+			"13",
 			"FAIL",
 		})
 	})
@@ -96,7 +98,7 @@ func TestNotBeZero(t *testing.T) {
 		NotBeZero(tt, 0)
 
 		BeDeepEqual(t, actual(), []string{
-			"is zero",
+			"actual is zero",
 			"FAIL",
 		})
 	})
