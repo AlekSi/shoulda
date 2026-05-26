@@ -63,8 +63,9 @@ func main() {
 	flag.Parse()
 
 	for _, srcFile := range []string{
-		"compare.go",
-		"zero.go",
+		"funcs.go",
+		"values.go",
+		"zeroes.go",
 	} {
 		if err := rewriteFile(filepath.Join("..", srcFile)); err != nil {
 			log.Fatal(err)
@@ -72,10 +73,12 @@ func main() {
 	}
 
 	for _, testFile := range []string{
-		"compare_example_test.go",
-		"compare_test.go",
-		"zero_example_test.go",
-		"zero_test.go",
+		"funcs_examples_test.go",
+		"funcs_test.go",
+		"values_examples_test.go",
+		"values_test.go",
+		"zeroes_examples_test.go",
+		"zeroes_test.go",
 	} {
 		if err := rewriteTestFile(filepath.Join("..", testFile)); err != nil {
 			log.Fatal(err)

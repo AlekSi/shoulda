@@ -1,7 +1,12 @@
-all:
-	go mod tidy
-	go mod tidy -modfile=tools.mod
+all: init
 	go generate -x ./...
 	go tool -modfile=tools.mod golangci-lint fmt ./...
 	go test -count=1 -race ./...
 	go tool -modfile=tools.mod golangci-lint run ./...
+
+init:
+	go mod tidy
+	go mod tidy -modfile=tools.mod
+
+docs:
+	go tool -modfile=tools.mod pkgsite -open
