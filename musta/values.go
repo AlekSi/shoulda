@@ -7,78 +7,6 @@ import (
 	"github.com/AlekSi/shoulda/cmp"
 )
 
-// BeNilf checks that actual is untyped nil.
-func BeNilf(tb TB, actual any, msg string, args ...any) {
-	tb.Helper()
-
-	if !shoulda.BeNilf(tb, actual, msg, args...) {
-		tb.FailNow()
-	}
-}
-
-// BeNil checks that actual is untyped nil.
-func BeNil(tb TB, actual any) {
-	tb.Helper()
-
-	if !shoulda.BeNil(tb, actual) {
-		tb.FailNow()
-	}
-}
-
-// NotBeNilf checks that actual is not (untyped) nil.
-func NotBeNilf(tb TB, actual any, msg string, args ...any) {
-	tb.Helper()
-
-	if !shoulda.NotBeNilf(tb, actual, msg, args...) {
-		tb.FailNow()
-	}
-}
-
-// NotBeNil checks that actual is not (untyped) nil.
-func NotBeNil(tb TB, actual any) {
-	tb.Helper()
-
-	if !shoulda.NotBeNil(tb, actual) {
-		tb.FailNow()
-	}
-}
-
-// BeZerof checks that actual is the zero value of its type.
-func BeZerof[T comparable](tb TB, actual T, msg string, args ...any) {
-	tb.Helper()
-
-	if !shoulda.BeZerof(tb, actual, msg, args...) {
-		tb.FailNow()
-	}
-}
-
-// BeZero checks that actual is the zero value of its type.
-func BeZero[T comparable](tb TB, actual T) {
-	tb.Helper()
-
-	if !shoulda.BeZero(tb, actual) {
-		tb.FailNow()
-	}
-}
-
-// NotBeZerof checks that actual is not the zero value of its type.
-func NotBeZerof[T comparable](tb TB, actual T, msg string, args ...any) {
-	tb.Helper()
-
-	if !shoulda.NotBeZerof(tb, actual, msg, args...) {
-		tb.FailNow()
-	}
-}
-
-// NotBeZero checks that actual is not the zero value of its type.
-func NotBeZero[T comparable](tb TB, actual T) {
-	tb.Helper()
-
-	if !shoulda.NotBeZero(tb, actual) {
-		tb.FailNow()
-	}
-}
-
 // BeFalse checks that actual is false.
 func BeFalse(tb TB, actual bool) {
 	tb.Helper()
@@ -120,6 +48,15 @@ func BeEqual[T cmp.Ordered](tb TB, actual, expected T) {
 	tb.Helper()
 
 	if !shoulda.BeEqual(tb, actual, expected) {
+		tb.FailNow()
+	}
+}
+
+// NotBeEqual checks that actual and expected are not equal according to [cmp.Equal].
+func NotBeEqual[T cmp.Ordered](tb TB, actual, expected T) {
+	tb.Helper()
+
+	if !shoulda.NotBeEqual(tb, actual, expected) {
 		tb.FailNow()
 	}
 }

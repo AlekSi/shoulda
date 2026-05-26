@@ -4,7 +4,6 @@ package musta
 
 import (
 	"bytes"
-	"errors"
 	"math"
 	"strings"
 	"testing"
@@ -27,126 +26,6 @@ func setup(t *testing.T) (internal.TestTB, func() []string) {
 		return strings.Split(s, "\n")
 	}
 	return tt, f
-}
-
-func TestBeNil(t *testing.T) {
-	t.Run("Value", func(t *testing.T) {
-		tt, actual := setup(t)
-		BeNil(tt, uint32(13))
-
-		BeDeepEqual(t, actual(), []string{
-			"actual is not untyped nil, but uint32:",
-			"13",
-			"FAIL",
-		})
-	})
-
-	t.Run("Pointer", func(t *testing.T) {
-		tt, actual := setup(t)
-		BeNil(tt, new(uint32(13)))
-
-		BeDeepEqual(t, actual(), []string{
-			"actual is not untyped nil, but *uint32:",
-			"&13",
-			"FAIL",
-		})
-	})
-
-	t.Run("UntypedNil", func(t *testing.T) {
-		tt, actual := setup(t)
-		BeNil(tt, nil)
-
-		BeDeepEqual(t, actual(), []string{""})
-	})
-
-	t.Run("TypedNil", func(t *testing.T) {
-		tt, actual := setup(t)
-		BeNil(tt, (*uint32)(nil))
-
-		BeDeepEqual(t, actual(), []string{
-			"actual is not untyped nil, but *uint32:",
-			"nil",
-			"FAIL",
-		})
-	})
-
-	t.Run("Error", func(t *testing.T) {
-		tt, actual := setup(t)
-		BeNil(tt, errors.New("boom"))
-
-		BeDeepEqual(t, actual(), []string{
-			"actual is not untyped nil, but *errors.errorString:",
-			`&errors.errorString{`,
-			`  s: "boom",`,
-			`}`,
-			"FAIL",
-		})
-	})
-}
-
-func TestNotBeNil(t *testing.T) {
-	t.Run("Value", func(t *testing.T) {
-		tt, actual := setup(t)
-		NotBeNil(tt, uint32(13))
-
-		BeDeepEqual(t, actual(), []string{""})
-	})
-
-	t.Run("Pointer", func(t *testing.T) {
-		tt, actual := setup(t)
-		NotBeNil(tt, new(uint32(13)))
-
-		BeDeepEqual(t, actual(), []string{""})
-	})
-
-	t.Run("UntypedNil", func(t *testing.T) {
-		tt, actual := setup(t)
-		NotBeNil(tt, nil)
-
-		BeDeepEqual(t, actual(), []string{
-			"actual is untyped nil",
-			"FAIL",
-		})
-	})
-
-	t.Run("TypedNil", func(t *testing.T) {
-		tt, actual := setup(t)
-		NotBeNil(tt, (*uint32)(nil))
-
-		BeDeepEqual(t, actual(), []string{""})
-	})
-
-	t.Run("Error", func(t *testing.T) {
-		tt, actual := setup(t)
-		NotBeNil(tt, errors.New("boom"))
-
-		BeDeepEqual(t, actual(), []string{""})
-	})
-}
-
-func TestBeZero(t *testing.T) {
-	t.Run("Simple", func(t *testing.T) {
-		tt, actual := setup(t)
-		BeZero(tt, 13)
-
-		BeDeepEqual(t, actual(), []string{
-			"actual is not zero, but int:",
-			"13",
-			"FAIL",
-		})
-	})
-}
-
-func TestNotBeZero(t *testing.T) {
-	t.Run("Simple", func(t *testing.T) {
-		tt, actual := setup(t)
-		NotBeZero(tt, 0)
-
-		BeDeepEqual(t, actual(), []string{
-			"actual is zero",
-			"FAIL",
-		})
-	})
 }
 
 func TestBeFalse(t *testing.T) {
@@ -235,6 +114,13 @@ func TestBeEqual(t *testing.T) {
 			"expected: 42",
 			"FAIL",
 		})
+	})
+
+	t.Run("NaN", func(t *testing.T) {
+		tt, lines := setup(t)
+		BeEqual(tt, math.NaN(), math.NaN())
+
+		BeDeepEqual(t, lines(), []string{""})
 	})
 }
 
