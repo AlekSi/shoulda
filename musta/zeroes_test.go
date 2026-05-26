@@ -113,12 +113,29 @@ func TestBeZero(t *testing.T) {
 			"FAIL",
 		})
 	})
+
+	t.Run("Nil", func(t *testing.T) {
+		tt, actual := setup(t)
+		BeZero(tt, (*int)(nil))
+
+		BeDeepEqual(t, actual(), []string{""})
+	})
 }
 
 func TestNotBeZero(t *testing.T) {
 	t.Run("Simple", func(t *testing.T) {
 		tt, actual := setup(t)
 		NotBeZero(tt, 0)
+
+		BeDeepEqual(t, actual(), []string{
+			"actual is zero",
+			"FAIL",
+		})
+	})
+
+	t.Run("Nil", func(t *testing.T) {
+		tt, actual := setup(t)
+		NotBeZero(tt, (*int)(nil))
 
 		BeDeepEqual(t, actual(), []string{
 			"actual is zero",
