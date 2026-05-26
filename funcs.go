@@ -5,7 +5,7 @@ import (
 )
 
 // Satisfy checks that predicate returns true for actual.
-func Satisfy[T any](tb TB, actual T, predicate func(_ T) bool) bool {
+func Satisfy[A any](tb TB, actual A, predicate func(_ A) bool) bool {
 	tb.Helper()
 
 	m := messagef("predicate is not satisfied for\nactual:   %v", actual)
@@ -14,7 +14,7 @@ func Satisfy[T any](tb TB, actual T, predicate func(_ T) bool) bool {
 }
 
 // SatisfyWith checks that predicate returns true for actual and expected.
-func SatisfyWith[T any](tb TB, actual, expected T, predicate func(_, _ T) bool) bool {
+func SatisfyWith[A, E any](tb TB, actual A, expected E, predicate func(_ A, _ E) bool) bool {
 	tb.Helper()
 
 	m := messagef("predicate is not satisfied with\nactual:   %v\nexpected: %v", actual, expected)
@@ -23,7 +23,7 @@ func SatisfyWith[T any](tb TB, actual, expected T, predicate func(_, _ T) bool) 
 }
 
 // CompareWith checks that compare(actual, expected) returns order.
-func CompareWith[T any](tb TB, actual, expected T, order cmp.Order, compare func(_, _ T) int) bool {
+func CompareWith[A, E any](tb TB, actual A, expected E, order cmp.Order, compare func(_ A, _ E) int) bool {
 	tb.Helper()
 
 	m := messagef("comparison result is not %d for\nactual:   %v\nexpected: %v", order, actual, expected)
@@ -32,7 +32,7 @@ func CompareWith[T any](tb TB, actual, expected T, order cmp.Order, compare func
 }
 
 // CompareEqual checks that compare(actual, expected) returns 0 ([cmp.OrderEqual]).
-func CompareEqual[T any](tb TB, actual, expected T, compare func(_, _ T) int) bool {
+func CompareEqual[A, E any](tb TB, actual A, expected E, compare func(_ A, _ E) int) bool {
 	tb.Helper()
 
 	res := compare(actual, expected)
@@ -46,7 +46,7 @@ func CompareEqual[T any](tb TB, actual, expected T, compare func(_, _ T) int) bo
 }
 
 // CompareLess checks that compare(actual, expected) returns -1 ([cmp.OrderLess]).
-func CompareLess[T any](tb TB, actual, expected T, compare func(_, _ T) int) bool {
+func CompareLess[A, E any](tb TB, actual A, expected E, compare func(_ A, _ E) int) bool {
 	tb.Helper()
 
 	res := compare(actual, expected)
@@ -60,7 +60,7 @@ func CompareLess[T any](tb TB, actual, expected T, compare func(_, _ T) int) boo
 }
 
 // CompareGreater checks that compare(actual, expected) returns 1 ([cmp.OrderGreater]).
-func CompareGreater[T any](tb TB, actual, expected T, compare func(_, _ T) int) bool {
+func CompareGreater[A, E any](tb TB, actual A, expected E, compare func(_ A, _ E) int) bool {
 	tb.Helper()
 
 	res := compare(actual, expected)

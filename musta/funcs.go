@@ -8,7 +8,7 @@ import (
 )
 
 // Satisfy checks that predicate returns true for actual.
-func Satisfy[T any](tb TB, actual T, predicate func(_ T) bool) {
+func Satisfy[A any](tb TB, actual A, predicate func(_ A) bool) {
 	tb.Helper()
 
 	if !shoulda.Satisfy(tb, actual, predicate) {
@@ -17,7 +17,7 @@ func Satisfy[T any](tb TB, actual T, predicate func(_ T) bool) {
 }
 
 // SatisfyWith checks that predicate returns true for actual and expected.
-func SatisfyWith[T any](tb TB, actual, expected T, predicate func(_, _ T) bool) {
+func SatisfyWith[A, E any](tb TB, actual A, expected E, predicate func(_ A, _ E) bool) {
 	tb.Helper()
 
 	if !shoulda.SatisfyWith(tb, actual, expected, predicate) {
@@ -26,7 +26,7 @@ func SatisfyWith[T any](tb TB, actual, expected T, predicate func(_, _ T) bool) 
 }
 
 // CompareWith checks that compare(actual, expected) returns order.
-func CompareWith[T any](tb TB, actual, expected T, order cmp.Order, compare func(_, _ T) int) {
+func CompareWith[A, E any](tb TB, actual A, expected E, order cmp.Order, compare func(_ A, _ E) int) {
 	tb.Helper()
 
 	if !shoulda.CompareWith(tb, actual, expected, order, compare) {
@@ -35,7 +35,7 @@ func CompareWith[T any](tb TB, actual, expected T, order cmp.Order, compare func
 }
 
 // CompareEqual checks that compare(actual, expected) returns 0 ([cmp.OrderEqual]).
-func CompareEqual[T any](tb TB, actual, expected T, compare func(_, _ T) int) {
+func CompareEqual[A, E any](tb TB, actual A, expected E, compare func(_ A, _ E) int) {
 	tb.Helper()
 
 	if !shoulda.CompareEqual(tb, actual, expected, compare) {
@@ -44,7 +44,7 @@ func CompareEqual[T any](tb TB, actual, expected T, compare func(_, _ T) int) {
 }
 
 // CompareLess checks that compare(actual, expected) returns -1 ([cmp.OrderLess]).
-func CompareLess[T any](tb TB, actual, expected T, compare func(_, _ T) int) {
+func CompareLess[A, E any](tb TB, actual A, expected E, compare func(_ A, _ E) int) {
 	tb.Helper()
 
 	if !shoulda.CompareLess(tb, actual, expected, compare) {
@@ -53,7 +53,7 @@ func CompareLess[T any](tb TB, actual, expected T, compare func(_, _ T) int) {
 }
 
 // CompareGreater checks that compare(actual, expected) returns 1 ([cmp.OrderGreater]).
-func CompareGreater[T any](tb TB, actual, expected T, compare func(_, _ T) int) {
+func CompareGreater[A, E any](tb TB, actual A, expected E, compare func(_ A, _ E) int) {
 	tb.Helper()
 
 	if !shoulda.CompareGreater(tb, actual, expected, compare) {

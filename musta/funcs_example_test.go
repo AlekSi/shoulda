@@ -68,3 +68,15 @@ func ExampleSatisfyWith_methodExpression() {
 	// expected: 2026-04-09 17:32:42.000000123 +0400 My
 	// FAIL
 }
+
+func ExampleCompareEqual_methodExpression() {
+	actual := time.Date(2026, time.April, 9, 17, 32, 42, 123, time.UTC)
+	expected := time.Date(2026, time.April, 9, 17, 32, 42, 123, time.FixedZone("My", 4*int(time.Hour.Seconds())))
+	CompareEqual(t, actual, expected, time.Time.Compare)
+
+	// Output:
+	// comparison result is greater, not equal for
+	// actual:   2026-04-09 17:32:42.000000123 +0000 UTC
+	// expected: 2026-04-09 17:32:42.000000123 +0400 My
+	// FAIL
+}
