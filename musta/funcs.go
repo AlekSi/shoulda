@@ -7,69 +7,6 @@ import (
 	"github.com/AlekSi/shoulda/cmp"
 )
 
-// BeFalse checks that actual is false.
-func BeFalse(tb TB, actual bool) {
-	tb.Helper()
-
-	if !shoulda.BeFalse(tb, actual) {
-		tb.FailNow()
-	}
-}
-
-// BeTrue checks that actual is true.
-func BeTrue(tb TB, actual bool) {
-	tb.Helper()
-
-	if !shoulda.BeTrue(tb, actual) {
-		tb.FailNow()
-	}
-}
-
-// BeDeepEqual checks that actual and expected are equal according to [reflect.DeepEqual].
-func BeDeepEqual(tb TB, actual, expected any) {
-	tb.Helper()
-
-	if !shoulda.BeDeepEqual(tb, actual, expected) {
-		tb.FailNow()
-	}
-}
-
-// NotBeDeepEqual checks that actual and expected are not equal according to [reflect.DeepEqual].
-func NotBeDeepEqual(tb TB, actual, expected any) {
-	tb.Helper()
-
-	if !shoulda.NotBeDeepEqual(tb, actual, expected) {
-		tb.FailNow()
-	}
-}
-
-// BeEqual checks that actual and expected are equal according to [cmp.Equal].
-func BeEqual[T cmp.Ordered](tb TB, actual, expected T) {
-	tb.Helper()
-
-	if !shoulda.BeEqual(tb, actual, expected) {
-		tb.FailNow()
-	}
-}
-
-// BeLess checks that actual is less than expected according to [cmp.Less].
-func BeLess[T cmp.Ordered](tb TB, actual, expected T) {
-	tb.Helper()
-
-	if !shoulda.BeLess(tb, actual, expected) {
-		tb.FailNow()
-	}
-}
-
-// BeGreater checks that actual is greater than expected according to [cmp.Greater].
-func BeGreater[T cmp.Ordered](tb TB, actual, expected T) {
-	tb.Helper()
-
-	if !shoulda.BeGreater(tb, actual, expected) {
-		tb.FailNow()
-	}
-}
-
 // Satisfy checks that predicate returns true for actual.
 func Satisfy[T any](tb TB, actual T, predicate func(_ T) bool) {
 	tb.Helper()

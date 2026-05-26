@@ -6,32 +6,7 @@ import (
 	"time"
 
 	"github.com/AlekSi/shoulda/cmp"
-	"github.com/AlekSi/shoulda/internal"
 )
-
-// t is used by examples.
-var t internal.TestTB
-
-func ExampleBeDeepEqual() {
-	BeDeepEqual(t, []int{13}, []int64{13})
-
-	// Output:
-	// Values are not deep equal:
-	// actual:   []int{13}
-	// expected: []int64{13}
-	// FAIL
-}
-
-// ExampleNotBeDeepEqual demonstrates NotBeDeepEqual.
-func ExampleNotBeDeepEqual() {
-	NotBeDeepEqual(t, []int{13}, []int{13})
-
-	// Output:
-	// Values are deep equal:
-	// actual:   []int{13}
-	// expected: []int{13}
-	// FAIL
-}
 
 func ExampleSatisfy_inline() {
 	Satisfy(t, 13, func(v int) bool { return v > 42 })

@@ -1,0 +1,27 @@
+package shoulda
+
+import "github.com/AlekSi/shoulda/internal"
+
+// t is used by examples.
+var t internal.TestTB
+
+func ExampleBeDeepEqual() {
+	BeDeepEqual(t, []int{13}, []int64{13})
+
+	// Output:
+	// Values are not deep equal:
+	// actual:   []int{13}
+	// expected: []int64{13}
+	// FAIL
+}
+
+// ExampleNotBeDeepEqual demonstrates NotBeDeepEqual.
+func ExampleNotBeDeepEqual() {
+	NotBeDeepEqual(t, []int{13}, []int{13})
+
+	// Output:
+	// Values are deep equal:
+	// actual:   []int{13}
+	// expected: []int{13}
+	// FAIL
+}
