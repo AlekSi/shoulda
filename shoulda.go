@@ -1,6 +1,7 @@
 package shoulda
 
 import (
+	"fmt"
 	"regexp"
 	"testing"
 
@@ -18,8 +19,8 @@ type TB interface {
 	FailNow()
 }
 
-// dumpConfig contains the configuration used by the default default [Dump].
-var dumpConfig = &litter.Options{
+// defaultDumpConfig contains the configuration used by the default [Dump].
+var defaultDumpConfig = &litter.Options{
 	Compact:                   false,
 	StripPackageNames:         false,
 	HidePrivateFields:         false,
@@ -31,21 +32,31 @@ var dumpConfig = &litter.Options{
 	StrictGo:                  false, // at least until https://github.com/sanity-io/litter/issues/59 is resolved
 	DumpFunc:                  nil,
 	DisablePointerReplacement: false,
-	FormatTime:                false,
+	FormatTime:                true,
 }
 
 // Dump returns the textual representation of v.
-var Dump = func(tb TB, v any) string {
+var Dump func(tb TB, v any) string = defaultDump
+
+// defaultDump is the default implementation of [Dump].
+func defaultDump(tb TB, v any) string {
 	tb.Helper()
 
-	return dumpConfig.Sdump(v)
+	// Include %T since litter does not always include type
+	// For example, Sdump(int(13)) and Sdump(uint(13)) produce the same result.
+	return fmt.Sprintf("%s (%T)", defaultDumpConfig.Sdump(v), v)
 }
 
 // Diff returns a diff between actual and expected.
-var Diff = func(tb TB, actualName string, actual []byte, expectedName string, expected []byte) []byte {
+var Diff func(tb TB, actualName string, actual any, expectedName string, expected any) string = defaultDiff
+
+// defaultDiff is the default implementation of [Diff].
+func defaultDiff(tb TB, actualName string, actual any, expectedName string, expected any) string {
 	tb.Helper()
 
-	return diff.Diff(expectedName, expected, actualName, actual)
+	a := Dump(tb, actual)
+	e := Dump(tb, expected)
+	return string(diff.Diff(expectedName, []byte(e), actualName, []byte(a)))
 }
 
 // assert returns true if condition is true;

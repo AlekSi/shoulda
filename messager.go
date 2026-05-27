@@ -21,7 +21,7 @@ type msgFunc func() string
 // Message implements [messager].
 func (m msgFunc) Message() string { return m() }
 
-// messagef constructs a [messager] from a message string and arguments.
+// messagef constructs a [messager] from a message or format string, and arguments.
 func messagef(msg string, args ...any) messager {
 	if len(args) == 0 {
 		return msgString(msg)
@@ -32,14 +32,14 @@ func messagef(msg string, args ...any) messager {
 	})
 }
 
-// dumpf implements [messager] from a message string and arguments using [Dump].
-// args is prepended with the value and its dump string.
-func dumpf(tb TB, msg string, v any, args ...any) messager {
+// dumpf implements [messager] from a format string, value, and arguments.
+// The value and its [Dump]-ed form are appended to arguments.
+func dumpf(tb TB, format string, v any, args ...any) messager {
 	return msgFunc(func() string {
 		tb.Helper()
-		s := Dump(tb, v)
-		args = append([]any{v, s}, args...)
-		return fmt.Sprintf(msg, args...)
+
+		args = append(args, v, Dump(tb, v))
+		return fmt.Sprintf(format, args...)
 	})
 }
 

@@ -11,8 +11,7 @@ func TestBeNil(t *testing.T) {
 		BeNil(tt, uint32(13))
 
 		BeDeepEqual(t, actual(), []string{
-			"actual is not untyped nil, but uint32:",
-			"13",
+			"actual is not untyped nil, but 13 (uint32)",
 			"FAIL",
 		})
 	})
@@ -22,8 +21,7 @@ func TestBeNil(t *testing.T) {
 		BeNil(tt, new(uint32(13)))
 
 		BeDeepEqual(t, actual(), []string{
-			"actual is not untyped nil, but *uint32:",
-			"&13",
+			"actual is not untyped nil, but &13 (*uint32)",
 			"FAIL",
 		})
 	})
@@ -40,8 +38,7 @@ func TestBeNil(t *testing.T) {
 		BeNil(tt, (*uint32)(nil))
 
 		BeDeepEqual(t, actual(), []string{
-			"actual is not untyped nil, but *uint32:",
-			"nil",
+			"actual is not untyped nil, but nil (*uint32)",
 			"FAIL",
 		})
 	})
@@ -51,10 +48,9 @@ func TestBeNil(t *testing.T) {
 		BeNil(tt, errors.New("boom"))
 
 		BeDeepEqual(t, actual(), []string{
-			"actual is not untyped nil, but *errors.errorString:",
-			`&errors.errorString{`,
+			`actual is not untyped nil, but &errors.errorString{`,
 			`  s: "boom",`,
-			`}`,
+			`} (*errors.errorString)`,
 			"FAIL",
 		})
 	})
@@ -106,8 +102,7 @@ func TestBeZero(t *testing.T) {
 		BeZero(tt, 13)
 
 		BeDeepEqual(t, actual(), []string{
-			"actual is not zero, but int:",
-			"13",
+			"actual is not zero, but 13 (int)",
 			"FAIL",
 		})
 	})
@@ -139,5 +134,46 @@ func TestNotBeZero(t *testing.T) {
 			"actual is zero",
 			"FAIL",
 		})
+	})
+}
+
+func TestError(t *testing.T) {
+	t.Run("Simple", func(t *testing.T) {
+		tt, actual := setup(t)
+		Error(tt, errors.New("boom"))
+
+		BeDeepEqual(t, actual(), []string{""})
+	})
+
+	t.Run("Nil", func(t *testing.T) {
+		tt, actual := setup(t)
+		Error(tt, nil)
+
+		BeDeepEqual(t, actual(), []string{
+			"actual is nil error",
+			"FAIL",
+		})
+	})
+}
+
+func TestNoError(t *testing.T) {
+	t.Run("Simple", func(t *testing.T) {
+		tt, actual := setup(t)
+		NoError(tt, errors.New("boom"))
+
+		BeDeepEqual(t, actual(), []string{
+			`actual is not nil error, but "boom"`,
+			`&errors.errorString{`,
+			`  s: "boom",`,
+			`} (*errors.errorString)`,
+			"FAIL",
+		})
+	})
+
+	t.Run("Nil", func(t *testing.T) {
+		tt, actual := setup(t)
+		NoError(tt, nil)
+
+		BeDeepEqual(t, actual(), []string{""})
 	})
 }

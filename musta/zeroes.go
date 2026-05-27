@@ -7,6 +7,8 @@ import (
 )
 
 // BeNil checks that actual is untyped nil.
+//
+// It is recommended to use [NoError] for errors and [BeZero] where possible otherwise.
 func BeNil(tb TB, actual any) {
 	tb.Helper()
 
@@ -16,6 +18,8 @@ func BeNil(tb TB, actual any) {
 }
 
 // NotBeNil checks that actual is not (untyped) nil.
+//
+// It is recommended to use [Error] for errors and [NotBeZero] where possible otherwise.
 func NotBeNil(tb TB, actual any) {
 	tb.Helper()
 
@@ -38,6 +42,24 @@ func NotBeZero[T comparable](tb TB, actual T) {
 	tb.Helper()
 
 	if !shoulda.NotBeZero(tb, actual) {
+		tb.FailNow()
+	}
+}
+
+// Error checks that actual is a non-nil error.
+func Error(tb TB, actual error) {
+	tb.Helper()
+
+	if !shoulda.Error(tb, actual) {
+		tb.FailNow()
+	}
+}
+
+// NoError checks that actual is a nil error.
+func NoError(tb TB, actual error) {
+	tb.Helper()
+
+	if !shoulda.NoError(tb, actual) {
 		tb.FailNow()
 	}
 }
