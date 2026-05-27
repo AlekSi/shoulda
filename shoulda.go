@@ -19,7 +19,7 @@ type TB interface {
 	FailNow()
 }
 
-// defaultDumpConfig contains the configuration used by the default default [Dump].
+// defaultDumpConfig contains the configuration used by the default [Dump].
 var defaultDumpConfig = &litter.Options{
 	Compact:                   false,
 	StripPackageNames:         false,
@@ -43,7 +43,7 @@ func defaultDump(tb TB, v any) string {
 	tb.Helper()
 
 	// Include %T since litter does not always include type
-	// For example, Sdump(int(13) amd Sdump(uint(13)) produce the same result.
+	// For example, Sdump(int(13)) and Sdump(uint(13)) produce the same result.
 	return fmt.Sprintf("%s (%T)", defaultDumpConfig.Sdump(v), v)
 }
 
