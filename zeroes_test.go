@@ -155,8 +155,7 @@ func TestError(t *testing.T) {
 		Error(tt, nil)
 
 		BeDeepEqual(t, actual(), []string{
-			"actual is not error, but <nil>:",
-			"nil",
+			"actual is nil error",
 			"FAIL",
 		})
 	})
@@ -168,7 +167,10 @@ func TestNoError(t *testing.T) {
 		NoError(tt, errors.New("boom"))
 
 		BeDeepEqual(t, actual(), []string{
-			"actual is error: boom",
+			`actual is not nil error, but "boom":`,
+			`&errors.errorString{`,
+			`  s: "boom",`,
+			`}`,
 			"FAIL",
 		})
 	})

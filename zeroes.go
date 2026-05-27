@@ -46,7 +46,7 @@ func NotBeZero[T comparable](tb TB, actual T) bool {
 func Error(tb TB, actual error) bool {
 	tb.Helper()
 
-	m := dumpf(tb, "actual is not error, but %T:\n%s", actual)
+	m := messagef("actual is nil error")
 
 	return assert(tb, actual != nil, m)
 }
@@ -55,7 +55,7 @@ func Error(tb TB, actual error) bool {
 func NoError(tb TB, actual error) bool {
 	tb.Helper()
 
-	m := messagef("actual is error: %v", actual)
+	m := dumpf(tb, "actual is not nil error, but %q:\n%s", actual)
 
 	return assert(tb, actual == nil, m)
 }

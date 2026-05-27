@@ -57,8 +57,7 @@ func ExampleError() {
 	Error(t, nil)
 
 	// Output:
-	// actual is not error, but <nil>:
-	// nil
+	// actual is nil error
 	// FAIL
 }
 
@@ -66,6 +65,9 @@ func ExampleNoError() {
 	NoError(t, errors.New("boom"))
 
 	// Output:
-	// actual is error: boom
+	// actual is not nil error, but "boom":
+	// &errors.errorString{
+	//   s: "boom",
+	// }
 	// FAIL
 }
