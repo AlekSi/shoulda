@@ -2,7 +2,7 @@ package shoulda
 
 import "errors"
 
-func ExampleBeNil_pointer() {
+func ExampleBeNil() {
 	BeNil(t, new(uint32(13)))
 
 	// Output:
@@ -17,17 +17,6 @@ func ExampleBeNil_typedNil() {
 	// Output:
 	// actual is not untyped nil, but *uint32:
 	// nil
-	// FAIL
-}
-
-func ExampleBeNil_error() {
-	BeNil(t, errors.New("boom"))
-
-	// Output:
-	// actual is not untyped nil, but *errors.errorString:
-	// &errors.errorString{
-	//   s: "boom",
-	// }
 	// FAIL
 }
 
@@ -61,5 +50,22 @@ func ExampleNotBeZero_pointer() {
 
 	// Output:
 	// actual is zero
+	// FAIL
+}
+
+func ExampleError() {
+	Error(t, nil)
+
+	// Output:
+	// actual is not error, but <nil>:
+	// nil
+	// FAIL
+}
+
+func ExampleNoError() {
+	NoError(t, errors.New("boom"))
+
+	// Output:
+	// actual is error: boom
 	// FAIL
 }

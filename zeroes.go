@@ -1,6 +1,8 @@
 package shoulda
 
 // BeNil checks that actual is untyped nil.
+//
+// It is recommended to use [NoError] for errors and [BeZero] where possible otherwise.
 func BeNil(tb TB, actual any) bool {
 	tb.Helper()
 
@@ -10,6 +12,8 @@ func BeNil(tb TB, actual any) bool {
 }
 
 // NotBeNil checks that actual is not (untyped) nil.
+//
+// It is recommended to use [Error] for errors and [NotBeZero] where possible otherwise.
 func NotBeNil(tb TB, actual any) bool {
 	tb.Helper()
 
@@ -36,4 +40,22 @@ func NotBeZero[T comparable](tb TB, actual T) bool {
 
 	var zero T
 	return assert(tb, actual != zero, m)
+}
+
+// Error checks that actual is a non-nil error.
+func Error(tb TB, actual error) bool {
+	tb.Helper()
+
+	m := dumpf(tb, "actual is not error, but %T:\n%s", actual)
+
+	return assert(tb, actual != nil, m)
+}
+
+// NoError checks that actual is a nil error.
+func NoError(tb TB, actual error) bool {
+	tb.Helper()
+
+	m := messagef("actual is error: %v", actual)
+
+	return assert(tb, actual == nil, m)
 }
