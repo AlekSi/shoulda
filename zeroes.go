@@ -6,7 +6,7 @@ package shoulda
 func BeNil(tb TB, actual any) bool {
 	tb.Helper()
 
-	m := dumpf(tb, "actual is not untyped nil, but %T:\n%s", actual)
+	m := dump(tb, "actual is not untyped nil, but:", actual)
 
 	return assert(tb, actual == nil, m)
 }
@@ -26,7 +26,7 @@ func NotBeNil(tb TB, actual any) bool {
 func BeZero[T comparable](tb TB, actual T) bool {
 	tb.Helper()
 
-	m := dumpf(tb, "actual is not zero, but %T:\n%s", actual)
+	m := dump(tb, "actual is not zero, but:", actual)
 
 	var zero T
 	return assert(tb, actual == zero, m)
@@ -55,7 +55,7 @@ func Error(tb TB, actual error) bool {
 func NoError(tb TB, actual error) bool {
 	tb.Helper()
 
-	m := dumpf(tb, "actual is not nil error, but %q:\n%s", actual)
+	m := dump(tb, "actual is not nil error, but:", actual)
 
 	return assert(tb, actual == nil, m)
 }

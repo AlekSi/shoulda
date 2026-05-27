@@ -32,14 +32,11 @@ func messagef(msg string, args ...any) messager {
 	})
 }
 
-// dumpf implements [messager] from a message string and arguments using [Dump].
-// args is prepended with the value and its dump string.
-func dumpf(tb TB, msg string, v any, args ...any) messager {
+// dump implements [messager] from a message string and value using [Dump].
+func dump(tb TB, msg string, v any) messager {
 	return msgFunc(func() string {
 		tb.Helper()
-		s := Dump(tb, v)
-		args = append([]any{v, s}, args...)
-		return fmt.Sprintf(msg, args...)
+		return fmt.Sprintf(msg+"\n%s", Dump(tb, v))
 	})
 }
 
