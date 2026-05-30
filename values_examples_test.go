@@ -9,9 +9,22 @@ func ExampleBeDeepEqual() {
 	BeDeepEqual(t, []int{13}, []int64{13})
 
 	// Output:
-	// Values are not deep equal:
-	// actual:   []int{13}
-	// expected: []int64{13}
+	// actual is not deep equal to expected:
+	// actual: []int{
+	//   13,
+	// } ([]int)
+	// expected: []int64{
+	//   13,
+	// } ([]int64)
+	// diff expected actual
+	// --- expected
+	// +++ actual
+	// @@ -1,3 +1,3 @@
+	// -[]int64{
+	// +[]int{
+	//    13,
+	// -} ([]int64)
+	// +} ([]int)
 	// FAIL
 }
 
@@ -20,8 +33,12 @@ func ExampleNotBeDeepEqual() {
 	NotBeDeepEqual(t, []int{13}, []int{13})
 
 	// Output:
-	// Values are deep equal:
-	// actual:   []int{13}
-	// expected: []int{13}
+	// actual is deep equal to expected:
+	// actual: []int{
+	//   13,
+	// } ([]int)
+	// expected: []int{
+	//   13,
+	// } ([]int)
 	// FAIL
 }

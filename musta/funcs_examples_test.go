@@ -12,8 +12,8 @@ func ExampleSatisfy_inline() {
 	Satisfy(t, 13, func(v int) bool { return v > 42 })
 
 	// Output:
-	// predicate is not satisfied for
-	// actual:   13
+	// actual is not satisfied by predicate:
+	// actual: 13 (int)
 	// FAIL
 }
 
@@ -22,8 +22,8 @@ func ExampleSatisfy_methodValue() {
 	Satisfy(t, actual, time.Now().Before)
 
 	// Output:
-	// predicate is not satisfied for
-	// actual:   2026-04-09 17:32:42.000000123 +0000 UTC
+	// actual is not satisfied by predicate:
+	// actual: time.Date(2026, 4, 9, 17, 32, 42, 123, time.UTC) (time.Time)
 	// FAIL
 }
 
@@ -32,8 +32,8 @@ func ExampleSatisfy_methodExpression() {
 	Satisfy(t, actual, time.Time.IsZero)
 
 	// Output:
-	// predicate is not satisfied for
-	// actual:   2026-04-09 17:32:42.000000123 +0000 UTC
+	// actual is not satisfied by predicate:
+	// actual: time.Date(2026, 4, 9, 17, 32, 42, 123, time.UTC) (time.Time)
 	// FAIL
 }
 
@@ -41,9 +41,15 @@ func ExampleSatisfyWith_inline() {
 	SatisfyWith(t, 13, 42, func(x, y int) bool { return x > y })
 
 	// Output:
-	// predicate is not satisfied with
-	// actual:   13
-	// expected: 42
+	// actual and expected are not satisfied by predicate:
+	// actual: 13 (int)
+	// expected: 42 (int)
+	// diff expected actual
+	// --- expected
+	// +++ actual
+	// @@ -1,1 +1,1 @@
+	// -42 (int)
+	// +13 (int)
 	// FAIL
 }
 
@@ -51,9 +57,15 @@ func ExampleSatisfyWith_function() {
 	SatisfyWith(t, 13, 42, cmp.Greater)
 
 	// Output:
-	// predicate is not satisfied with
-	// actual:   13
-	// expected: 42
+	// actual and expected are not satisfied by predicate:
+	// actual: 13 (int)
+	// expected: 42 (int)
+	// diff expected actual
+	// --- expected
+	// +++ actual
+	// @@ -1,1 +1,1 @@
+	// -42 (int)
+	// +13 (int)
 	// FAIL
 }
 
@@ -63,9 +75,15 @@ func ExampleSatisfyWith_methodExpression() {
 	SatisfyWith(t, actual, expected, time.Time.Before)
 
 	// Output:
-	// predicate is not satisfied with
-	// actual:   2026-04-09 17:32:42.000000123 +0000 UTC
-	// expected: 2026-04-09 17:32:42.000000123 +0400 My
+	// actual and expected are not satisfied by predicate:
+	// actual: time.Date(2026, 4, 9, 17, 32, 42, 123, time.UTC) (time.Time)
+	// expected: time.Date(2026, 4, 9, 13, 32, 42, 123, time.UTC) (time.Time)
+	// diff expected actual
+	// --- expected
+	// +++ actual
+	// @@ -1,1 +1,1 @@
+	// -time.Date(2026, 4, 9, 13, 32, 42, 123, time.UTC) (time.Time)
+	// +time.Date(2026, 4, 9, 17, 32, 42, 123, time.UTC) (time.Time)
 	// FAIL
 }
 
@@ -75,8 +93,14 @@ func ExampleCompareEqual_methodExpression() {
 	CompareEqual(t, actual, expected, time.Time.Compare)
 
 	// Output:
-	// comparison result is greater, not equal for
-	// actual:   2026-04-09 17:32:42.000000123 +0000 UTC
-	// expected: 2026-04-09 17:32:42.000000123 +0400 My
+	// actual is not equal to expected, but greater:
+	// actual: time.Date(2026, 4, 9, 17, 32, 42, 123, time.UTC) (time.Time)
+	// expected: time.Date(2026, 4, 9, 13, 32, 42, 123, time.UTC) (time.Time)
+	// diff expected actual
+	// --- expected
+	// +++ actual
+	// @@ -1,1 +1,1 @@
+	// -time.Date(2026, 4, 9, 13, 32, 42, 123, time.UTC) (time.Time)
+	// +time.Date(2026, 4, 9, 17, 32, 42, 123, time.UTC) (time.Time)
 	// FAIL
 }

@@ -36,7 +36,7 @@ func TestBeFalse(t *testing.T) {
 		BeFalse(tt, time.Time.Equal(actual, expected))
 
 		BeDeepEqual(t, lines(), []string{
-			"is not false",
+			"actual is not false",
 			"FAIL",
 		})
 	})
@@ -50,7 +50,7 @@ func TestBeTrue(t *testing.T) {
 		BeTrue(tt, time.Time.Equal(actual, expected))
 
 		BeDeepEqual(t, lines(), []string{
-			"is not true",
+			"actual is not true",
 			"FAIL",
 		})
 	})
@@ -62,9 +62,22 @@ func TestBeDeepEqual(t *testing.T) {
 		BeDeepEqual(tt, []int{13}, []int64{13})
 
 		BeDeepEqual(t, lines(), []string{
-			"Values are not deep equal:",
-			"actual:   []int{13}",
-			"expected: []int64{13}",
+			"actual is not deep equal to expected:",
+			"actual: []int{",
+			"  13,",
+			"} ([]int)",
+			"expected: []int64{",
+			"  13,",
+			"} ([]int64)",
+			"diff expected actual",
+			"--- expected",
+			"+++ actual",
+			"@@ -1,3 +1,3 @@",
+			"-[]int64{",
+			"+[]int{",
+			"   13,",
+			"-} ([]int64)",
+			"+} ([]int)",
 			"FAIL",
 		})
 	})
@@ -74,9 +87,13 @@ func TestBeDeepEqual(t *testing.T) {
 		BeDeepEqual(tt, []float64{math.NaN()}, []float64{math.NaN()})
 
 		BeDeepEqual(t, lines(), []string{
-			"Values are not deep equal:",
-			"actual:   []float64{NaN}",
-			"expected: []float64{NaN}",
+			"actual is not deep equal to expected:",
+			"actual: []float64{",
+			"  NaN,",
+			"} ([]float64)",
+			"expected: []float64{",
+			"  NaN,",
+			"} ([]float64)",
 			"FAIL",
 		})
 	})
@@ -88,9 +105,13 @@ func TestNotBeDeepEqual(t *testing.T) {
 		NotBeDeepEqual(tt, []int{13}, []int{13})
 
 		BeDeepEqual(t, lines(), []string{
-			"Values are deep equal:",
-			"actual:   []int{13}",
-			"expected: []int{13}",
+			"actual is deep equal to expected:",
+			"actual: []int{",
+			"  13,",
+			"} ([]int)",
+			"expected: []int{",
+			"  13,",
+			"} ([]int)",
 			"FAIL",
 		})
 	})
@@ -109,9 +130,15 @@ func TestBeEqual(t *testing.T) {
 		BeEqual(tt, 13, 42)
 
 		BeDeepEqual(t, lines(), []string{
-			"Values are not equal:",
-			"actual:   13",
-			"expected: 42",
+			"actual is not equal to expected:",
+			"actual: 13 (int)",
+			"expected: 42 (int)",
+			"diff expected actual",
+			"--- expected",
+			"+++ actual",
+			"@@ -1,1 +1,1 @@",
+			"-42 (int)",
+			"+13 (int)",
 			"FAIL",
 		})
 	})
@@ -130,9 +157,15 @@ func TestBeLess(t *testing.T) {
 		BeLess(tt, 42, 13)
 
 		BeDeepEqual(t, lines(), []string{
-			"actual:   42",
-			"is not less than",
-			"expected: 13",
+			"actual is not less than expected:",
+			"actual: 42 (int)",
+			"expected: 13 (int)",
+			"diff expected actual",
+			"--- expected",
+			"+++ actual",
+			"@@ -1,1 +1,1 @@",
+			"-13 (int)",
+			"+42 (int)",
 			"FAIL",
 		})
 	})
@@ -144,9 +177,15 @@ func TestBeGreater(t *testing.T) {
 		BeGreater(tt, 13, 42)
 
 		BeDeepEqual(t, lines(), []string{
-			"actual:   13",
-			"is not greater than",
-			"expected: 42",
+			"actual is not greater than expected:",
+			"actual: 13 (int)",
+			"expected: 42 (int)",
+			"diff expected actual",
+			"--- expected",
+			"+++ actual",
+			"@@ -1,1 +1,1 @@",
+			"-42 (int)",
+			"+13 (int)",
 			"FAIL",
 		})
 	})

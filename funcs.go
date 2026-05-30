@@ -8,7 +8,7 @@ import (
 func Satisfy[A any](tb TB, actual A, predicate func(_ A) bool) bool {
 	tb.Helper()
 
-	m := messagef("predicate is not satisfied for\nactual:   %v", actual)
+	m := msgDumpf(tb, "actual is not satisfied by predicate:\nactual: %[2]s", actual)
 
 	return assert(tb, predicate(actual), m)
 }
@@ -17,7 +17,11 @@ func Satisfy[A any](tb TB, actual A, predicate func(_ A) bool) bool {
 func SatisfyWith[A, E any](tb TB, actual A, expected E, predicate func(_ A, _ E) bool) bool {
 	tb.Helper()
 
-	m := messagef("predicate is not satisfied with\nactual:   %v\nexpected: %v", actual, expected)
+	m := msgDiff(
+		tb,
+		"actual and expected are not satisfied by predicate:\nactual: %[2]s\nexpected: %[4]s\n%[5]s",
+		actual, expected,
+	)
 
 	return assert(tb, predicate(actual, expected), m)
 }
@@ -26,9 +30,16 @@ func SatisfyWith[A, E any](tb TB, actual A, expected E, predicate func(_ A, _ E)
 func CompareWith[A, E any](tb TB, actual A, expected E, order cmp.Order, compare func(_ A, _ E) int) bool {
 	tb.Helper()
 
-	m := messagef("comparison result is not %d for\nactual:   %v\nexpected: %v", order, actual, expected)
-
-	return assert(tb, compare(actual, expected) == int(order), m)
+	switch order {
+	case cmp.OrderEqual:
+		return CompareEqual(tb, actual, expected, compare)
+	case cmp.OrderLess:
+		return CompareLess(tb, actual, expected, compare)
+	case cmp.OrderGreater:
+		return CompareGreater(tb, actual, expected, compare)
+	default:
+		return assert(tb, false, msgf("invalid cmp.%s", order))
+	}
 }
 
 // CompareEqual checks that compare(actual, expected) returns 0 ([cmp.OrderEqual]).
@@ -37,9 +48,10 @@ func CompareEqual[A, E any](tb TB, actual A, expected E, compare func(_ A, _ E) 
 
 	res := compare(actual, expected)
 
-	m := messagef(
-		"comparison result is %s, not equal for\nactual:   %v\nexpected: %v",
-		cmp.Order(res), actual, expected,
+	m := msgDiff(
+		tb,
+		"actual is not equal to expected, but "+cmp.Order(res).String()+":\nactual: %[2]s\nexpected: %[4]s\n%[5]s",
+		actual, expected,
 	)
 
 	return assert(tb, res == 0, m)
@@ -51,9 +63,10 @@ func CompareLess[A, E any](tb TB, actual A, expected E, compare func(_ A, _ E) i
 
 	res := compare(actual, expected)
 
-	m := messagef(
-		"comparison result is %s, not less for\nactual:   %v\nexpected: %v",
-		cmp.Order(res), actual, expected,
+	m := msgDiff(
+		tb,
+		"actual is not less than expected, but "+cmp.Order(res).String()+":\nactual: %[2]s\nexpected: %[4]s\n%[5]s",
+		actual, expected,
 	)
 
 	return assert(tb, res == -1, m)
@@ -65,9 +78,10 @@ func CompareGreater[A, E any](tb TB, actual A, expected E, compare func(_ A, _ E
 
 	res := compare(actual, expected)
 
-	m := messagef(
-		"comparison result is %s, not greater for\nactual:   %v\nexpected: %v",
-		cmp.Order(res), actual, expected,
+	m := msgDiff(
+		tb,
+		"actual is not greater than expected, but "+cmp.Order(res).String()+":\nactual: %[2]s\nexpected: %[4]s\n%[5]s",
+		actual, expected,
 	)
 
 	return assert(tb, res == +1, m)
