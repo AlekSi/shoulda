@@ -58,7 +58,7 @@ func defaultDiff(tb TB, actualName string, actual any, expectedName string, expe
 	a := strings.TrimRight(Dump(tb, actual), "\n") + "\n"
 	e := strings.TrimRight(Dump(tb, expected), "\n") + "\n"
 	d := diff.Diff(expectedName, []byte(e), actualName, []byte(a))
-	return strings.TrimRight(string(d), "\n")
+	return string(d)
 }
 
 // assert returns true if condition is true;

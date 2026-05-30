@@ -2,6 +2,7 @@ package shoulda
 
 import (
 	"fmt"
+	"strings"
 )
 
 // messager is an interface for lazy message construction.
@@ -57,7 +58,7 @@ func msgDiff(tb TB, format string, actual any, expected any) messager {
 			Diff(tb, "actual", actual, "expected", expected),
 		}
 
-		return fmt.Sprintf(format, args...)
+		return strings.TrimRight(fmt.Sprintf(format, args...), "\n")
 	})
 }
 

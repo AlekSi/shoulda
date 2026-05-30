@@ -40,6 +40,5 @@ func ExampleNotBeDeepEqual() {
 	// expected: []int{
 	//   13,
 	// } ([]int)
-	//
 	// FAIL
 }

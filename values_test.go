@@ -92,7 +92,6 @@ func TestBeDeepEqual(t *testing.T) {
 			"expected: []float64{",
 			"  NaN,",
 			"} ([]float64)",
-			"",
 			"FAIL",
 		})
 	})
@@ -111,7 +110,6 @@ func TestNotBeDeepEqual(t *testing.T) {
 			"expected: []int{",
 			"  13,",
 			"} ([]int)",
-			"",
 			"FAIL",
 		})
 	})
