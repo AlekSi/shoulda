@@ -8,7 +8,7 @@ import (
 func Satisfy[A any](tb TB, actual A, predicate func(_ A) bool) bool {
 	tb.Helper()
 
-	m := messagef("predicate is not satisfied for\nactual:   %v", actual)
+	m := msg("predicate is not satisfied for\nactual:   %v", actual)
 
 	return assert(tb, predicate(actual), m)
 }
@@ -17,7 +17,7 @@ func Satisfy[A any](tb TB, actual A, predicate func(_ A) bool) bool {
 func SatisfyWith[A, E any](tb TB, actual A, expected E, predicate func(_ A, _ E) bool) bool {
 	tb.Helper()
 
-	m := messagef("predicate is not satisfied with\nactual:   %v\nexpected: %v", actual, expected)
+	m := msg("predicate is not satisfied with\nactual:   %v\nexpected: %v", actual, expected)
 
 	return assert(tb, predicate(actual, expected), m)
 }
@@ -26,7 +26,7 @@ func SatisfyWith[A, E any](tb TB, actual A, expected E, predicate func(_ A, _ E)
 func CompareWith[A, E any](tb TB, actual A, expected E, order cmp.Order, compare func(_ A, _ E) int) bool {
 	tb.Helper()
 
-	m := messagef("comparison result is not %d for\nactual:   %v\nexpected: %v", order, actual, expected)
+	m := msg("comparison result is not %d for\nactual:   %v\nexpected: %v", order, actual, expected)
 
 	return assert(tb, compare(actual, expected) == int(order), m)
 }
@@ -37,7 +37,7 @@ func CompareEqual[A, E any](tb TB, actual A, expected E, compare func(_ A, _ E) 
 
 	res := compare(actual, expected)
 
-	m := messagef(
+	m := msg(
 		"comparison result is %s, not equal for\nactual:   %v\nexpected: %v",
 		cmp.Order(res), actual, expected,
 	)
@@ -51,7 +51,7 @@ func CompareLess[A, E any](tb TB, actual A, expected E, compare func(_ A, _ E) i
 
 	res := compare(actual, expected)
 
-	m := messagef(
+	m := msg(
 		"comparison result is %s, not less for\nactual:   %v\nexpected: %v",
 		cmp.Order(res), actual, expected,
 	)
@@ -65,7 +65,7 @@ func CompareGreater[A, E any](tb TB, actual A, expected E, compare func(_ A, _ E
 
 	res := compare(actual, expected)
 
-	m := messagef(
+	m := msg(
 		"comparison result is %s, not greater for\nactual:   %v\nexpected: %v",
 		cmp.Order(res), actual, expected,
 	)

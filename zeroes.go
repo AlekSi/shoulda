@@ -6,7 +6,7 @@ package shoulda
 func BeNil(tb TB, actual any) bool {
 	tb.Helper()
 
-	m := dumpf(tb, "actual is not untyped nil, but:\nactual: %[2]s", actual)
+	m := msgDumpf(tb, "actual is not untyped nil, but:\nactual: %[2]s", actual)
 
 	return assert(tb, actual == nil, m)
 }
@@ -17,7 +17,7 @@ func BeNil(tb TB, actual any) bool {
 func NotBeNil(tb TB, actual any) bool {
 	tb.Helper()
 
-	m := messagef("actual is untyped nil")
+	m := msg("actual is untyped nil")
 
 	return assert(tb, actual != nil, m)
 }
@@ -26,7 +26,7 @@ func NotBeNil(tb TB, actual any) bool {
 func BeZero[T comparable](tb TB, actual T) bool {
 	tb.Helper()
 
-	m := dumpf(tb, "actual is not zero, but:\nactual: %[2]s", actual)
+	m := msgDumpf(tb, "actual is not zero, but:\nactual: %[2]s", actual)
 
 	var zero T
 	return assert(tb, actual == zero, m)
@@ -36,7 +36,7 @@ func BeZero[T comparable](tb TB, actual T) bool {
 func NotBeZero[T comparable](tb TB, actual T) bool {
 	tb.Helper()
 
-	m := messagef("actual is zero")
+	m := msg("actual is zero")
 
 	var zero T
 	return assert(tb, actual != zero, m)
@@ -46,7 +46,7 @@ func NotBeZero[T comparable](tb TB, actual T) bool {
 func Error(tb TB, actual error) bool {
 	tb.Helper()
 
-	m := messagef("actual is nil error")
+	m := msg("actual is nil error")
 
 	return assert(tb, actual != nil, m)
 }
@@ -55,7 +55,7 @@ func Error(tb TB, actual error) bool {
 func NoError(tb TB, actual error) bool {
 	tb.Helper()
 
-	m := dumpf(tb, "actual is not nil error, but %[1]q:\nactual: %[2]s", actual)
+	m := msgDumpf(tb, "actual is not nil error, but %[1]q:\nactual: %[2]s", actual)
 
 	return assert(tb, actual == nil, m)
 }

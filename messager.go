@@ -21,8 +21,8 @@ type msgFunc func() string
 // Message implements [messager].
 func (m msgFunc) Message() string { return m() }
 
-// messagef constructs a [messager] from a message or format string, and arguments.
-func messagef(msg string, args ...any) messager {
+// msg constructs a [messager] from a message or format string, and arguments.
+func msg(msg string, args ...any) messager {
 	if len(args) == 0 {
 		return msgString(msg)
 	}
@@ -32,14 +32,29 @@ func messagef(msg string, args ...any) messager {
 	})
 }
 
-// dumpf constructs a [messager] from a format string and values.
-func dumpf(tb TB, format string, vs ...any) messager {
+// msgDumpf constructs a [messager] from a format string and values.
+func msgDumpf(tb TB, format string, vs ...any) messager {
 	return msgFunc(func() string {
 		tb.Helper()
 
 		var args []any
 		for _, v := range vs {
 			args = append(args, v, Dump(tb, v))
+		}
+
+		return fmt.Sprintf(format, args...)
+	})
+}
+
+// msgDiff constructs a [messager] from a format string and values plus their diff.
+func msgDiff(tb TB, format string, actual any, expected any) messager {
+	return msgFunc(func() string {
+		tb.Helper()
+
+		args := []any{
+			actual, Dump(tb, actual),
+			expected, Dump(tb, expected),
+			Diff(tb, "actual", actual, "expected", expected),
 		}
 
 		return fmt.Sprintf(format, args...)

@@ -10,7 +10,7 @@ import (
 func BeFalse(tb TB, actual bool) bool {
 	tb.Helper()
 
-	m := messagef("actual is not false")
+	m := msg("actual is not false")
 
 	return assert(tb, !actual, m)
 }
@@ -19,7 +19,7 @@ func BeFalse(tb TB, actual bool) bool {
 func BeTrue(tb TB, actual bool) bool {
 	tb.Helper()
 
-	m := messagef("actual is not true")
+	m := msg("actual is not true")
 
 	return assert(tb, actual, m)
 }
@@ -28,7 +28,7 @@ func BeTrue(tb TB, actual bool) bool {
 func BeDeepEqual(tb TB, actual, expected any) bool {
 	tb.Helper()
 
-	m := messagef("actual is not deep equal to expected:\nactual: %#v\nexpected: %#v", actual, expected)
+	m := msgDiff(tb, "actual is not deep equal to expected:\nactual: %[2]s\nexpected: %[4]s\n%[5]s", actual, expected)
 
 	return assert(tb, reflect.DeepEqual(actual, expected), m)
 }
@@ -37,7 +37,7 @@ func BeDeepEqual(tb TB, actual, expected any) bool {
 func NotBeDeepEqual(tb TB, actual, expected any) bool {
 	tb.Helper()
 
-	m := messagef("Values are deep equal:\nactual:   %#v\nexpected: %#v", actual, expected)
+	m := msgDiff(tb, "actual is deep equal to expected:\nactual: %[2]s\nexpected: %[4]s\n%[5]s", actual, expected)
 
 	return assert(tb, !reflect.DeepEqual(actual, expected), m)
 }
@@ -46,7 +46,7 @@ func NotBeDeepEqual(tb TB, actual, expected any) bool {
 func BeEqual[T cmp.Ordered](tb TB, actual, expected T) bool {
 	tb.Helper()
 
-	m := messagef("Values are not equal:\nactual:   %v\nexpected: %v", actual, expected)
+	m := msgDiff(tb, "actual is not equal to expected:\nactual: %[2]s\nexpected: %[4]s\n%[5]s", actual, expected)
 
 	return assert(tb, cmp.Equal(actual, expected), m)
 }
@@ -55,7 +55,7 @@ func BeEqual[T cmp.Ordered](tb TB, actual, expected T) bool {
 func NotBeEqual[T cmp.Ordered](tb TB, actual, expected T) bool {
 	tb.Helper()
 
-	m := messagef("Values are equal:\nactual:   %v\nexpected: %v", actual, expected)
+	m := msgDiff(tb, "actual is equal to expected:\nactual: %[2]s\nexpected: %[4]s\n%[5]s", actual, expected)
 
 	return assert(tb, !cmp.Equal(actual, expected), m)
 }
@@ -64,7 +64,7 @@ func NotBeEqual[T cmp.Ordered](tb TB, actual, expected T) bool {
 func BeLess[T cmp.Ordered](tb TB, actual, expected T) bool {
 	tb.Helper()
 
-	m := messagef("actual:   %v\nis not less than\nexpected: %v", actual, expected)
+	m := msgDiff(tb, "actual is not less than expected:\nactual: %[2]s\nexpected: %[4]s\n%[5]s", actual, expected)
 
 	return assert(tb, cmp.Less(actual, expected), m)
 }
@@ -73,7 +73,7 @@ func BeLess[T cmp.Ordered](tb TB, actual, expected T) bool {
 func BeGreater[T cmp.Ordered](tb TB, actual, expected T) bool {
 	tb.Helper()
 
-	m := messagef("actual:   %v\nis not greater than\nexpected: %v", actual, expected)
+	m := msgDiff(tb, "actual is not greater than expected:\nactual: %[2]s\nexpected: %[4]s\n%[5]s", actual, expected)
 
 	return assert(tb, cmp.Greater(actual, expected), m)
 }

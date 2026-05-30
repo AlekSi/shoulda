@@ -3,6 +3,7 @@ package shoulda
 import (
 	"fmt"
 	"regexp"
+	"strings"
 	"testing"
 
 	"github.com/sanity-io/litter"
@@ -54,9 +55,10 @@ var Diff func(tb TB, actualName string, actual any, expectedName string, expecte
 func defaultDiff(tb TB, actualName string, actual any, expectedName string, expected any) string {
 	tb.Helper()
 
-	a := Dump(tb, actual)
-	e := Dump(tb, expected)
-	return string(diff.Diff(expectedName, []byte(e), actualName, []byte(a)))
+	a := strings.TrimRight(Dump(tb, actual), "\n") + "\n"
+	e := strings.TrimRight(Dump(tb, expected), "\n") + "\n"
+	d := diff.Diff(expectedName, []byte(e), actualName, []byte(a))
+	return strings.TrimRight(string(d), "\n")
 }
 
 // assert returns true if condition is true;
