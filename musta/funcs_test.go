@@ -15,8 +15,8 @@ func TestSatisfy(t *testing.T) {
 		Satisfy(tt, 13, func(v int) bool { return v > 42 })
 
 		BeDeepEqual(t, lines(), []string{
-			"predicate is not satisfied for",
-			"actual:   13",
+			"actual is not satisfied by predicate:",
+			"actual: 13 (int)",
 			"FAIL",
 		})
 	})
@@ -27,8 +27,8 @@ func TestSatisfy(t *testing.T) {
 		Satisfy(tt, actual, time.Now().Before)
 
 		BeDeepEqual(t, lines(), []string{
-			"predicate is not satisfied for",
-			"actual:   2026-04-09 17:32:42.000000123 +0000 UTC",
+			"actual is not satisfied by predicate:",
+			"actual: time.Date(2026, 4, 9, 17, 32, 42, 123, time.UTC) (time.Time)",
 			"FAIL",
 		})
 	})
@@ -39,8 +39,8 @@ func TestSatisfy(t *testing.T) {
 		Satisfy(tt, actual, time.Time.IsZero)
 
 		BeDeepEqual(t, lines(), []string{
-			"predicate is not satisfied for",
-			"actual:   2026-04-09 17:32:42.000000123 +0000 UTC",
+			"actual is not satisfied by predicate:",
+			"actual: time.Date(2026, 4, 9, 17, 32, 42, 123, time.UTC) (time.Time)",
 			"FAIL",
 		})
 	})
@@ -52,9 +52,15 @@ func TestSatisfyWith(t *testing.T) {
 		SatisfyWith(tt, 13, 42, func(x, y int) bool { return x > y })
 
 		BeDeepEqual(t, lines(), []string{
-			"predicate is not satisfied with",
-			"actual:   13",
-			"expected: 42",
+			"actual and expected are not satisfied by predicate:",
+			"actual: 13 (int)",
+			"expected: 42 (int)",
+			"diff expected actual",
+			"--- expected",
+			"+++ actual",
+			"@@ -1,1 +1,1 @@",
+			"-42 (int)",
+			"+13 (int)",
 			"FAIL",
 		})
 	})
@@ -64,9 +70,15 @@ func TestSatisfyWith(t *testing.T) {
 		SatisfyWith(tt, 13, 42, cmp.Greater)
 
 		BeDeepEqual(t, lines(), []string{
-			"predicate is not satisfied with",
-			"actual:   13",
-			"expected: 42",
+			"actual and expected are not satisfied by predicate:",
+			"actual: 13 (int)",
+			"expected: 42 (int)",
+			"diff expected actual",
+			"--- expected",
+			"+++ actual",
+			"@@ -1,1 +1,1 @@",
+			"-42 (int)",
+			"+13 (int)",
 			"FAIL",
 		})
 	})
@@ -78,9 +90,15 @@ func TestSatisfyWith(t *testing.T) {
 		SatisfyWith(tt, actual, expected, time.Time.Before)
 
 		BeDeepEqual(t, lines(), []string{
-			"predicate is not satisfied with",
-			"actual:   2026-04-09 17:32:42.000000123 +0000 UTC",
-			"expected: 2026-04-09 17:32:42.000000123 +0400 My",
+			"actual and expected are not satisfied by predicate:",
+			"actual: time.Date(2026, 4, 9, 17, 32, 42, 123, time.UTC) (time.Time)",
+			"expected: time.Date(2026, 4, 9, 13, 32, 42, 123, time.UTC) (time.Time)",
+			"diff expected actual",
+			"--- expected",
+			"+++ actual",
+			"@@ -1,1 +1,1 @@",
+			"-time.Date(2026, 4, 9, 13, 32, 42, 123, time.UTC) (time.Time)",
+			"+time.Date(2026, 4, 9, 17, 32, 42, 123, time.UTC) (time.Time)",
 			"FAIL",
 		})
 	})
@@ -92,9 +110,15 @@ func TestCompareWith(t *testing.T) {
 		CompareWith(tt, 42, 13, cmp.OrderLess, cmp.Compare[int])
 
 		BeDeepEqual(t, lines(), []string{
-			"comparison result is not -1 for",
-			"actual:   42",
-			"expected: 13",
+			"actual is not less than expected, but greater:",
+			"actual: 42 (int)",
+			"expected: 13 (int)",
+			"diff expected actual",
+			"--- expected",
+			"+++ actual",
+			"@@ -1,1 +1,1 @@",
+			"-13 (int)",
+			"+42 (int)",
 			"FAIL",
 		})
 	})
@@ -108,9 +132,15 @@ func TestCompareEqual(t *testing.T) {
 		CompareEqual(tt, actual, expected, time.Time.Compare)
 
 		BeDeepEqual(t, lines(), []string{
-			"comparison result is greater, not equal for",
-			"actual:   2026-04-09 17:32:42.000000123 +0000 UTC",
-			"expected: 2026-04-09 17:32:42.000000123 +0400 My",
+			"actual is not equal to expected, but greater:",
+			"actual: time.Date(2026, 4, 9, 17, 32, 42, 123, time.UTC) (time.Time)",
+			"expected: time.Date(2026, 4, 9, 13, 32, 42, 123, time.UTC) (time.Time)",
+			"diff expected actual",
+			"--- expected",
+			"+++ actual",
+			"@@ -1,1 +1,1 @@",
+			"-time.Date(2026, 4, 9, 13, 32, 42, 123, time.UTC) (time.Time)",
+			"+time.Date(2026, 4, 9, 17, 32, 42, 123, time.UTC) (time.Time)",
 			"FAIL",
 		})
 	})
@@ -124,9 +154,15 @@ func TestCompareLess(t *testing.T) {
 		CompareLess(tt, actual, expected, time.Time.Compare)
 
 		BeDeepEqual(t, lines(), []string{
-			"comparison result is greater, not less for",
-			"actual:   2026-04-09 17:32:42.000000123 +0000 UTC",
-			"expected: 2026-04-09 17:32:42.000000123 +0400 My",
+			"actual is not less than expected, but greater:",
+			"actual: time.Date(2026, 4, 9, 17, 32, 42, 123, time.UTC) (time.Time)",
+			"expected: time.Date(2026, 4, 9, 13, 32, 42, 123, time.UTC) (time.Time)",
+			"diff expected actual",
+			"--- expected",
+			"+++ actual",
+			"@@ -1,1 +1,1 @@",
+			"-time.Date(2026, 4, 9, 13, 32, 42, 123, time.UTC) (time.Time)",
+			"+time.Date(2026, 4, 9, 17, 32, 42, 123, time.UTC) (time.Time)",
 			"FAIL",
 		})
 	})
@@ -140,9 +176,15 @@ func TestCompareGreater(t *testing.T) {
 		CompareGreater(tt, actual, expected, time.Time.Compare)
 
 		BeDeepEqual(t, lines(), []string{
-			"comparison result is less, not greater for",
-			"actual:   2026-04-09 17:32:42.000000123 +0400 My",
-			"expected: 2026-04-09 17:32:42.000000123 +0000 UTC",
+			"actual is not greater than expected, but less:",
+			"actual: time.Date(2026, 4, 9, 13, 32, 42, 123, time.UTC) (time.Time)",
+			"expected: time.Date(2026, 4, 9, 17, 32, 42, 123, time.UTC) (time.Time)",
+			"diff expected actual",
+			"--- expected",
+			"+++ actual",
+			"@@ -1,1 +1,1 @@",
+			"-time.Date(2026, 4, 9, 17, 32, 42, 123, time.UTC) (time.Time)",
+			"+time.Date(2026, 4, 9, 13, 32, 42, 123, time.UTC) (time.Time)",
 			"FAIL",
 		})
 	})
