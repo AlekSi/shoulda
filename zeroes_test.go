@@ -11,7 +11,8 @@ func TestBeNil(t *testing.T) {
 		BeNil(tt, uint32(13))
 
 		BeDeepEqual(t, actual(), []string{
-			"actual is not untyped nil, but 13 (uint32)",
+			"actual is not untyped nil, but:",
+			"actual: 13 (uint32)",
 			"FAIL",
 		})
 	})
@@ -21,7 +22,8 @@ func TestBeNil(t *testing.T) {
 		BeNil(tt, new(uint32(13)))
 
 		BeDeepEqual(t, actual(), []string{
-			"actual is not untyped nil, but &13 (*uint32)",
+			"actual is not untyped nil, but:",
+			"actual: &13 (*uint32)",
 			"FAIL",
 		})
 	})
@@ -38,7 +40,8 @@ func TestBeNil(t *testing.T) {
 		BeNil(tt, (*uint32)(nil))
 
 		BeDeepEqual(t, actual(), []string{
-			"actual is not untyped nil, but nil (*uint32)",
+			"actual is not untyped nil, but:",
+			"actual: nil (*uint32)",
 			"FAIL",
 		})
 	})
@@ -48,7 +51,8 @@ func TestBeNil(t *testing.T) {
 		BeNil(tt, errors.New("boom"))
 
 		BeDeepEqual(t, actual(), []string{
-			`actual is not untyped nil, but &errors.errorString{`,
+			`actual is not untyped nil, but:`,
+			`actual: &errors.errorString{`,
 			`  s: "boom",`,
 			`} (*errors.errorString)`,
 			"FAIL",
@@ -102,7 +106,8 @@ func TestBeZero(t *testing.T) {
 		BeZero(tt, 13)
 
 		BeDeepEqual(t, actual(), []string{
-			"actual is not zero, but 13 (int)",
+			"actual is not zero, but:",
+			"actual: 13 (int)",
 			"FAIL",
 		})
 	})
@@ -162,8 +167,8 @@ func TestNoError(t *testing.T) {
 		NoError(tt, errors.New("boom"))
 
 		BeDeepEqual(t, actual(), []string{
-			`actual is not nil error, but "boom"`,
-			`&errors.errorString{`,
+			`actual is not nil error, but "boom":`,
+			`actual: &errors.errorString{`,
 			`  s: "boom",`,
 			`} (*errors.errorString)`,
 			"FAIL",

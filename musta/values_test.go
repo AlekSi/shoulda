@@ -36,7 +36,7 @@ func TestBeFalse(t *testing.T) {
 		BeFalse(tt, time.Time.Equal(actual, expected))
 
 		BeDeepEqual(t, lines(), []string{
-			"is not false",
+			"actual is not false",
 			"FAIL",
 		})
 	})
@@ -50,7 +50,7 @@ func TestBeTrue(t *testing.T) {
 		BeTrue(tt, time.Time.Equal(actual, expected))
 
 		BeDeepEqual(t, lines(), []string{
-			"is not true",
+			"actual is not true",
 			"FAIL",
 		})
 	})
@@ -62,8 +62,8 @@ func TestBeDeepEqual(t *testing.T) {
 		BeDeepEqual(tt, []int{13}, []int64{13})
 
 		BeDeepEqual(t, lines(), []string{
-			"Values are not deep equal:",
-			"actual:   []int{13}",
+			"actual is not deep equal to expected:",
+			"actual: []int{13}",
 			"expected: []int64{13}",
 			"FAIL",
 		})
@@ -74,8 +74,8 @@ func TestBeDeepEqual(t *testing.T) {
 		BeDeepEqual(tt, []float64{math.NaN()}, []float64{math.NaN()})
 
 		BeDeepEqual(t, lines(), []string{
-			"Values are not deep equal:",
-			"actual:   []float64{NaN}",
+			"actual is not deep equal to expected:",
+			"actual: []float64{NaN}",
 			"expected: []float64{NaN}",
 			"FAIL",
 		})

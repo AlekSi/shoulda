@@ -32,13 +32,16 @@ func messagef(msg string, args ...any) messager {
 	})
 }
 
-// dumpf implements [messager] from a format string, value, and arguments.
-// The value and its [Dump]-ed form are appended to arguments.
-func dumpf(tb TB, format string, v any, args ...any) messager {
+// dumpf constructs a [messager] from a format string and values.
+func dumpf(tb TB, format string, vs ...any) messager {
 	return msgFunc(func() string {
 		tb.Helper()
 
-		args = append(args, v, Dump(tb, v))
+		var args []any
+		for _, v := range vs {
+			args = append(args, v, Dump(tb, v))
+		}
+
 		return fmt.Sprintf(format, args...)
 	})
 }

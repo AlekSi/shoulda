@@ -10,7 +10,7 @@ import (
 func BeFalse(tb TB, actual bool) bool {
 	tb.Helper()
 
-	m := messagef("is not false")
+	m := messagef("actual is not false")
 
 	return assert(tb, !actual, m)
 }
@@ -19,7 +19,7 @@ func BeFalse(tb TB, actual bool) bool {
 func BeTrue(tb TB, actual bool) bool {
 	tb.Helper()
 
-	m := messagef("is not true")
+	m := messagef("actual is not true")
 
 	return assert(tb, actual, m)
 }
@@ -28,7 +28,7 @@ func BeTrue(tb TB, actual bool) bool {
 func BeDeepEqual(tb TB, actual, expected any) bool {
 	tb.Helper()
 
-	m := messagef("Values are not deep equal:\nactual:   %#v\nexpected: %#v", actual, expected)
+	m := messagef("actual is not deep equal to expected:\nactual: %#v\nexpected: %#v", actual, expected)
 
 	return assert(tb, reflect.DeepEqual(actual, expected), m)
 }

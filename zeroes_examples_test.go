@@ -6,7 +6,8 @@ func ExampleBeNil() {
 	BeNil(t, new(uint32(13)))
 
 	// Output:
-	// actual is not untyped nil, but &13 (*uint32)
+	// actual is not untyped nil, but:
+	// actual: &13 (*uint32)
 	// FAIL
 }
 
@@ -14,7 +15,8 @@ func ExampleBeNil_typedNil() {
 	BeNil(t, (*uint32)(nil))
 
 	// Output:
-	// actual is not untyped nil, but nil (*uint32)
+	// actual is not untyped nil, but:
+	// actual: nil (*uint32)
 	// FAIL
 }
 
@@ -30,7 +32,8 @@ func ExampleBeZero() {
 	BeZero(t, 13)
 
 	// Output:
-	// actual is not zero, but 13 (int)
+	// actual is not zero, but:
+	// actual: 13 (int)
 	// FAIL
 }
 
@@ -62,8 +65,8 @@ func ExampleNoError() {
 	NoError(t, errors.New("boom"))
 
 	// Output:
-	// actual is not nil error, but "boom"
-	// &errors.errorString{
+	// actual is not nil error, but "boom":
+	// actual: &errors.errorString{
 	//   s: "boom",
 	// } (*errors.errorString)
 	// FAIL
