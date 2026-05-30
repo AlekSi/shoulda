@@ -21,14 +21,14 @@ type msgFunc func() string
 // Message implements [messager].
 func (m msgFunc) Message() string { return m() }
 
-// msg constructs a [messager] from a message or format string, and arguments.
-func msg(msg string, args ...any) messager {
+// msgf constructs a [messager] from a message or format string, and arguments.
+func msgf(format string, args ...any) messager {
 	if len(args) == 0 {
-		return msgString(msg)
+		return msgString(format)
 	}
 
 	return msgFunc(func() string {
-		return fmt.Sprintf(msg, args...)
+		return fmt.Sprintf(format, args...)
 	})
 }
 

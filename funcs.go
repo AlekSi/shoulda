@@ -1,8 +1,6 @@
 package shoulda
 
 import (
-	"fmt"
-
 	"github.com/AlekSi/shoulda/cmp"
 )
 
@@ -40,7 +38,7 @@ func CompareWith[A, E any](tb TB, actual A, expected E, order cmp.Order, compare
 	case cmp.OrderGreater:
 		return CompareGreater(tb, actual, expected, compare)
 	default:
-		panic(fmt.Sprintf("invalid order %s", order))
+		return assert(tb, false, msgf("invalid cmp.%s", order))
 	}
 }
 

@@ -17,7 +17,7 @@ func BeNil(tb TB, actual any) bool {
 func NotBeNil(tb TB, actual any) bool {
 	tb.Helper()
 
-	m := msg("actual is untyped nil")
+	m := msgf("actual is untyped nil")
 
 	return assert(tb, actual != nil, m)
 }
@@ -36,7 +36,7 @@ func BeZero[T comparable](tb TB, actual T) bool {
 func NotBeZero[T comparable](tb TB, actual T) bool {
 	tb.Helper()
 
-	m := msg("actual is zero")
+	m := msgf("actual is zero")
 
 	var zero T
 	return assert(tb, actual != zero, m)
@@ -46,7 +46,7 @@ func NotBeZero[T comparable](tb TB, actual T) bool {
 func Error(tb TB, actual error) bool {
 	tb.Helper()
 
-	m := msg("actual is nil error")
+	m := msgf("actual is nil error")
 
 	return assert(tb, actual != nil, m)
 }

@@ -10,7 +10,7 @@ import (
 func BeFalse(tb TB, actual bool) bool {
 	tb.Helper()
 
-	m := msg("actual is not false")
+	m := msgf("actual is not false")
 
 	return assert(tb, !actual, m)
 }
@@ -19,7 +19,7 @@ func BeFalse(tb TB, actual bool) bool {
 func BeTrue(tb TB, actual bool) bool {
 	tb.Helper()
 
-	m := msg("actual is not true")
+	m := msgf("actual is not true")
 
 	return assert(tb, actual, m)
 }
