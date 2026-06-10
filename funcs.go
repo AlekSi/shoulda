@@ -17,10 +17,11 @@ func Satisfy[A any](tb TB, actual A, predicate func(_ A) bool) bool {
 func SatisfyWith[A, E any](tb TB, actual A, expected E, predicate func(_ A, _ E) bool) bool {
 	tb.Helper()
 
-	m := msgDiff(
-		tb,
-		"actual and expected are not satisfied by predicate:\nactual: %[2]s\nexpected: %[4]s\n%[5]s",
-		actual, expected,
+	m := msgf(
+		"actual and expected are not satisfied by predicate:\nactual: %s\nexpected: %s\n%s",
+		Dump(tb, actual),
+		Dump(tb, expected),
+		Diff(tb, "actual", actual, "expected", expected),
 	)
 
 	return assert(tb, predicate(actual, expected), m)
@@ -48,10 +49,11 @@ func CompareEqual[A, E any](tb TB, actual A, expected E, compare func(_ A, _ E) 
 
 	res := compare(actual, expected)
 
-	m := msgDiff(
-		tb,
-		"actual is not equal to expected, but "+cmp.Order(res).String()+":\nactual: %[2]s\nexpected: %[4]s\n%[5]s",
-		actual, expected,
+	m := msgf(
+		"actual is not equal to expected, but "+cmp.Order(res).String()+":\nactual: %s\nexpected: %s\n%s",
+		Dump(tb, actual),
+		Dump(tb, expected),
+		Diff(tb, "actual", actual, "expected", expected),
 	)
 
 	return assert(tb, res == 0, m)
@@ -63,10 +65,11 @@ func CompareLess[A, E any](tb TB, actual A, expected E, compare func(_ A, _ E) i
 
 	res := compare(actual, expected)
 
-	m := msgDiff(
-		tb,
-		"actual is not less than expected, but "+cmp.Order(res).String()+":\nactual: %[2]s\nexpected: %[4]s\n%[5]s",
-		actual, expected,
+	m := msgf(
+		"actual is not less than expected, but "+cmp.Order(res).String()+":\nactual: %s\nexpected: %s\n%s",
+		Dump(tb, actual),
+		Dump(tb, expected),
+		Diff(tb, "actual", actual, "expected", expected),
 	)
 
 	return assert(tb, res == -1, m)
@@ -78,10 +81,11 @@ func CompareGreater[A, E any](tb TB, actual A, expected E, compare func(_ A, _ E
 
 	res := compare(actual, expected)
 
-	m := msgDiff(
-		tb,
-		"actual is not greater than expected, but "+cmp.Order(res).String()+":\nactual: %[2]s\nexpected: %[4]s\n%[5]s",
-		actual, expected,
+	m := msgf(
+		"actual is not greater than expected, but "+cmp.Order(res).String()+":\nactual: %s\nexpected: %s\n%s",
+		Dump(tb, actual),
+		Dump(tb, expected),
+		Diff(tb, "actual", actual, "expected", expected),
 	)
 
 	return assert(tb, res == +1, m)

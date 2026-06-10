@@ -25,33 +25,10 @@ func (m msgFunc) Message() string { return m() }
 // msgf constructs a [messager] from a message or format string, and arguments.
 func msgf(format string, args ...any) messager {
 	if len(args) == 0 {
-		return msgString(format)
+		return msgString(strings.TrimRight(format, "\n"))
 	}
 
 	return msgFunc(func() string {
-		return fmt.Sprintf(format, args...)
-	})
-}
-
-// msgDiff constructs a [messager] from a format string and values plus their diff.
-func msgDiff(tb TB, format string, actual any, expected any) messager {
-	return msgFunc(func() string {
-		tb.Helper()
-
-		args := []any{
-			actual, Dump(tb, actual),
-			expected, Dump(tb, expected),
-			Diff(tb, "actual", actual, "expected", expected),
-		}
-
 		return strings.TrimRight(fmt.Sprintf(format, args...), "\n")
 	})
 }
-
-// // msgDiff implements [messager] using [Diff].
-// func msgDiff(tb TB, actualName string, actual []byte, expectedName string, expected []byte) messager {
-// 	return msgFunc(func() string {
-// 		tb.Helper()
-// 		return string(Diff(tb, actualName, actual, expectedName, expected))
-// 	})
-// }.
