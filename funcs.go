@@ -8,7 +8,20 @@ import (
 func Satisfy[A any](tb TB, actual A, predicate func(_ A) bool) bool {
 	tb.Helper()
 
-	m := msgf("actual is not satisfied by predicate:\nactual: %s", Dump(tb, actual))
+	args := []any{Dump(tb, actual)}
+
+	m := msgf("actual is not satisfied by predicate:\nactual: %s", args...)
+
+	return assert(tb, predicate(actual), m)
+}
+
+// Satisfyf checks that predicate returns true for actual.
+func Satisfyf[A any](tb TB, actual A, predicate func(_ A) bool, format string, args ...any) bool {
+	tb.Helper()
+
+	args = append([]any{Dump(tb, actual)}, args...)
+
+	m := msgf("actual is not satisfied by predicate:\nactual: %s\n"+format, args...)
 
 	return assert(tb, predicate(actual), m)
 }
@@ -17,12 +30,13 @@ func Satisfy[A any](tb TB, actual A, predicate func(_ A) bool) bool {
 func SatisfyWith[A, E any](tb TB, actual A, expected E, predicate func(_ A, _ E) bool) bool {
 	tb.Helper()
 
-	m := msgf(
-		"actual and expected are not satisfied by predicate:\nactual: %s\nexpected: %s\n%s",
+	args := []any{
 		Dump(tb, actual),
 		Dump(tb, expected),
 		Diff(tb, "actual", actual, "expected", expected),
-	)
+	}
+
+	m := msgf("actual and expected are not satisfied by predicate:\nactual: %s\nexpected: %s\n%s", args...)
 
 	return assert(tb, predicate(actual, expected), m)
 }
@@ -49,12 +63,13 @@ func CompareEqual[A, E any](tb TB, actual A, expected E, compare func(_ A, _ E) 
 
 	res := compare(actual, expected)
 
-	m := msgf(
-		"actual is not equal to expected, but "+cmp.Order(res).String()+":\nactual: %s\nexpected: %s\n%s",
+	args := []any{
 		Dump(tb, actual),
 		Dump(tb, expected),
 		Diff(tb, "actual", actual, "expected", expected),
-	)
+	}
+
+	m := msgf("actual is not equal to expected, but "+cmp.Order(res).String()+":\nactual: %s\nexpected: %s\n%s", args...)
 
 	return assert(tb, res == 0, m)
 }
@@ -65,12 +80,13 @@ func CompareLess[A, E any](tb TB, actual A, expected E, compare func(_ A, _ E) i
 
 	res := compare(actual, expected)
 
-	m := msgf(
-		"actual is not less than expected, but "+cmp.Order(res).String()+":\nactual: %s\nexpected: %s\n%s",
+	args := []any{
 		Dump(tb, actual),
 		Dump(tb, expected),
 		Diff(tb, "actual", actual, "expected", expected),
-	)
+	}
+
+	m := msgf("actual is not less than expected, but "+cmp.Order(res).String()+":\nactual: %s\nexpected: %s\n%s", args...)
 
 	return assert(tb, res == -1, m)
 }
@@ -81,12 +97,13 @@ func CompareGreater[A, E any](tb TB, actual A, expected E, compare func(_ A, _ E
 
 	res := compare(actual, expected)
 
-	m := msgf(
-		"actual is not greater than expected, but "+cmp.Order(res).String()+":\nactual: %s\nexpected: %s\n%s",
+	args := []any{
 		Dump(tb, actual),
 		Dump(tb, expected),
 		Diff(tb, "actual", actual, "expected", expected),
-	)
+	}
+
+	m := msgf("actual is not greater than expected, but "+cmp.Order(res).String()+":\nactual: %s\nexpected: %s\n%s", args...)
 
 	return assert(tb, res == +1, m)
 }

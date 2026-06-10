@@ -7,6 +7,7 @@ func BeNil(tb TB, actual any) bool {
 	tb.Helper()
 
 	args := []any{Dump(tb, actual)}
+
 	m := msgf("actual is not untyped nil, but:\nactual: %s", args...)
 
 	return assert(tb, actual == nil, m)
@@ -19,6 +20,7 @@ func BeNilf(tb TB, actual any, format string, args ...any) bool {
 	tb.Helper()
 
 	args = append([]any{Dump(tb, actual)}, args...)
+
 	m := msgf("actual is not untyped nil, but:\nactual: %s\n"+format, args...)
 
 	return assert(tb, actual == nil, m)
@@ -51,6 +53,7 @@ func BeZero[T comparable](tb TB, actual T) bool {
 	tb.Helper()
 
 	args := []any{Dump(tb, actual)}
+
 	m := msgf("actual is not zero, but:\nactual: %s", args...)
 
 	var zero T
@@ -62,6 +65,7 @@ func BeZerof[T comparable](tb TB, actual T, format string, args ...any) bool {
 	tb.Helper()
 
 	args = append([]any{Dump(tb, actual)}, args...)
+
 	m := msgf("actual is not zero, but:\nactual: %s\n"+format, args...)
 
 	var zero T
@@ -111,6 +115,7 @@ func NoError(tb TB, actual error) bool {
 	tb.Helper()
 
 	args := []any{actual, Dump(tb, actual)}
+
 	m := msgf("actual is not nil error, but %q:\nactual: %s", args...)
 
 	return assert(tb, actual == nil, m)
@@ -121,6 +126,7 @@ func NoErrorf(tb TB, actual error, format string, args ...any) bool {
 	tb.Helper()
 
 	args = append([]any{actual, Dump(tb, actual)}, args...)
+
 	m := msgf("actual is not nil error, but %q:\nactual: %s\n"+format, args...)
 
 	return assert(tb, actual == nil, m)

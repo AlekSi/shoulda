@@ -44,6 +44,18 @@ func TestSatisfy(t *testing.T) {
 	})
 }
 
+func TestSatisfyf(t *testing.T) {
+	tt, lines := setup(t)
+	Satisfyf(tt, 13, func(v int) bool { return v > 42 }, "extra message: %s", "foo")
+
+	BeDeepEqual(t, lines(), []string{
+		"actual is not satisfied by predicate:",
+		"actual: 13 (int)",
+		"extra message: foo",
+		"FAIL",
+	})
+}
+
 func TestSatisfyWith(t *testing.T) {
 	t.Run("Inline", func(t *testing.T) {
 		tt, lines := setup(t)

@@ -37,6 +37,16 @@ func ExampleSatisfy_methodExpression() {
 	// FAIL
 }
 
+func ExampleSatisfyf_inline() {
+	Satisfyf(t, 13, func(v int) bool { return v > 42 }, "extra message: %s", "foo")
+
+	// Output:
+	// actual is not satisfied by predicate:
+	// actual: 13 (int)
+	// extra message: foo
+	// FAIL
+}
+
 func ExampleSatisfyWith_inline() {
 	SatisfyWith(t, 13, 42, func(x, y int) bool { return x > y })
 

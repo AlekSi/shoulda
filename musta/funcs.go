@@ -16,6 +16,15 @@ func Satisfy[A any](tb TB, actual A, predicate func(_ A) bool) {
 	}
 }
 
+// Satisfyf checks that predicate returns true for actual.
+func Satisfyf[A any](tb TB, actual A, predicate func(_ A) bool, format string, args ...any) {
+	tb.Helper()
+
+	if !shoulda.Satisfyf(tb, actual, predicate, format, args...) {
+		tb.FailNow()
+	}
+}
+
 // SatisfyWith checks that predicate returns true for actual and expected.
 func SatisfyWith[A, E any](tb TB, actual A, expected E, predicate func(_ A, _ E) bool) {
 	tb.Helper()
