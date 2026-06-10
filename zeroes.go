@@ -6,7 +6,8 @@ package shoulda
 func BeNil(tb TB, actual any) bool {
 	tb.Helper()
 
-	m := msgf("actual is not untyped nil, but:\nactual: %s", Dump(tb, actual))
+	args := []any{Dump(tb, actual)}
+	m := msgf("actual is not untyped nil, but:\nactual: %s", args...)
 
 	return assert(tb, actual == nil, m)
 }
@@ -49,7 +50,8 @@ func NotBeNilf(tb TB, actual any, format string, args ...any) bool {
 func BeZero[T comparable](tb TB, actual T) bool {
 	tb.Helper()
 
-	m := msgf("actual is not zero, but:\nactual: %s", Dump(tb, actual))
+	args := []any{Dump(tb, actual)}
+	m := msgf("actual is not zero, but:\nactual: %s", args...)
 
 	var zero T
 	return assert(tb, actual == zero, m)
@@ -108,7 +110,8 @@ func Errorf(tb TB, actual error, format string, args ...any) bool {
 func NoError(tb TB, actual error) bool {
 	tb.Helper()
 
-	m := msgf("actual is not nil error, but %q:\nactual: %s", actual, Dump(tb, actual))
+	args := []any{actual, Dump(tb, actual)}
+	m := msgf("actual is not nil error, but %q:\nactual: %s", args...)
 
 	return assert(tb, actual == nil, m)
 }
