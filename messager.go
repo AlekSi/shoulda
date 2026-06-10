@@ -33,20 +33,6 @@ func msgf(format string, args ...any) messager {
 	})
 }
 
-// msgDumpf constructs a [messager] from a format string and values.
-func msgDumpf(tb TB, format string, vs ...any) messager {
-	return msgFunc(func() string {
-		tb.Helper()
-
-		var args []any
-		for _, v := range vs {
-			args = append(args, v, Dump(tb, v))
-		}
-
-		return fmt.Sprintf(format, args...)
-	})
-}
-
 // msgDiff constructs a [messager] from a format string and values plus their diff.
 func msgDiff(tb TB, format string, actual any, expected any) messager {
 	return msgFunc(func() string {
