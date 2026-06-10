@@ -60,6 +60,18 @@ func TestBeNil(t *testing.T) {
 	})
 }
 
+func TestBeNilf(t *testing.T) {
+	tt, actual := setup(t)
+	BeNilf(tt, uint32(13), "extra message: %s", "foo")
+
+	BeDeepEqual(t, actual(), []string{
+		"actual is not untyped nil, but:",
+		"actual: 13 (uint32)",
+		"extra message: foo",
+		"FAIL",
+	})
+}
+
 func TestNotBeNil(t *testing.T) {
 	t.Run("Value", func(t *testing.T) {
 		tt, actual := setup(t)
@@ -100,6 +112,17 @@ func TestNotBeNil(t *testing.T) {
 	})
 }
 
+func TestNotBeNilf(t *testing.T) {
+	tt, actual := setup(t)
+	NotBeNilf(tt, nil, "extra message: %s", "foo")
+
+	BeDeepEqual(t, actual(), []string{
+		"actual is untyped nil",
+		"extra message: foo",
+		"FAIL",
+	})
+}
+
 func TestBeZero(t *testing.T) {
 	t.Run("Simple", func(t *testing.T) {
 		tt, actual := setup(t)
@@ -117,6 +140,18 @@ func TestBeZero(t *testing.T) {
 		BeZero(tt, (*int)(nil))
 
 		BeDeepEqual(t, actual(), []string{""})
+	})
+}
+
+func TestBeZerof(t *testing.T) {
+	tt, actual := setup(t)
+	BeZerof(tt, 13, "extra message: %s", "foo")
+
+	BeDeepEqual(t, actual(), []string{
+		"actual is not zero, but:",
+		"actual: 13 (int)",
+		"extra message: foo",
+		"FAIL",
 	})
 }
 
@@ -142,6 +177,17 @@ func TestNotBeZero(t *testing.T) {
 	})
 }
 
+func TestNotBeZerof(t *testing.T) {
+	tt, actual := setup(t)
+	NotBeZerof(tt, 0, "extra message: %s", "foo")
+
+	BeDeepEqual(t, actual(), []string{
+		"actual is zero",
+		"extra message: foo",
+		"FAIL",
+	})
+}
+
 func TestError(t *testing.T) {
 	t.Run("Simple", func(t *testing.T) {
 		tt, actual := setup(t)
@@ -158,6 +204,17 @@ func TestError(t *testing.T) {
 			"actual is nil error",
 			"FAIL",
 		})
+	})
+}
+
+func TestErrorf(t *testing.T) {
+	tt, actual := setup(t)
+	Errorf(tt, nil, "extra message: %s", "foo")
+
+	BeDeepEqual(t, actual(), []string{
+		"actual is nil error",
+		"extra message: foo",
+		"FAIL",
 	})
 }
 
@@ -180,5 +237,19 @@ func TestNoError(t *testing.T) {
 		NoError(tt, nil)
 
 		BeDeepEqual(t, actual(), []string{""})
+	})
+}
+
+func TestNoErrorf(t *testing.T) {
+	tt, actual := setup(t)
+	NoErrorf(tt, errors.New("boom"), "extra message: %s", "foo")
+
+	BeDeepEqual(t, actual(), []string{
+		`actual is not nil error, but "boom":`,
+		`actual: &errors.errorString{`,
+		`  s: "boom",`,
+		`} (*errors.errorString)`,
+		"extra message: foo",
+		"FAIL",
 	})
 }
