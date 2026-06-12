@@ -61,6 +61,23 @@ func ExampleSatisfyWith_inline() {
 	// FAIL
 }
 
+func ExampleSatisfyWithf_inline() {
+	SatisfyWithf(t, 13, 42, func(x, y int) bool { return x > y }, "extra message: %s", "foo")
+
+	// Output:
+	// actual and expected are not satisfied by predicate:
+	// actual: 13 (int)
+	// expected: 42 (int)
+	// diff expected actual
+	// --- expected
+	// +++ actual
+	// @@ -1,1 +1,1 @@
+	// -42 (int)
+	// +13 (int)
+	// extra message: foo
+	// FAIL
+}
+
 func ExampleSatisfyWith_function() {
 	SatisfyWith(t, 13, 42, cmp.Greater)
 
@@ -95,6 +112,23 @@ func ExampleSatisfyWith_methodExpression() {
 	// FAIL
 }
 
+func ExampleCompareWithf_function() {
+	CompareWithf(t, 42, 13, cmp.OrderLess, cmp.Compare[int], "extra message: %s", "foo")
+
+	// Output:
+	// actual is not less than expected, but greater:
+	// actual: 42 (int)
+	// expected: 13 (int)
+	// diff expected actual
+	// --- expected
+	// +++ actual
+	// @@ -1,1 +1,1 @@
+	// -13 (int)
+	// +42 (int)
+	// extra message: foo
+	// FAIL
+}
+
 func ExampleCompareEqual_methodExpression() {
 	actual := time.Date(2026, time.April, 9, 17, 32, 42, 123, time.UTC)
 	expected := time.Date(2026, time.April, 9, 17, 32, 42, 123, time.FixedZone("My", 4*int(time.Hour.Seconds())))
@@ -110,5 +144,56 @@ func ExampleCompareEqual_methodExpression() {
 	// @@ -1,1 +1,1 @@
 	// -time.Date(2026, 4, 9, 13, 32, 42, 123, time.UTC) (time.Time)
 	// +time.Date(2026, 4, 9, 17, 32, 42, 123, time.UTC) (time.Time)
+	// FAIL
+}
+
+func ExampleCompareEqualf_function() {
+	CompareEqualf(t, 42, 13, cmp.Compare[int], "extra message: %s", "foo")
+
+	// Output:
+	// actual is not equal to expected, but greater:
+	// actual: 42 (int)
+	// expected: 13 (int)
+	// diff expected actual
+	// --- expected
+	// +++ actual
+	// @@ -1,1 +1,1 @@
+	// -13 (int)
+	// +42 (int)
+	// extra message: foo
+	// FAIL
+}
+
+func ExampleCompareLessf_function() {
+	CompareLessf(t, 42, 13, cmp.Compare[int], "extra message: %s", "foo")
+
+	// Output:
+	// actual is not less than expected, but greater:
+	// actual: 42 (int)
+	// expected: 13 (int)
+	// diff expected actual
+	// --- expected
+	// +++ actual
+	// @@ -1,1 +1,1 @@
+	// -13 (int)
+	// +42 (int)
+	// extra message: foo
+	// FAIL
+}
+
+func ExampleCompareGreaterf_function() {
+	CompareGreaterf(t, 13, 42, cmp.Compare[int], "extra message: %s", "foo")
+
+	// Output:
+	// actual is not greater than expected, but less:
+	// actual: 13 (int)
+	// expected: 42 (int)
+	// diff expected actual
+	// --- expected
+	// +++ actual
+	// @@ -1,1 +1,1 @@
+	// -42 (int)
+	// +13 (int)
+	// extra message: foo
 	// FAIL
 }
