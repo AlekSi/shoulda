@@ -11,8 +11,8 @@ type stringer func() string
 // String implements [fmt.Stringer].
 func (s stringer) String() string { return s() }
 
-// msgf constructs a [fmt.Stringer] from a message or format string, and arguments.
-func msgf(format string, args ...any) fmt.Stringer {
+// sprintf constructs a [fmt.Stringer] from a message or format string, and arguments.
+func sprintf(format string, args ...any) fmt.Stringer {
 	if len(args) == 0 {
 		return stringer(func() string {
 			return strings.TrimRight(format, "\n")
@@ -24,9 +24,9 @@ func msgf(format string, args ...any) fmt.Stringer {
 	})
 }
 
-// msgDumpf constructs a [fmt.Stringer] from a value, format string, and arguments.
+// dumpf constructs a [fmt.Stringer] from a value, format string, and arguments.
 // The value itself and its [Dump] result are prepended to args.
-func msgDumpf(tb TB, value any, format string, args ...any) fmt.Stringer {
+func dumpf(tb TB, value any, format string, args ...any) fmt.Stringer {
 	tb.Helper()
 
 	return stringer(func() string {
