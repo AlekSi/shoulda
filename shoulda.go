@@ -63,14 +63,14 @@ func defaultDiff(tb TB, actualName string, actual any, expectedName string, expe
 
 // assert returns true if condition is true;
 // otherwise it logs m, fails test, and returns false.
-func assert(tb TB, condition bool, m messager) bool {
+func assert(tb TB, condition bool, s fmt.Stringer) bool {
 	tb.Helper()
 
 	if condition {
 		return true
 	}
 
-	tb.Log(m.Message())
+	tb.Log(s.String())
 	tb.Fail()
 	return false
 }
