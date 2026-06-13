@@ -62,7 +62,7 @@ func defaultDiff(tb TB, actualName string, actual any, expectedName string, expe
 }
 
 // assert returns true if condition is true;
-// otherwise it logs m, fails test, and returns false.
+// otherwise it logs s.String(), fails test, and returns false.
 func assert(tb TB, condition bool, s fmt.Stringer) bool {
 	tb.Helper()
 

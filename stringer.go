@@ -27,17 +27,21 @@ func msgf(format string, args ...any) fmt.Stringer {
 // msgDumpf constructs a [fmt.Stringer] from a value, format string, and arguments.
 // The value itself and its [Dump] result are prepended to args.
 func msgDumpf(tb TB, value any, format string, args ...any) fmt.Stringer {
+	tb.Helper()
+
 	return stringer(func() string {
 		tb.Helper()
 
-		args = append([]any{value, Dump(tb, value)}, args...)
+		a := append([]any{value, Dump(tb, value)}, args...)
 
-		return strings.TrimRight(fmt.Sprintf(format, args...), "\n")
+		return strings.TrimRight(fmt.Sprintf(format, a...), "\n")
 	})
 }
 
 // msgDiff constructs a [fmt.Stringer] from a format string and values plus their diff.
 func msgDiff(tb TB, format string, actual any, expected any) stringer {
+	tb.Helper()
+
 	return stringer(func() string {
 		tb.Helper()
 
