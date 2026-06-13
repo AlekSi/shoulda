@@ -39,11 +39,31 @@ func NotBeNil(tb TB, actual any) {
 	}
 }
 
+// NotBeNilf checks that actual is not (untyped) nil.
+//
+// It is recommended to use [Error] for errors and [NotBeZero] where possible otherwise.
+func NotBeNilf(tb TB, actual any, format string, args ...any) {
+	tb.Helper()
+
+	if !shoulda.NotBeNilf(tb, actual, format, args...) {
+		tb.FailNow()
+	}
+}
+
 // BeZero checks that actual is the zero value of its type.
 func BeZero[T comparable](tb TB, actual T) {
 	tb.Helper()
 
 	if !shoulda.BeZero(tb, actual) {
+		tb.FailNow()
+	}
+}
+
+// BeZerof checks that actual is the zero value of its type.
+func BeZerof[T comparable](tb TB, actual T, format string, args ...any) {
+	tb.Helper()
+
+	if !shoulda.BeZerof(tb, actual, format, args...) {
 		tb.FailNow()
 	}
 }
@@ -57,6 +77,15 @@ func NotBeZero[T comparable](tb TB, actual T) {
 	}
 }
 
+// NotBeZerof checks that actual is not the zero value of its type.
+func NotBeZerof[T comparable](tb TB, actual T, format string, args ...any) {
+	tb.Helper()
+
+	if !shoulda.NotBeZerof(tb, actual, format, args...) {
+		tb.FailNow()
+	}
+}
+
 // Error checks that actual is a non-nil error.
 func Error(tb TB, actual error) {
 	tb.Helper()
@@ -66,11 +95,29 @@ func Error(tb TB, actual error) {
 	}
 }
 
+// Errorf checks that actual is a non-nil error.
+func Errorf(tb TB, actual error, format string, args ...any) {
+	tb.Helper()
+
+	if !shoulda.Errorf(tb, actual, format, args...) {
+		tb.FailNow()
+	}
+}
+
 // NoError checks that actual is a nil error.
 func NoError(tb TB, actual error) {
 	tb.Helper()
 
 	if !shoulda.NoError(tb, actual) {
+		tb.FailNow()
+	}
+}
+
+// NoErrorf checks that actual is a nil error.
+func NoErrorf(tb TB, actual error, format string, args ...any) {
+	tb.Helper()
+
+	if !shoulda.NoErrorf(tb, actual, format, args...) {
 		tb.FailNow()
 	}
 }
