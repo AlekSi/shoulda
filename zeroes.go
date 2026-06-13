@@ -11,6 +11,17 @@ func BeNil(tb TB, actual any) bool {
 	return assert(tb, actual == nil, s)
 }
 
+// BeNilf checks that actual is untyped nil.
+//
+// It is recommended to use [NoError] for errors and [BeZero] where possible otherwise.
+func BeNilf(tb TB, actual any, format string, args ...any) bool {
+	tb.Helper()
+
+	s := dumpf(tb, actual, "actual is not untyped nil, but:\nactual: %[2]s\n"+format, args...)
+
+	return assert(tb, actual == nil, s)
+}
+
 // NotBeNil checks that actual is not (untyped) nil.
 //
 // It is recommended to use [Error] for errors and [NotBeZero] where possible otherwise.

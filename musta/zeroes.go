@@ -17,6 +17,17 @@ func BeNil(tb TB, actual any) {
 	}
 }
 
+// BeNilf checks that actual is untyped nil.
+//
+// It is recommended to use [NoError] for errors and [BeZero] where possible otherwise.
+func BeNilf(tb TB, actual any, format string, args ...any) {
+	tb.Helper()
+
+	if !shoulda.BeNilf(tb, actual, format, args...) {
+		tb.FailNow()
+	}
+}
+
 // NotBeNil checks that actual is not (untyped) nil.
 //
 // It is recommended to use [Error] for errors and [NotBeZero] where possible otherwise.

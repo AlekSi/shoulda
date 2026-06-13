@@ -60,6 +60,18 @@ func TestBeNil(t *testing.T) {
 	})
 }
 
+func TestBeNilf(t *testing.T) {
+	tt, actual := setup(t)
+	BeNilf(tt, uint32(13), "extra message: %s, %d", "foo", 42)
+
+	BeDeepEqual(t, actual(), []string{
+		"actual is not untyped nil, but:",
+		"actual: 13 (uint32)",
+		"extra message: foo, 42",
+		"FAIL",
+	})
+}
+
 func TestNotBeNil(t *testing.T) {
 	t.Run("Value", func(t *testing.T) {
 		tt, actual := setup(t)
