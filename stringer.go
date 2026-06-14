@@ -13,12 +13,6 @@ func (s stringer) String() string { return s() }
 
 // sprintf constructs a [fmt.Stringer] from a message or format string, and arguments.
 func sprintf(format string, args ...any) fmt.Stringer {
-	if len(args) == 0 {
-		return stringer(func() string {
-			return strings.TrimRight(format, "\n")
-		})
-	}
-
 	return stringer(func() string {
 		return strings.TrimRight(fmt.Sprintf(format, args...), "\n")
 	})
