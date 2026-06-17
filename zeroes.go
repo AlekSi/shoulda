@@ -6,7 +6,7 @@ package shoulda
 func BeNil(tb TB, actual any) bool {
 	tb.Helper()
 
-	s := dumpf(tb, actual, "actual is not untyped nil, but:\nactual: %[2]s")
+	s := dumpf(tb, "actual is not untyped nil, but:\nactual: %[2]s", actual, "")
 
 	return assert(tb, actual == nil, s)
 }
@@ -17,7 +17,7 @@ func BeNil(tb TB, actual any) bool {
 func BeNilf(tb TB, actual any, format string, args ...any) bool {
 	tb.Helper()
 
-	s := dumpf(tb, actual, "actual is not untyped nil, but:\nactual: %[2]s\n"+format, args...)
+	s := dumpf(tb, "actual is not untyped nil, but:\nactual: %[2]s\n", actual, format, args...)
 
 	return assert(tb, actual == nil, s)
 }
@@ -48,7 +48,7 @@ func NotBeNilf(tb TB, actual any, format string, args ...any) bool {
 func BeZero[T comparable](tb TB, actual T) bool {
 	tb.Helper()
 
-	s := dumpf(tb, actual, "actual is not zero, but:\nactual: %[2]s")
+	s := dumpf(tb, "actual is not zero, but:\nactual: %[2]s", actual, "")
 
 	var zero T
 	return assert(tb, actual == zero, s)
@@ -58,7 +58,7 @@ func BeZero[T comparable](tb TB, actual T) bool {
 func BeZerof[T comparable](tb TB, actual T, format string, args ...any) bool {
 	tb.Helper()
 
-	s := dumpf(tb, actual, "actual is not zero, but:\nactual: %[2]s\n"+format, args...)
+	s := dumpf(tb, "actual is not zero, but:\nactual: %[2]s\n", actual, format, args...)
 
 	var zero T
 	return assert(tb, actual == zero, s)
@@ -106,7 +106,7 @@ func Errorf(tb TB, actual error, format string, args ...any) bool {
 func NoError(tb TB, actual error) bool {
 	tb.Helper()
 
-	s := dumpf(tb, actual, "actual is not nil error, but %[1]q:\nactual: %[2]s")
+	s := dumpf(tb, "actual is not nil error, but %[1]q:\nactual: %[2]s", actual, "")
 
 	return assert(tb, actual == nil, s)
 }
@@ -115,7 +115,7 @@ func NoError(tb TB, actual error) bool {
 func NoErrorf(tb TB, actual error, format string, args ...any) bool {
 	tb.Helper()
 
-	s := dumpf(tb, actual, "actual is not nil error, but %[1]q:\nactual: %[2]s\n"+format, args...)
+	s := dumpf(tb, "actual is not nil error, but %[1]q:\nactual: %[2]s\n", actual, format, args...)
 
 	return assert(tb, actual == nil, s)
 }

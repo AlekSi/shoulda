@@ -8,7 +8,7 @@ import (
 func Satisfy[A any](tb TB, actual A, predicate func(_ A) bool) bool {
 	tb.Helper()
 
-	s := dumpf(tb, actual, "actual is not satisfied by predicate:\nactual: %[2]s")
+	s := dumpf(tb, "actual is not satisfied by predicate:\nactual: %[2]s", actual, "")
 
 	return assert(tb, predicate(actual), s)
 }
