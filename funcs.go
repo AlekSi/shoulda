@@ -8,9 +8,9 @@ import (
 func Satisfy[A any](tb TB, actual A, predicate func(_ A) bool) bool {
 	tb.Helper()
 
-	m := msgDumpf(tb, actual, "actual is not satisfied by predicate:\nactual: %[2]s")
+	s := dumpf(tb, "actual is not satisfied by predicate:\nactual: %[2]s", actual, "")
 
-	return assert(tb, predicate(actual), m)
+	return assert(tb, predicate(actual), s)
 }
 
 // SatisfyWith checks that predicate returns true for actual and expected.
@@ -38,7 +38,7 @@ func CompareWith[A, E any](tb TB, actual A, expected E, order cmp.Order, compare
 	case cmp.OrderGreater:
 		return CompareGreater(tb, actual, expected, compare)
 	default:
-		return assert(tb, false, msgf("invalid cmp.%s", order))
+		return assert(tb, false, sprintf("invalid cmp.%s", order))
 	}
 }
 

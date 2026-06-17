@@ -10,18 +10,18 @@ import (
 func BeFalse(tb TB, actual bool) bool {
 	tb.Helper()
 
-	m := msgf("actual is not false")
+	s := sprintf("actual is not false")
 
-	return assert(tb, !actual, m)
+	return assert(tb, !actual, s)
 }
 
 // BeTrue checks that actual is true.
 func BeTrue(tb TB, actual bool) bool {
 	tb.Helper()
 
-	m := msgf("actual is not true")
+	s := sprintf("actual is not true")
 
-	return assert(tb, actual, m)
+	return assert(tb, actual, s)
 }
 
 // BeDeepEqual checks that actual and expected are equal according to [reflect.DeepEqual].
