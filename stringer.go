@@ -11,7 +11,7 @@ type stringer func() string
 // String implements [fmt.Stringer].
 func (s stringer) String() string { return s() }
 
-// sprintf constructs a [fmt.Stringer] from a message or format string, and arguments.
+// sprintf constructs a [fmt.Stringer] from a format string and arguments.
 func sprintf(format string, args ...any) fmt.Stringer {
 	return stringer(func() string {
 		return strings.TrimRight(fmt.Sprintf(format, args...), "\n")
