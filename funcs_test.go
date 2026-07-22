@@ -187,3 +187,133 @@ func TestCompareGreater(t *testing.T) {
 		})
 	})
 }
+
+func TestNotPanic(t *testing.T) {
+	t.Run("NoPanic", func(t *testing.T) {
+		tt, lines := setup(t)
+		NotPanic(tt, func() {})
+
+		BeDeepEqual(t, lines(), []string{""})
+	})
+
+	t.Run("Panic", func(t *testing.T) {
+		tt, lines := setup(t)
+		NotPanic(tt, func() { panic("boom") })
+
+		BeDeepEqual(t, lines(), []string{
+			"function panicked:",
+			`actual: "boom" (string)`,
+			"FAIL",
+		})
+	})
+}
+
+func TestPanicSatisfy(t *testing.T) {
+	t.Run("NoPanic", func(t *testing.T) {
+		tt, lines := setup(t)
+		PanicSatisfy[any](tt, nil, func() {})
+
+		BeDeepEqual(t, lines(), []string{
+			"function did not panic",
+			"FAIL",
+		})
+	})
+
+	t.Run("Panic", func(t *testing.T) {
+		tt, lines := setup(t)
+		PanicSatisfy[any](tt, nil, func() { panic("boom") })
+
+		BeDeepEqual(t, lines(), []string{""})
+	})
+
+	t.Run("Predicate", func(t *testing.T) {
+		tt, lines := setup(t)
+		var actual string
+		PanicSatisfy(tt, func(r string) bool {
+			actual = r
+			return true
+		}, func() { panic("boom") })
+
+		BeEqual(t, actual, "boom")
+		BeDeepEqual(t, lines(), []string{""})
+	})
+
+	t.Run("PredicateFail", func(t *testing.T) {
+		tt, lines := setup(t)
+		var actual string
+		PanicSatisfy(tt, func(r string) bool {
+			actual = r
+			return false
+		}, func() { panic("boom") })
+
+		BeEqual(t, actual, "boom")
+		BeDeepEqual(t, lines(), []string{
+			"actual is not satisfied by predicate:",
+			`actual: "boom" (string)`,
+			"FAIL",
+		})
+	})
+
+	t.Run("Assertion", func(t *testing.T) {
+		tt, lines := setup(t)
+		var called bool
+		PanicSatisfy(tt, func(r string) bool {
+			called = true
+			BeEqual(tt, r, "boom") // no return to work with musta
+			return true
+		}, func() { panic("boom") })
+
+		BeTrue(t, called)
+		BeDeepEqual(t, lines(), []string{""})
+	})
+
+	t.Run("AssertionFail", func(t *testing.T) {
+		tt, lines := setup(t)
+		var called bool
+		PanicSatisfy(tt, func(r string) bool {
+			called = true
+			NotBeEqual(tt, r, "boom") // no return to work with musta
+			return true
+		}, func() { panic("boom") })
+
+		BeTrue(t, called)
+		BeDeepEqual(t, lines(), []string{
+			"actual is equal to expected:",
+			`actual: "boom" (string)`,
+			`expected: "boom" (string)`,
+			"FAIL",
+		})
+	})
+
+	t.Run("WrongType", func(t *testing.T) {
+		tt, lines := setup(t)
+		var called bool
+		PanicSatisfy(tt, func(r int) bool {
+			called = true
+			return true
+		}, func() { panic("boom") })
+
+		BeFalse(t, called)
+		BeDeepEqual(t, lines(), []string{
+			"actual panic value is not of type int, but:",
+			`actual: "boom" (string)`,
+			"FAIL",
+		})
+	})
+
+	t.Run("WrongInterfaceType", func(t *testing.T) {
+		tt, lines := setup(t)
+		var called bool
+		PanicSatisfy(tt, func(r error) bool {
+			called = true
+			return true
+		}, func() { panic("boom") })
+
+		BeFalse(t, called)
+		BeDeepEqual(t, lines(), []string{
+			"actual panic value is not of type error, but:",
+			`actual: "boom" (string)`,
+			"FAIL",
+		})
+	})
+}

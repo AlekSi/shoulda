@@ -1,6 +1,10 @@
 package shoulda
 
 import (
+	"fmt"
+	"reflect"
+	"strings"
+
 	"github.com/AlekSi/shoulda/cmp"
 )
 
@@ -85,4 +89,53 @@ func CompareGreater[A, E any](tb TB, actual A, expected E, compare func(_ A, _ E
 	)
 
 	return assert(tb, res == +1, m)
+}
+
+// NotPanic checks that f does not panic.
+func NotPanic(tb TB, f func()) (ok bool) {
+	tb.Helper()
+
+	defer func() {
+		tb.Helper()
+
+		r := recover()
+		s := dumpf(tb, "function panicked:\nactual: %[2]s", r, "")
+		ok = assert(tb, r == nil, s)
+	}()
+
+	f()
+	return
+}
+
+// PanicSatisfy checks that f panics with the value of type A.
+// If predicate is not nil, it also checks that the panic value satisfies it.
+func PanicSatisfy[A any](tb TB, predicate func(_ A) bool, f func()) (ok bool) {
+	tb.Helper()
+
+	defer func() {
+		tb.Helper()
+
+		r := recover()
+		if r == nil {
+			ok = assert(tb, false, sprintf("function did not panic"))
+			return
+		}
+
+		var actual A
+		actual, ok = r.(A)
+		s := stringer(func() string {
+			s := fmt.Sprintf("actual panic value is not of type %s, but:\nactual: %s", reflect.TypeFor[A](), Dump(tb, r))
+			return strings.TrimRight(s, "\n")
+		})
+		if !assert(tb, ok, s) {
+			return
+		}
+
+		if predicate != nil {
+			ok = Satisfy(tb, actual, predicate)
+		}
+	}()
+
+	f()
+	return
 }
