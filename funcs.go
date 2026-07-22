@@ -1,6 +1,10 @@
 package shoulda
 
 import (
+	"fmt"
+	"reflect"
+	"strings"
+
 	"github.com/AlekSi/shoulda/cmp"
 )
 
@@ -92,6 +96,8 @@ func NotPanic(tb TB, f func()) (ok bool) {
 	tb.Helper()
 
 	defer func() {
+		tb.Helper()
+
 		r := recover()
 		s := dumpf(tb, "function panicked:\nactual: %[2]s", r, "")
 		ok = assert(tb, r == nil, s)
@@ -107,6 +113,8 @@ func PanicSatisfy[A any](tb TB, predicate func(_ A) bool, f func()) (ok bool) {
 	tb.Helper()
 
 	defer func() {
+		tb.Helper()
+
 		r := recover()
 		if r == nil {
 			ok = assert(tb, false, sprintf("function did not panic"))
@@ -115,7 +123,10 @@ func PanicSatisfy[A any](tb TB, predicate func(_ A) bool, f func()) (ok bool) {
 
 		var actual A
 		actual, ok = r.(A)
-		s := sprintf("actual panic value is not of type %[1]T, but:\nactual: %[2]s", actual, Dump(tb, r))
+		s := stringer(func() string {
+			s := fmt.Sprintf("actual panic value is not of type %s, but:\nactual: %s", reflect.TypeFor[A](), Dump(tb, r))
+			return strings.TrimRight(s, "\n")
+		})
 		if !assert(tb, ok, s) {
 			return
 		}

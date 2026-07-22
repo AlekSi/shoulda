@@ -300,4 +300,20 @@ func TestPanicSatisfy(t *testing.T) {
 			"FAIL",
 		})
 	})
+
+	t.Run("WrongInterfaceType", func(t *testing.T) {
+		tt, lines := setup(t)
+		var called bool
+		PanicSatisfy(tt, func(r error) bool {
+			called = true
+			return true
+		}, func() { panic("boom") })
+
+		BeFalse(t, called)
+		BeDeepEqual(t, lines(), []string{
+			"actual panic value is not of type error, but:",
+			`actual: "boom" (string)`,
+			"FAIL",
+		})
+	})
 }
