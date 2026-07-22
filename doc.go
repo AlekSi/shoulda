@@ -1,5 +1,9 @@
 // Package shoulda provides an assertion library that is as simple as possible, but not simpler.
 //
+// # Assertions
+//
+// The assertion functions return true if the assertion passes, return false and fail the test otherwise.
+//
 // # Comparison
 //
 // Helpers ending with `f` accept [fmt.Printf]-like format string and arguments for additional messages.

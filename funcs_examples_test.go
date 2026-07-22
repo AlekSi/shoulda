@@ -102,3 +102,41 @@ func ExampleCompareEqual_methodExpression() {
 	// +time.Date(2026, 4, 9, 17, 32, 42, 123, time.UTC) (time.Time)
 	// FAIL
 }
+
+func ExampleNotPanic() {
+	NotPanic(t, func() { panic("boom") })
+
+	// Output:
+	// function panicked:
+	// actual: "boom" (string)
+	// FAIL
+}
+
+func ExamplePanicSatisfy_methodExpression() {
+	PanicSatisfy(t, time.Time.IsZero, func() { panic(time.Date(2026, time.April, 9, 17, 32, 42, 123, time.UTC)) })
+
+	// Output:
+	// actual is not satisfied by predicate:
+	// actual: time.Date(2026, 4, 9, 17, 32, 42, 123, time.UTC) (time.Time)
+	// FAIL
+}
+
+func ExamplePanicSatisfy_assertion() {
+	PanicSatisfy(t, func(actual time.Time) bool {
+		expected := time.Date(2026, time.April, 9, 17, 32, 42, 123, time.FixedZone("My", 4*int(time.Hour.Seconds())))
+		CompareEqual(t, actual, expected, time.Time.Compare)
+		return true
+	}, func() { panic(time.Date(2026, time.April, 9, 17, 32, 42, 123, time.UTC)) })
+
+	// Output:
+	// actual is not equal to expected, but greater:
+	// actual: time.Date(2026, 4, 9, 17, 32, 42, 123, time.UTC) (time.Time)
+	// expected: time.Date(2026, 4, 9, 13, 32, 42, 123, time.UTC) (time.Time)
+	// diff expected actual
+	// --- expected
+	// +++ actual
+	// @@ -1,1 +1,1 @@
+	// -time.Date(2026, 4, 9, 13, 32, 42, 123, time.UTC) (time.Time)
+	// +time.Date(2026, 4, 9, 17, 32, 42, 123, time.UTC) (time.Time)
+	// FAIL
+}

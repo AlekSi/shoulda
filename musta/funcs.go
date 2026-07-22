@@ -60,3 +60,22 @@ func CompareGreater[A, E any](tb TB, actual A, expected E, compare func(_ A, _ E
 		tb.FailNow()
 	}
 }
+
+// NotPanic checks that f does not panic.
+func NotPanic(tb TB, f func()) {
+	tb.Helper()
+
+	if !shoulda.NotPanic(tb, f) {
+		tb.FailNow()
+	}
+}
+
+// PanicSatisfy checks that f panics with the value of type A.
+// If predicate is not nil, it also checks that the panic value satisfies it.
+func PanicSatisfy[A any](tb TB, predicate func(_ A) bool, f func()) {
+	tb.Helper()
+
+	if !shoulda.PanicSatisfy(tb, predicate, f) {
+		tb.FailNow()
+	}
+}

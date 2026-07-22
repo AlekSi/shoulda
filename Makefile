@@ -9,4 +9,4 @@ init:
 	go mod tidy -modfile=tools.mod
 
 docs:
-	go tool -modfile=tools.mod pkgsite -open
+	go tool -modfile=tools.mod pkgsite -http=127.0.0.1:42000 -open
