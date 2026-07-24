@@ -63,6 +63,7 @@ func main() {
 	flag.Parse()
 
 	for _, srcFile := range []string{
+		"errors.go",
 		"funcs.go",
 		"values.go",
 		"zeroes.go",
@@ -73,6 +74,8 @@ func main() {
 	}
 
 	for _, testFile := range []string{
+		"errors_examples_test.go",
+		"errors_test.go",
 		"funcs_examples_test.go",
 		"funcs_test.go",
 		"values_examples_test.go",
