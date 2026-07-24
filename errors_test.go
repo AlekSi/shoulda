@@ -35,6 +35,40 @@ func TestErrorf(t *testing.T) {
 	})
 }
 
+func TestErrorIs(t *testing.T) {
+	expected := errors.New("expected")
+
+	t.Run("Same", func(t *testing.T) {
+		tt, actual := setup(t)
+		ErrorIs(tt, expected, expected)
+
+		BeDeepEqual(t, actual(), []string{""})
+	})
+
+	t.Run("Wrapped", func(t *testing.T) {
+		tt, actual := setup(t)
+		ErrorIs(tt, errors.Join(errors.New("other"), expected), expected)
+
+		BeDeepEqual(t, actual(), []string{""})
+	})
+
+	t.Run("Different", func(t *testing.T) {
+		tt, actual := setup(t)
+		ErrorIs(tt, errors.New("actual"), expected)
+
+		BeDeepEqual(t, actual(), []string{
+			"actual does not match expected:",
+			"actual: &errors.errorString{",
+			`  s: "actual",`,
+			"} (*errors.errorString)",
+			"expected: &errors.errorString{",
+			`  s: "expected",`,
+			"} (*errors.errorString)",
+			"FAIL",
+		})
+	})
+}
+
 func TestNoError(t *testing.T) {
 	t.Run("Simple", func(t *testing.T) {
 		tt, actual := setup(t)

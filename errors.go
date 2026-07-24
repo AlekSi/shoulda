@@ -1,5 +1,7 @@
 package shoulda
 
+import "errors"
+
 // Error checks that actual is a non-nil error.
 func Error(tb TB, actual error) bool {
 	tb.Helper()
@@ -16,6 +18,19 @@ func Errorf(tb TB, actual error, format string, args ...any) bool {
 	s := sprintf("actual is nil error\n"+format, args...)
 
 	return assert(tb, actual != nil, s)
+}
+
+// ErrorIs checks that actual matches expected using [errors.Is].
+func ErrorIs(tb TB, actual, expected error) bool {
+	tb.Helper()
+
+	s := dumpf(
+		tb,
+		"actual does not match expected:\nactual: %[2]s\n", actual,
+		"expected: %s", dumpf(tb, "%[2]s", expected, ""),
+	)
+
+	return assert(tb, errors.Is(actual, expected), s)
 }
 
 // NoError checks that actual is a nil error.

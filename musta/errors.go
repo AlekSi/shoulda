@@ -24,6 +24,15 @@ func Errorf(tb TB, actual error, format string, args ...any) {
 	}
 }
 
+// ErrorIs checks that actual matches expected using [errors.Is].
+func ErrorIs(tb TB, actual, expected error) {
+	tb.Helper()
+
+	if !shoulda.ErrorIs(tb, actual, expected) {
+		tb.FailNow()
+	}
+}
+
 // NoError checks that actual is a nil error.
 func NoError(tb TB, actual error) {
 	tb.Helper()

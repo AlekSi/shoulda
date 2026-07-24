@@ -21,6 +21,20 @@ func ExampleErrorf() {
 	// FAIL
 }
 
+func ExampleErrorIs() {
+	ErrorIs(t, errors.New("actual"), errors.New("expected"))
+
+	// Output:
+	// actual does not match expected:
+	// actual: &errors.errorString{
+	//   s: "actual",
+	// } (*errors.errorString)
+	// expected: &errors.errorString{
+	//   s: "expected",
+	// } (*errors.errorString)
+	// FAIL
+}
+
 func ExampleNoError() {
 	NoError(t, errors.New("boom"))
 
