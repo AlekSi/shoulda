@@ -124,6 +124,8 @@ func PanicSatisfy[A any](tb TB, predicate func(_ A) bool, f func()) (ok bool) {
 		var actual A
 		actual, ok = r.(A)
 		s := stringer(func() string {
+			tb.Helper()
+
 			s := fmt.Sprintf("actual panic value is not of type %s, but:\nactual: %s", reflect.TypeFor[A](), Dump(tb, r))
 			return strings.TrimRight(s, "\n")
 		})

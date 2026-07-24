@@ -85,39 +85,3 @@ func NotBeZerof[T comparable](tb TB, actual T, format string, args ...any) {
 		tb.FailNow()
 	}
 }
-
-// Error checks that actual is a non-nil error.
-func Error(tb TB, actual error) {
-	tb.Helper()
-
-	if !shoulda.Error(tb, actual) {
-		tb.FailNow()
-	}
-}
-
-// Errorf checks that actual is a non-nil error.
-func Errorf(tb TB, actual error, format string, args ...any) {
-	tb.Helper()
-
-	if !shoulda.Errorf(tb, actual, format, args...) {
-		tb.FailNow()
-	}
-}
-
-// NoError checks that actual is a nil error.
-func NoError(tb TB, actual error) {
-	tb.Helper()
-
-	if !shoulda.NoError(tb, actual) {
-		tb.FailNow()
-	}
-}
-
-// NoErrorf checks that actual is a nil error.
-func NoErrorf(tb TB, actual error, format string, args ...any) {
-	tb.Helper()
-
-	if !shoulda.NoErrorf(tb, actual, format, args...) {
-		tb.FailNow()
-	}
-}
