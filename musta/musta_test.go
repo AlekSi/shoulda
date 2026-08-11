@@ -20,8 +20,9 @@ func TestNotFail(t *testing.T) {
 		NotFail(42, errors.New("boom"))(tt)
 
 		BeDeepEqual(t, lines(), []string{
-			`actual is not nil error, but "boom":`,
-			"actual: &errors.errorString{",
+			"actual is not nil error:",
+			"actual: boom",
+			"&errors.errorString{",
 			`  s: "boom",`,
 			"} (*errors.errorString)",
 			"FAIL",
@@ -45,8 +46,9 @@ func TestNotFail2(t *testing.T) {
 		NotFail2(42, "foo", errors.New("boom"))(tt)
 
 		BeDeepEqual(t, lines(), []string{
-			`actual is not nil error, but "boom":`,
-			"actual: &errors.errorString{",
+			"actual is not nil error:",
+			"actual: boom",
+			"&errors.errorString{",
 			`  s: "boom",`,
 			"} (*errors.errorString)",
 			"FAIL",
@@ -71,8 +73,9 @@ func TestNotFail3(t *testing.T) {
 		NotFail3(42, "foo", true, errors.New("boom"))(tt)
 
 		BeDeepEqual(t, lines(), []string{
-			`actual is not nil error, but "boom":`,
-			"actual: &errors.errorString{",
+			"actual is not nil error:",
+			"actual: boom",
+			"&errors.errorString{",
 			`  s: "boom",`,
 			"} (*errors.errorString)",
 			"FAIL",

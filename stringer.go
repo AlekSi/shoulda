@@ -18,22 +18,45 @@ func sprintf(format string, args ...any) fmt.Stringer {
 	})
 }
 
-// dumpf constructs a [fmt.Stringer] from format strings, value, and arguments.
-// The value itself and its [Dump] result act as arguments for formatValue.
-func dumpf(tb TB, formatValue string, value any, format string, args ...any) fmt.Stringer {
+// dumpf constructs a [fmt.Stringer] for value followed by an optional suffix.
+//
+// valueFormat is formatted with these operands:
+//
+//	%[1] = value
+//	%[2] = Dump(tb, value)
+//
+// valueFormat must use explicit operand indexes.
+//
+// format is formatted separately with args, so its operand numbering starts at %[1] again.
+// Pass an empty format when no suffix is needed.
+//
+// The two results are concatenated without a separator, then trailing newlines are removed.
+func dumpf(tb TB, valueFormat string, value any, format string, args ...any) fmt.Stringer {
 	tb.Helper()
 
 	return stringer(func() string {
 		tb.Helper()
 
-		v := fmt.Sprintf(formatValue, value, Dump(tb, value))
+		v := fmt.Sprintf(valueFormat, value, Dump(tb, value))
 		a := fmt.Sprintf(format, args...)
 
 		return strings.TrimRight(v+a, "\n")
 	})
 }
 
-// msgDiff constructs a [fmt.Stringer] from a format string and values plus their diff.
+// msgDiff constructs a [fmt.Stringer] comparing actual with expected.
+//
+// format is formatted with these operands:
+//
+//	%[1] = actual
+//	%[2] = Dump(tb, actual)
+//	%[3] = expected
+//	%[4] = Dump(tb, expected)
+//	%[5] = Diff(tb, "actual", actual, "expected", expected)
+//
+// format must use explicit operand indexes.
+//
+// Trailing newlines are removed from the formatted message.
 func msgDiff(tb TB, format string, actual any, expected any) stringer {
 	tb.Helper()
 

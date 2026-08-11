@@ -56,18 +56,55 @@ func TestErrorIs(t *testing.T) {
 
 	t.Run("Different", func(t *testing.T) {
 		tt, actual := setup(t)
-		ErrorIs(tt, errors.New("actual"), expected)
+		ErrorIs(tt, errors.New("boom"), expected)
 
 		BeDeepEqual(t, actual(), []string{
-			"actual does not match expected:",
-			"actual: &errors.errorString{",
-			`  s: "actual",`,
+			"actual error does not match expected:",
+			"actual: boom",
+			"&errors.errorString{",
+			`  s: "boom",`,
 			"} (*errors.errorString)",
-			"expected: &errors.errorString{",
+			"expected: expected",
+			"&errors.errorString{",
 			`  s: "expected",`,
 			"} (*errors.errorString)",
 			"FAIL",
 		})
+	})
+
+	t.Run("Nil", func(t *testing.T) {
+		tt, actual := setup(t)
+		ErrorIs(tt, nil, expected)
+
+		BeDeepEqual(t, actual(), []string{
+			"actual error does not match expected:",
+			"actual: <nil>",
+			"nil (<nil>)",
+			"expected: expected",
+			"&errors.errorString{",
+			`  s: "expected",`,
+			"} (*errors.errorString)",
+			"FAIL",
+		})
+	})
+}
+
+func TestErrorIsf(t *testing.T) {
+	tt, actual := setup(t)
+	ErrorIsf(tt, errors.New("boom"), errors.New("target"), "extra message: %s, %d", "foo", 42)
+
+	BeDeepEqual(t, actual(), []string{
+		"actual error does not match expected:",
+		"actual: boom",
+		"&errors.errorString{",
+		`  s: "boom",`,
+		"} (*errors.errorString)",
+		"expected: target",
+		"&errors.errorString{",
+		`  s: "target",`,
+		"} (*errors.errorString)",
+		"extra message: foo, 42",
+		"FAIL",
 	})
 }
 
@@ -77,8 +114,9 @@ func TestNoError(t *testing.T) {
 		NoError(tt, errors.New("boom"))
 
 		BeDeepEqual(t, actual(), []string{
-			`actual is not nil error, but "boom":`,
-			`actual: &errors.errorString{`,
+			"actual is not nil error:",
+			"actual: boom",
+			"&errors.errorString{",
 			`  s: "boom",`,
 			`} (*errors.errorString)`,
 			"FAIL",
@@ -98,8 +136,9 @@ func TestNoErrorf(t *testing.T) {
 	NoErrorf(tt, errors.New("boom"), "extra message: %s, %d", "foo", 42)
 
 	BeDeepEqual(t, actual(), []string{
-		`actual is not nil error, but "boom":`,
-		`actual: &errors.errorString{`,
+		"actual is not nil error:",
+		"actual: boom",
+		"&errors.errorString{",
 		`  s: "boom",`,
 		`} (*errors.errorString)`,
 		"extra message: foo, 42",
