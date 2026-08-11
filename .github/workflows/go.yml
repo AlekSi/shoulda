@@ -19,7 +19,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        go: ["1.26.x", "1.27rc2"]
+        go: ["1.26.x"]
 
     steps:
       - name: Checkout code
