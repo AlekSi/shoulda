@@ -40,6 +40,17 @@ func TestBeFalse(t *testing.T) {
 	})
 }
 
+func TestBeFalsef(t *testing.T) {
+	tt, lines := setup(t)
+	BeFalsef(tt, true, "extra message: %s, %d", "foo", 42)
+
+	BeDeepEqual(t, lines(), []string{
+		"actual is not false",
+		"extra message: foo, 42",
+		"FAIL",
+	})
+}
+
 func TestBeTrue(t *testing.T) {
 	t.Run("Simple", func(t *testing.T) {
 		tt, lines := setup(t)
@@ -51,6 +62,17 @@ func TestBeTrue(t *testing.T) {
 			"actual is not true",
 			"FAIL",
 		})
+	})
+}
+
+func TestBeTruef(t *testing.T) {
+	tt, lines := setup(t)
+	BeTruef(tt, false, "extra message: %s, %d", "foo", 42)
+
+	BeDeepEqual(t, lines(), []string{
+		"actual is not true",
+		"extra message: foo, 42",
+		"FAIL",
 	})
 }
 

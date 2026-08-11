@@ -15,11 +15,29 @@ func BeFalse(tb TB, actual bool) bool {
 	return assert(tb, !actual, s)
 }
 
+// BeFalsef checks that actual is false.
+func BeFalsef(tb TB, actual bool, format string, args ...any) bool {
+	tb.Helper()
+
+	s := sprintf("actual is not false\n"+format, args...)
+
+	return assert(tb, !actual, s)
+}
+
 // BeTrue checks that actual is true.
 func BeTrue(tb TB, actual bool) bool {
 	tb.Helper()
 
 	s := sprintf("actual is not true")
+
+	return assert(tb, actual, s)
+}
+
+// BeTruef checks that actual is true.
+func BeTruef(tb TB, actual bool, format string, args ...any) bool {
+	tb.Helper()
+
+	s := sprintf("actual is not true\n"+format, args...)
 
 	return assert(tb, actual, s)
 }

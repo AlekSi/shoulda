@@ -16,11 +16,29 @@ func BeFalse(tb TB, actual bool) {
 	}
 }
 
+// BeFalsef checks that actual is false.
+func BeFalsef(tb TB, actual bool, format string, args ...any) {
+	tb.Helper()
+
+	if !shoulda.BeFalsef(tb, actual, format, args...) {
+		tb.FailNow()
+	}
+}
+
 // BeTrue checks that actual is true.
 func BeTrue(tb TB, actual bool) {
 	tb.Helper()
 
 	if !shoulda.BeTrue(tb, actual) {
+		tb.FailNow()
+	}
+}
+
+// BeTruef checks that actual is true.
+func BeTruef(tb TB, actual bool, format string, args ...any) {
+	tb.Helper()
+
+	if !shoulda.BeTruef(tb, actual, format, args...) {
 		tb.FailNow()
 	}
 }
