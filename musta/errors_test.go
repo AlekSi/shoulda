@@ -59,15 +59,36 @@ func TestErrorIs(t *testing.T) {
 		ErrorIs(tt, errors.New("actual"), expected)
 
 		BeDeepEqual(t, actual(), []string{
-			"actual does not match expected:",
-			"actual: &errors.errorString{",
+			"actual error does not match expected:",
+			`actual: "actual"`,
+			"&errors.errorString{",
 			`  s: "actual",`,
 			"} (*errors.errorString)",
-			"expected: &errors.errorString{",
+			`expected: "expected"`,
+			"&errors.errorString{",
 			`  s: "expected",`,
 			"} (*errors.errorString)",
 			"FAIL",
 		})
+	})
+}
+
+func TestErrorIsf(t *testing.T) {
+	tt, actual := setup(t)
+	ErrorIsf(tt, errors.New("actual"), errors.New("expected"), "extra message: %s, %d", "foo", 42)
+
+	BeDeepEqual(t, actual(), []string{
+		"actual error does not match expected:",
+		`actual: "actual"`,
+		"&errors.errorString{",
+		`  s: "actual",`,
+		"} (*errors.errorString)",
+		`expected: "expected"`,
+		"&errors.errorString{",
+		`  s: "expected",`,
+		"} (*errors.errorString)",
+		"extra message: foo, 42",
+		"FAIL",
 	})
 }
 

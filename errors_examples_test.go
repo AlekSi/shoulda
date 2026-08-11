@@ -23,13 +23,32 @@ func ExampleErrorIs() {
 	ErrorIs(t, errors.New("actual"), errors.New("expected"))
 
 	// Output:
-	// actual does not match expected:
-	// actual: &errors.errorString{
+	// actual error does not match expected:
+	// actual: "actual"
+	// &errors.errorString{
 	//   s: "actual",
 	// } (*errors.errorString)
-	// expected: &errors.errorString{
+	// expected: "expected"
+	// &errors.errorString{
 	//   s: "expected",
 	// } (*errors.errorString)
+	// FAIL
+}
+
+func ExampleErrorIsf() {
+	ErrorIsf(t, errors.New("actual"), errors.New("expected"), "extra message: %s, %d", "foo", 42)
+
+	// Output:
+	// actual error does not match expected:
+	// actual: "actual"
+	// &errors.errorString{
+	//   s: "actual",
+	// } (*errors.errorString)
+	// expected: "expected"
+	// &errors.errorString{
+	//   s: "expected",
+	// } (*errors.errorString)
+	// extra message: foo, 42
 	// FAIL
 }
 

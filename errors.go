@@ -25,9 +25,23 @@ func ErrorIs(tb TB, actual, expected error) bool {
 	tb.Helper()
 
 	s := sprintf(
-		"actual does not match expected:\nactual: %s\nexpected: %s",
-		dumpf(tb, "%[2]s", actual, ""),
-		dumpf(tb, "%[2]s", expected, ""),
+		"actual error does not match expected:\nactual: %s\nexpected: %s",
+		dumpf(tb, "%[1]q\n%[2]s", actual, ""),
+		dumpf(tb, "%[1]q\n%[2]s", expected, ""),
+	)
+
+	return assert(tb, errors.Is(actual, expected), s)
+}
+
+// ErrorIsf checks that actual matches expected using [errors.Is].
+func ErrorIsf(tb TB, actual, expected error, format string, args ...any) bool {
+	tb.Helper()
+
+	s := sprintf(
+		"actual error does not match expected:\nactual: %s\nexpected: %s\n%s",
+		dumpf(tb, "%[1]q\n%[2]s", actual, ""),
+		dumpf(tb, "%[1]q\n%[2]s\n", expected, ""),
+		sprintf(format, args...),
 	)
 
 	return assert(tb, errors.Is(actual, expected), s)

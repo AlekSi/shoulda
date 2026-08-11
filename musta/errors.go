@@ -33,6 +33,15 @@ func ErrorIs(tb TB, actual, expected error) {
 	}
 }
 
+// ErrorIsf checks that actual matches expected using [errors.Is].
+func ErrorIsf(tb TB, actual, expected error, format string, args ...any) {
+	tb.Helper()
+
+	if !shoulda.ErrorIsf(tb, actual, expected, format, args...) {
+		tb.FailNow()
+	}
+}
+
 // NoError checks that actual is a nil error.
 func NoError(tb TB, actual error) {
 	tb.Helper()
