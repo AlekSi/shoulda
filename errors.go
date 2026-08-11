@@ -26,8 +26,8 @@ func ErrorIs(tb TB, actual, expected error) bool {
 
 	s := sprintf(
 		"actual error does not match expected:\nactual: %s\nexpected: %s",
-		dumpf(tb, "%[1]q\n%[2]s", actual, ""),
-		dumpf(tb, "%[1]q\n%[2]s", expected, ""),
+		dumpf(tb, "%[1]v\n%[2]s", actual, ""),
+		dumpf(tb, "%[1]v\n%[2]s", expected, ""),
 	)
 
 	return assert(tb, errors.Is(actual, expected), s)
@@ -39,8 +39,8 @@ func ErrorIsf(tb TB, actual, expected error, format string, args ...any) bool {
 
 	s := sprintf(
 		"actual error does not match expected:\nactual: %s\nexpected: %s\n%s",
-		dumpf(tb, "%[1]q\n%[2]s", actual, ""),
-		dumpf(tb, "%[1]q\n%[2]s\n", expected, ""),
+		dumpf(tb, "%[1]v\n%[2]s", actual, ""),
+		dumpf(tb, "%[1]v\n%[2]s\n", expected, ""),
 		sprintf(format, args...),
 	)
 
@@ -51,7 +51,7 @@ func ErrorIsf(tb TB, actual, expected error, format string, args ...any) bool {
 func NoError(tb TB, actual error) bool {
 	tb.Helper()
 
-	s := dumpf(tb, "actual is not nil error, but %[1]q:\nactual: %[2]s", actual, "")
+	s := dumpf(tb, "actual is not nil error:\nactual: %[1]v\n%[2]s", actual, "")
 
 	return assert(tb, actual == nil, s)
 }
@@ -60,7 +60,7 @@ func NoError(tb TB, actual error) bool {
 func NoErrorf(tb TB, actual error, format string, args ...any) bool {
 	tb.Helper()
 
-	s := dumpf(tb, "actual is not nil error, but %[1]q:\nactual: %[2]s\n", actual, format, args...)
+	s := dumpf(tb, "actual is not nil error:\nactual: %[1]v\n%[2]s\n", actual, format, args...)
 
 	return assert(tb, actual == nil, s)
 }

@@ -22,33 +22,33 @@ func ExampleErrorf() {
 }
 
 func ExampleErrorIs() {
-	ErrorIs(t, errors.New("actual"), errors.New("expected"))
+	ErrorIs(t, errors.New("boom"), errors.New("target"))
 
 	// Output:
 	// actual error does not match expected:
-	// actual: "actual"
+	// actual: boom
 	// &errors.errorString{
-	//   s: "actual",
+	//   s: "boom",
 	// } (*errors.errorString)
-	// expected: "expected"
+	// expected: target
 	// &errors.errorString{
-	//   s: "expected",
+	//   s: "target",
 	// } (*errors.errorString)
 	// FAIL
 }
 
 func ExampleErrorIsf() {
-	ErrorIsf(t, errors.New("actual"), errors.New("expected"), "extra message: %s, %d", "foo", 42)
+	ErrorIsf(t, errors.New("boom"), errors.New("target"), "extra message: %s, %d", "foo", 42)
 
 	// Output:
 	// actual error does not match expected:
-	// actual: "actual"
+	// actual: boom
 	// &errors.errorString{
-	//   s: "actual",
+	//   s: "boom",
 	// } (*errors.errorString)
-	// expected: "expected"
+	// expected: target
 	// &errors.errorString{
-	//   s: "expected",
+	//   s: "target",
 	// } (*errors.errorString)
 	// extra message: foo, 42
 	// FAIL
@@ -58,8 +58,9 @@ func ExampleNoError() {
 	NoError(t, errors.New("boom"))
 
 	// Output:
-	// actual is not nil error, but "boom":
-	// actual: &errors.errorString{
+	// actual is not nil error:
+	// actual: boom
+	// &errors.errorString{
 	//   s: "boom",
 	// } (*errors.errorString)
 	// FAIL
@@ -69,8 +70,9 @@ func ExampleNoErrorf() {
 	NoErrorf(t, errors.New("boom"), "extra message: %s, %d", "foo", 42)
 
 	// Output:
-	// actual is not nil error, but "boom":
-	// actual: &errors.errorString{
+	// actual is not nil error:
+	// actual: boom
+	// &errors.errorString{
 	//   s: "boom",
 	// } (*errors.errorString)
 	// extra message: foo, 42
