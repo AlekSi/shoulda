@@ -24,10 +24,10 @@ func Errorf(tb TB, actual error, format string, args ...any) bool {
 func ErrorIs(tb TB, actual, expected error) bool {
 	tb.Helper()
 
-	s := dumpf(
-		tb,
-		"actual does not match expected:\nactual: %[2]s\n", actual,
-		"expected: %s", dumpf(tb, "%[2]s", expected, ""),
+	s := sprintf(
+		"actual does not match expected:\nactual: %s\nexpected: %s",
+		dumpf(tb, "%[2]s", actual, ""),
+		dumpf(tb, "%[2]s", expected, ""),
 	)
 
 	return assert(tb, errors.Is(actual, expected), s)
