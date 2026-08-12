@@ -69,6 +69,17 @@ func ExampleBeEqualf() {
 	// FAIL
 }
 
+func ExampleNotBeEqualf() {
+	NotBeEqualf(t, 13, 13, "extra message: %s, %d", "foo", 42)
+
+	// Output:
+	// actual is equal to expected:
+	// actual: 13 (int)
+	// expected: 13 (int)
+	// extra message: foo, 42
+	// FAIL
+}
+
 // ExampleNotBeDeepEqual demonstrates NotBeDeepEqual.
 func ExampleNotBeDeepEqual() {
 	NotBeDeepEqual(t, []int{13}, []int{13})
@@ -81,5 +92,20 @@ func ExampleNotBeDeepEqual() {
 	// expected: []int{
 	//   13,
 	// } ([]int)
+	// FAIL
+}
+
+func ExampleNotBeDeepEqualf() {
+	NotBeDeepEqualf(t, []int{13}, []int{13}, "extra message: %s, %d", "foo", 42)
+
+	// Output:
+	// actual is deep equal to expected:
+	// actual: []int{
+	//   13,
+	// } ([]int)
+	// expected: []int{
+	//   13,
+	// } ([]int)
+	// extra message: foo, 42
 	// FAIL
 }

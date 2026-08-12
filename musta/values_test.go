@@ -172,6 +172,23 @@ func TestNotBeDeepEqual(t *testing.T) {
 	})
 }
 
+func TestNotBeDeepEqualf(t *testing.T) {
+	tt, lines := setup(t)
+	NotBeDeepEqualf(tt, []int{13}, []int{13}, "extra message: %s, %d", "foo", 42)
+
+	BeDeepEqual(t, lines(), []string{
+		"actual is deep equal to expected:",
+		"actual: []int{",
+		"  13,",
+		"} ([]int)",
+		"expected: []int{",
+		"  13,",
+		"} ([]int)",
+		"extra message: foo, 42",
+		"FAIL",
+	})
+}
+
 func TestBeEqual(t *testing.T) {
 	t.Run("Simple", func(t *testing.T) {
 		tt, lines := setup(t)
@@ -213,6 +230,19 @@ func TestBeEqualf(t *testing.T) {
 		"@@ -1,1 +1,1 @@",
 		"-42 (int)",
 		"+13 (int)",
+		"extra message: foo, 42",
+		"FAIL",
+	})
+}
+
+func TestNotBeEqualf(t *testing.T) {
+	tt, lines := setup(t)
+	NotBeEqualf(tt, 13, 13, "extra message: %s, %d", "foo", 42)
+
+	BeDeepEqual(t, lines(), []string{
+		"actual is equal to expected:",
+		"actual: 13 (int)",
+		"expected: 13 (int)",
 		"extra message: foo, 42",
 		"FAIL",
 	})
