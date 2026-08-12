@@ -52,6 +52,15 @@ func BeDeepEqual(tb TB, actual, expected any) {
 	}
 }
 
+// BeDeepEqualf checks that actual and expected are equal according to [reflect.DeepEqual].
+func BeDeepEqualf(tb TB, actual, expected any, format string, args ...any) {
+	tb.Helper()
+
+	if !shoulda.BeDeepEqualf(tb, actual, expected, format, args...) {
+		tb.FailNow()
+	}
+}
+
 // NotBeDeepEqual checks that actual and expected are not equal according to [reflect.DeepEqual].
 func NotBeDeepEqual(tb TB, actual, expected any) {
 	tb.Helper()

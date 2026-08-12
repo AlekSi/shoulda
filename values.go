@@ -51,6 +51,19 @@ func BeDeepEqual(tb TB, actual, expected any) bool {
 	return assert(tb, reflect.DeepEqual(actual, expected), m)
 }
 
+// BeDeepEqualf checks that actual and expected are equal according to [reflect.DeepEqual].
+func BeDeepEqualf(tb TB, actual, expected any, format string, args ...any) bool {
+	tb.Helper()
+
+	s := sprintf(
+		"%s\n%s",
+		msgDiff(tb, "actual is not deep equal to expected:\nactual: %[2]s\nexpected: %[4]s\n%[5]s", actual, expected),
+		sprintf(format, args...),
+	)
+
+	return assert(tb, reflect.DeepEqual(actual, expected), s)
+}
+
 // NotBeDeepEqual checks that actual and expected are not equal according to [reflect.DeepEqual].
 func NotBeDeepEqual(tb TB, actual, expected any) bool {
 	tb.Helper()
