@@ -119,6 +119,32 @@ func TestBeDeepEqual(t *testing.T) {
 	})
 }
 
+func TestBeDeepEqualf(t *testing.T) {
+	tt, lines := setup(t)
+	BeDeepEqualf(tt, []int{13}, []int64{13}, "extra message: %s, %d", "foo", 42)
+
+	BeDeepEqual(t, lines(), []string{
+		"actual is not deep equal to expected:",
+		"actual: []int{",
+		"  13,",
+		"} ([]int)",
+		"expected: []int64{",
+		"  13,",
+		"} ([]int64)",
+		"diff expected actual",
+		"--- expected",
+		"+++ actual",
+		"@@ -1,3 +1,3 @@",
+		"-[]int64{",
+		"+[]int{",
+		"   13,",
+		"-} ([]int64)",
+		"+} ([]int)",
+		"extra message: foo, 42",
+		"FAIL",
+	})
+}
+
 func TestNotBeDeepEqual(t *testing.T) {
 	t.Run("Simple", func(t *testing.T) {
 		tt, lines := setup(t)
@@ -141,6 +167,23 @@ func TestNotBeDeepEqual(t *testing.T) {
 		NotBeDeepEqual(tt, []float64{math.NaN()}, []float64{math.NaN()})
 
 		BeDeepEqual(t, lines(), []string{""})
+	})
+}
+
+func TestNotBeDeepEqualf(t *testing.T) {
+	tt, lines := setup(t)
+	NotBeDeepEqualf(tt, []int{13}, []int{13}, "extra message: %s, %d", "foo", 42)
+
+	BeDeepEqual(t, lines(), []string{
+		"actual is deep equal to expected:",
+		"actual: []int{",
+		"  13,",
+		"} ([]int)",
+		"expected: []int{",
+		"  13,",
+		"} ([]int)",
+		"extra message: foo, 42",
+		"FAIL",
 	})
 }
 
@@ -168,6 +211,38 @@ func TestBeEqual(t *testing.T) {
 		BeEqual(tt, math.NaN(), math.NaN())
 
 		BeDeepEqual(t, lines(), []string{""})
+	})
+}
+
+func TestBeEqualf(t *testing.T) {
+	tt, lines := setup(t)
+	BeEqualf(tt, 13, 42, "extra message: %s, %d", "foo", 42)
+
+	BeDeepEqual(t, lines(), []string{
+		"actual is not equal to expected:",
+		"actual: 13 (int)",
+		"expected: 42 (int)",
+		"diff expected actual",
+		"--- expected",
+		"+++ actual",
+		"@@ -1,1 +1,1 @@",
+		"-42 (int)",
+		"+13 (int)",
+		"extra message: foo, 42",
+		"FAIL",
+	})
+}
+
+func TestNotBeEqualf(t *testing.T) {
+	tt, lines := setup(t)
+	NotBeEqualf(tt, 13, 13, "extra message: %s, %d", "foo", 42)
+
+	BeDeepEqual(t, lines(), []string{
+		"actual is equal to expected:",
+		"actual: 13 (int)",
+		"expected: 13 (int)",
+		"extra message: foo, 42",
+		"FAIL",
 	})
 }
 
