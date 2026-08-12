@@ -82,6 +82,19 @@ func BeEqual[T cmp.Ordered](tb TB, actual, expected T) bool {
 	return assert(tb, cmp.Equal(actual, expected), m)
 }
 
+// BeEqualf checks that actual and expected are equal according to [cmp.Equal].
+func BeEqualf[T cmp.Ordered](tb TB, actual, expected T, format string, args ...any) bool {
+	tb.Helper()
+
+	s := sprintf(
+		"%s\n%s",
+		msgDiff(tb, "actual is not equal to expected:\nactual: %[2]s\nexpected: %[4]s\n%[5]s", actual, expected),
+		sprintf(format, args...),
+	)
+
+	return assert(tb, cmp.Equal(actual, expected), s)
+}
+
 // NotBeEqual checks that actual and expected are not equal according to [cmp.Equal].
 func NotBeEqual[T cmp.Ordered](tb TB, actual, expected T) bool {
 	tb.Helper()

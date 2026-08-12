@@ -79,6 +79,15 @@ func BeEqual[T cmp.Ordered](tb TB, actual, expected T) {
 	}
 }
 
+// BeEqualf checks that actual and expected are equal according to [cmp.Equal].
+func BeEqualf[T cmp.Ordered](tb TB, actual, expected T, format string, args ...any) {
+	tb.Helper()
+
+	if !shoulda.BeEqualf(tb, actual, expected, format, args...) {
+		tb.FailNow()
+	}
+}
+
 // NotBeEqual checks that actual and expected are not equal according to [cmp.Equal].
 func NotBeEqual[T cmp.Ordered](tb TB, actual, expected T) {
 	tb.Helper()

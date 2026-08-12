@@ -199,6 +199,25 @@ func TestBeEqual(t *testing.T) {
 	})
 }
 
+func TestBeEqualf(t *testing.T) {
+	tt, lines := setup(t)
+	BeEqualf(tt, 13, 42, "extra message: %s, %d", "foo", 42)
+
+	BeDeepEqual(t, lines(), []string{
+		"actual is not equal to expected:",
+		"actual: 13 (int)",
+		"expected: 42 (int)",
+		"diff expected actual",
+		"--- expected",
+		"+++ actual",
+		"@@ -1,1 +1,1 @@",
+		"-42 (int)",
+		"+13 (int)",
+		"extra message: foo, 42",
+		"FAIL",
+	})
+}
+
 func TestBeLess(t *testing.T) {
 	t.Run("Simple", func(t *testing.T) {
 		tt, lines := setup(t)
