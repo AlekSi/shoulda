@@ -210,6 +210,27 @@ func TestNotPanic(t *testing.T) {
 	})
 }
 
+func TestNotPanicf(t *testing.T) {
+	t.Run("NoPanic", func(t *testing.T) {
+		tt, lines := setup(t)
+		NotPanicf(tt, func() {}, "extra message: %s, %d", "foo", 42)
+
+		BeDeepEqual(t, lines(), []string{""})
+	})
+
+	t.Run("Panic", func(t *testing.T) {
+		tt, lines := setup(t)
+		NotPanicf(tt, func() { panic("boom") }, "extra message: %s, %d", "foo", 42)
+
+		BeDeepEqual(t, lines(), []string{
+			"function panicked:",
+			`actual: "boom" (string)`,
+			"extra message: foo, 42",
+			"FAIL",
+		})
+	})
+}
+
 func TestPanicSatisfy(t *testing.T) {
 	t.Run("NoPanic", func(t *testing.T) {
 		tt, lines := setup(t)
@@ -315,6 +336,52 @@ func TestPanicSatisfy(t *testing.T) {
 		BeDeepEqual(t, lines(), []string{
 			"actual panic value is not of type error, but:",
 			`actual: "boom" (string)`,
+			"FAIL",
+		})
+	})
+}
+
+func TestPanicSatisfyf(t *testing.T) {
+	t.Run("NoPanic", func(t *testing.T) {
+		tt, lines := setup(t)
+		PanicSatisfyf[any](tt, nil, func() {}, "extra message: %s, %d", "foo", 42)
+
+		BeDeepEqual(t, lines(), []string{
+			"function did not panic",
+			"extra message: foo, 42",
+			"FAIL",
+		})
+	})
+
+	t.Run("Panic", func(t *testing.T) {
+		tt, lines := setup(t)
+		PanicSatisfyf[any](tt, nil, func() { panic("boom") }, "extra message: %s, %d", "foo", 42)
+
+		BeDeepEqual(t, lines(), []string{""})
+	})
+
+	t.Run("PredicateFail", func(t *testing.T) {
+		tt, lines := setup(t)
+		PanicSatisfyf(tt, func(string) bool { return false }, func() { panic("boom") },
+			"extra message: %s, %d", "foo", 42)
+
+		BeDeepEqual(t, lines(), []string{
+			"actual is not satisfied by predicate:",
+			`actual: "boom" (string)`,
+			"extra message: foo, 42",
+			"FAIL",
+		})
+	})
+
+	t.Run("WrongType", func(t *testing.T) {
+		tt, lines := setup(t)
+		PanicSatisfyf(tt, func(int) bool { return true }, func() { panic("boom") },
+			"extra message: %s, %d", "foo", 42)
+
+		BeDeepEqual(t, lines(), []string{
+			"actual panic value is not of type int, but:",
+			`actual: "boom" (string)`,
+			"extra message: foo, 42",
 			"FAIL",
 		})
 	})

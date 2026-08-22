@@ -70,12 +70,31 @@ func NotPanic(tb TB, f func()) {
 	}
 }
 
+// NotPanicf checks that f does not panic.
+func NotPanicf(tb TB, f func(), format string, args ...any) {
+	tb.Helper()
+
+	if !shoulda.NotPanicf(tb, f, format, args...) {
+		tb.FailNow()
+	}
+}
+
 // PanicSatisfy checks that f panics with the value of type A.
 // If predicate is not nil, it also checks that the panic value satisfies it.
 func PanicSatisfy[A any](tb TB, predicate func(_ A) bool, f func()) {
 	tb.Helper()
 
 	if !shoulda.PanicSatisfy(tb, predicate, f) {
+		tb.FailNow()
+	}
+}
+
+// PanicSatisfyf checks that f panics with the value of type A.
+// If predicate is not nil, it also checks that the panic value satisfies it.
+func PanicSatisfyf[A any](tb TB, predicate func(_ A) bool, f func(), format string, args ...any) {
+	tb.Helper()
+
+	if !shoulda.PanicSatisfyf(tb, predicate, f, format, args...) {
 		tb.FailNow()
 	}
 }
