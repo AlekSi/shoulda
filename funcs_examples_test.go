@@ -6,37 +6,40 @@ import (
 	"github.com/AlekSi/shoulda/cmp"
 )
 
-func ExampleSatisfy_inline() {
-	Satisfy(t, 13, func(v int) bool { return v > 42 })
+func ExampleSatisfyf_inline() {
+	Satisfyf(t, 13, func(v int) bool { return v > 42 }, "extra message: %s, %d", "foo", 42)
 
 	// Output:
 	// actual is not satisfied by predicate:
 	// actual: 13 (int)
+	// extra message: foo, 42
 	// FAIL
 }
 
-func ExampleSatisfy_methodValue() {
+func ExampleSatisfyf_methodValue() {
 	actual := time.Date(2026, time.April, 9, 17, 32, 42, 123, time.UTC)
-	Satisfy(t, actual, time.Now().Before)
+	Satisfyf(t, actual, time.Now().Before, "extra message: %s, %d", "foo", 42)
 
 	// Output:
 	// actual is not satisfied by predicate:
 	// actual: time.Date(2026, 4, 9, 17, 32, 42, 123, time.UTC) (time.Time)
+	// extra message: foo, 42
 	// FAIL
 }
 
-func ExampleSatisfy_methodExpression() {
+func ExampleSatisfyf_methodExpression() {
 	actual := time.Date(2026, time.April, 9, 17, 32, 42, 123, time.UTC)
-	Satisfy(t, actual, time.Time.IsZero)
+	Satisfyf(t, actual, time.Time.IsZero, "extra message: %s, %d", "foo", 42)
 
 	// Output:
 	// actual is not satisfied by predicate:
 	// actual: time.Date(2026, 4, 9, 17, 32, 42, 123, time.UTC) (time.Time)
+	// extra message: foo, 42
 	// FAIL
 }
 
-func ExampleSatisfyWith_inline() {
-	SatisfyWith(t, 13, 42, func(x, y int) bool { return x > y })
+func ExampleSatisfyWithf_inline() {
+	SatisfyWithf(t, 13, 42, func(x, y int) bool { return x > y }, "extra message: %s, %d", "foo", 42)
 
 	// Output:
 	// actual and expected are not satisfied by predicate:
@@ -48,11 +51,12 @@ func ExampleSatisfyWith_inline() {
 	// @@ -1,1 +1,1 @@
 	// -42 (int)
 	// +13 (int)
+	// extra message: foo, 42
 	// FAIL
 }
 
-func ExampleSatisfyWith_function() {
-	SatisfyWith(t, 13, 42, cmp.Greater)
+func ExampleSatisfyWithf_function() {
+	SatisfyWithf(t, 13, 42, cmp.Greater, "extra message: %s, %d", "foo", 42)
 
 	// Output:
 	// actual and expected are not satisfied by predicate:
@@ -64,13 +68,14 @@ func ExampleSatisfyWith_function() {
 	// @@ -1,1 +1,1 @@
 	// -42 (int)
 	// +13 (int)
+	// extra message: foo, 42
 	// FAIL
 }
 
-func ExampleSatisfyWith_methodExpression() {
+func ExampleSatisfyWithf_methodExpression() {
 	actual := time.Date(2026, time.April, 9, 17, 32, 42, 123, time.UTC)
 	expected := time.Date(2026, time.April, 9, 17, 32, 42, 123, time.FixedZone("My", 4*int(time.Hour.Seconds())))
-	SatisfyWith(t, actual, expected, time.Time.Before)
+	SatisfyWithf(t, actual, expected, time.Time.Before, "extra message: %s, %d", "foo", 42)
 
 	// Output:
 	// actual and expected are not satisfied by predicate:
@@ -82,13 +87,14 @@ func ExampleSatisfyWith_methodExpression() {
 	// @@ -1,1 +1,1 @@
 	// -time.Date(2026, 4, 9, 13, 32, 42, 123, time.UTC) (time.Time)
 	// +time.Date(2026, 4, 9, 17, 32, 42, 123, time.UTC) (time.Time)
+	// extra message: foo, 42
 	// FAIL
 }
 
-func ExampleCompareEqual_methodExpression() {
+func ExampleCompareEqualf_methodExpression() {
 	actual := time.Date(2026, time.April, 9, 17, 32, 42, 123, time.UTC)
 	expected := time.Date(2026, time.April, 9, 17, 32, 42, 123, time.FixedZone("My", 4*int(time.Hour.Seconds())))
-	CompareEqual(t, actual, expected, time.Time.Compare)
+	CompareEqualf(t, actual, expected, time.Time.Compare, "extra message: %s, %d", "foo", 42)
 
 	// Output:
 	// actual is not equal to expected, but greater:
@@ -100,33 +106,40 @@ func ExampleCompareEqual_methodExpression() {
 	// @@ -1,1 +1,1 @@
 	// -time.Date(2026, 4, 9, 13, 32, 42, 123, time.UTC) (time.Time)
 	// +time.Date(2026, 4, 9, 17, 32, 42, 123, time.UTC) (time.Time)
+	// extra message: foo, 42
 	// FAIL
 }
 
-func ExampleNotPanic() {
-	NotPanic(t, func() { panic("boom") })
+func ExampleNotPanicf() {
+	NotPanicf(t, func() { panic("boom") }, "extra message: %s, %d", "foo", 42)
 
 	// Output:
 	// function panicked:
 	// actual: "boom" (string)
+	// extra message: foo, 42
 	// FAIL
 }
 
-func ExamplePanicSatisfy_methodExpression() {
-	PanicSatisfy(t, time.Time.IsZero, func() { panic(time.Date(2026, time.April, 9, 17, 32, 42, 123, time.UTC)) })
+func ExamplePanicSatisfyf_methodExpression() {
+	PanicSatisfyf(t, time.Time.IsZero, func() {
+		panic(time.Date(2026, time.April, 9, 17, 32, 42, 123, time.UTC))
+	}, "extra message: %s, %d", "foo", 42)
 
 	// Output:
 	// actual is not satisfied by predicate:
 	// actual: time.Date(2026, 4, 9, 17, 32, 42, 123, time.UTC) (time.Time)
+	// extra message: foo, 42
 	// FAIL
 }
 
-func ExamplePanicSatisfy_assertion() {
-	PanicSatisfy(t, func(actual time.Time) bool {
+func ExamplePanicSatisfyf_assertion() {
+	PanicSatisfyf(t, func(actual time.Time) bool {
 		expected := time.Date(2026, time.April, 9, 17, 32, 42, 123, time.FixedZone("My", 4*int(time.Hour.Seconds())))
 		CompareEqual(t, actual, expected, time.Time.Compare)
 		return true
-	}, func() { panic(time.Date(2026, time.April, 9, 17, 32, 42, 123, time.UTC)) })
+	}, func() {
+		panic(time.Date(2026, time.April, 9, 17, 32, 42, 123, time.UTC))
+	}, "extra message: %s, %d", "foo", 42)
 
 	// Output:
 	// actual is not equal to expected, but greater:
