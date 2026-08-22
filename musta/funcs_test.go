@@ -46,6 +46,18 @@ func TestSatisfy(t *testing.T) {
 	})
 }
 
+func TestSatisfyf(t *testing.T) {
+	tt, lines := setup(t)
+	Satisfyf(tt, 13, func(v int) bool { return v > 42 }, "extra message: %s, %d", "foo", 42)
+
+	BeDeepEqual(t, lines(), []string{
+		"actual is not satisfied by predicate:",
+		"actual: 13 (int)",
+		"extra message: foo, 42",
+		"FAIL",
+	})
+}
+
 func TestSatisfyWith(t *testing.T) {
 	t.Run("Inline", func(t *testing.T) {
 		tt, lines := setup(t)
@@ -101,6 +113,25 @@ func TestSatisfyWith(t *testing.T) {
 			"+time.Date(2026, 4, 9, 17, 32, 42, 123, time.UTC) (time.Time)",
 			"FAIL",
 		})
+	})
+}
+
+func TestSatisfyWithf(t *testing.T) {
+	tt, lines := setup(t)
+	SatisfyWithf(tt, 13, 42, func(x, y int) bool { return x > y }, "extra message: %s, %d", "foo", 42)
+
+	BeDeepEqual(t, lines(), []string{
+		"actual and expected are not satisfied by predicate:",
+		"actual: 13 (int)",
+		"expected: 42 (int)",
+		"diff expected actual",
+		"--- expected",
+		"+++ actual",
+		"@@ -1,1 +1,1 @@",
+		"-42 (int)",
+		"+13 (int)",
+		"extra message: foo, 42",
+		"FAIL",
 	})
 }
 
