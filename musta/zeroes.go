@@ -6,50 +6,6 @@ import (
 	"github.com/AlekSi/shoulda"
 )
 
-// BeNil checks that actual is untyped nil.
-//
-// It is recommended to use [NoError] for errors and [BeZero] where possible otherwise.
-func BeNil(tb TB, actual any) {
-	tb.Helper()
-
-	if !shoulda.BeNil(tb, actual) {
-		tb.FailNow()
-	}
-}
-
-// BeNilf checks that actual is untyped nil.
-//
-// It is recommended to use [NoError] for errors and [BeZero] where possible otherwise.
-func BeNilf(tb TB, actual any, format string, args ...any) {
-	tb.Helper()
-
-	if !shoulda.BeNilf(tb, actual, format, args...) {
-		tb.FailNow()
-	}
-}
-
-// NotBeNil checks that actual is not (untyped) nil.
-//
-// It is recommended to use [Error] for errors and [NotBeZero] where possible otherwise.
-func NotBeNil(tb TB, actual any) {
-	tb.Helper()
-
-	if !shoulda.NotBeNil(tb, actual) {
-		tb.FailNow()
-	}
-}
-
-// NotBeNilf checks that actual is not (untyped) nil.
-//
-// It is recommended to use [Error] for errors and [NotBeZero] where possible otherwise.
-func NotBeNilf(tb TB, actual any, format string, args ...any) {
-	tb.Helper()
-
-	if !shoulda.NotBeNilf(tb, actual, format, args...) {
-		tb.FailNow()
-	}
-}
-
 // BeZero checks that actual is the zero value of its type.
 func BeZero[T comparable](tb TB, actual T) {
 	tb.Helper()

@@ -4,7 +4,6 @@ package musta
 
 import (
 	"github.com/AlekSi/shoulda"
-	"github.com/AlekSi/shoulda/cmp"
 )
 
 // Satisfy checks that predicate returns true for actual.
@@ -39,24 +38,6 @@ func SatisfyWithf[A, E any](tb TB, actual A, expected E, predicate func(_ A, _ E
 	tb.Helper()
 
 	if !shoulda.SatisfyWithf(tb, actual, expected, predicate, format, args...) {
-		tb.FailNow()
-	}
-}
-
-// CompareWith checks that compare(actual, expected) returns order.
-func CompareWith[A, E any](tb TB, actual A, expected E, order cmp.Order, compare func(_ A, _ E) int) {
-	tb.Helper()
-
-	if !shoulda.CompareWith(tb, actual, expected, order, compare) {
-		tb.FailNow()
-	}
-}
-
-// CompareWithf checks that compare(actual, expected) returns order.
-func CompareWithf[A, E any](tb TB, actual A, expected E, order cmp.Order, compare func(_ A, _ E) int, format string, args ...any) {
-	tb.Helper()
-
-	if !shoulda.CompareWithf(tb, actual, expected, order, compare, format, args...) {
 		tb.FailNow()
 	}
 }
