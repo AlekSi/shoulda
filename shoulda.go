@@ -77,6 +77,6 @@ func assert(tb TB, condition bool, s fmt.Stringer) bool {
 
 // check interfaces
 var (
-	_ TB = (testing.TB)(nil)
+	_ TB = testing.TB(nil)
 	_ TB = internal.TestTB{}
 )

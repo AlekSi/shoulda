@@ -139,6 +139,19 @@ func BeLess[T cmp.Ordered](tb TB, actual, expected T) bool {
 	return assert(tb, cmp.Less(actual, expected), m)
 }
 
+// BeLessf checks that actual is less than expected according to [cmp.Less].
+func BeLessf[T cmp.Ordered](tb TB, actual, expected T, format string, args ...any) bool {
+	tb.Helper()
+
+	s := sprintf(
+		"%s\n%s",
+		msgDiff(tb, "actual is not less than expected:\nactual: %[2]s\nexpected: %[4]s\n%[5]s", actual, expected),
+		sprintf(format, args...),
+	)
+
+	return assert(tb, cmp.Less(actual, expected), s)
+}
+
 // BeGreater checks that actual is greater than expected according to [cmp.Greater].
 func BeGreater[T cmp.Ordered](tb TB, actual, expected T) bool {
 	tb.Helper()
@@ -146,4 +159,17 @@ func BeGreater[T cmp.Ordered](tb TB, actual, expected T) bool {
 	m := msgDiff(tb, "actual is not greater than expected:\nactual: %[2]s\nexpected: %[4]s\n%[5]s", actual, expected)
 
 	return assert(tb, cmp.Greater(actual, expected), m)
+}
+
+// BeGreaterf checks that actual is greater than expected according to [cmp.Greater].
+func BeGreaterf[T cmp.Ordered](tb TB, actual, expected T, format string, args ...any) bool {
+	tb.Helper()
+
+	s := sprintf(
+		"%s\n%s",
+		msgDiff(tb, "actual is not greater than expected:\nactual: %[2]s\nexpected: %[4]s\n%[5]s", actual, expected),
+		sprintf(format, args...),
+	)
+
+	return assert(tb, cmp.Greater(actual, expected), s)
 }

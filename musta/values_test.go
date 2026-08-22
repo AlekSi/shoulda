@@ -268,6 +268,25 @@ func TestBeLess(t *testing.T) {
 	})
 }
 
+func TestBeLessf(t *testing.T) {
+	tt, lines := setup(t)
+	BeLessf(tt, 42, 13, "extra message: %s, %d", "foo", 42)
+
+	BeDeepEqual(t, lines(), []string{
+		"actual is not less than expected:",
+		"actual: 42 (int)",
+		"expected: 13 (int)",
+		"diff expected actual",
+		"--- expected",
+		"+++ actual",
+		"@@ -1,1 +1,1 @@",
+		"-13 (int)",
+		"+42 (int)",
+		"extra message: foo, 42",
+		"FAIL",
+	})
+}
+
 func TestBeGreater(t *testing.T) {
 	t.Run("Simple", func(t *testing.T) {
 		tt, lines := setup(t)
@@ -285,5 +304,24 @@ func TestBeGreater(t *testing.T) {
 			"+13 (int)",
 			"FAIL",
 		})
+	})
+}
+
+func TestBeGreaterf(t *testing.T) {
+	tt, lines := setup(t)
+	BeGreaterf(tt, 13, 42, "extra message: %s, %d", "foo", 42)
+
+	BeDeepEqual(t, lines(), []string{
+		"actual is not greater than expected:",
+		"actual: 13 (int)",
+		"expected: 42 (int)",
+		"diff expected actual",
+		"--- expected",
+		"+++ actual",
+		"@@ -1,1 +1,1 @@",
+		"-42 (int)",
+		"+13 (int)",
+		"extra message: foo, 42",
+		"FAIL",
 	})
 }
