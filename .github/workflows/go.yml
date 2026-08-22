@@ -11,6 +11,10 @@ on:
 permissions:
   contents: read
 
+env:
+  GOPROXY: "https://proxy.golang.org"
+  GOTOOLCHAIN: local
+
 jobs:
   test:
     name: Test with ${{ matrix.go }}
@@ -19,7 +23,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        go: ["1.26.x"]
+        go: ["1.26.x", "1.27.x"]
 
     steps:
       - name: Checkout code
