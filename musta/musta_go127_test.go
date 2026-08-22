@@ -1,3 +1,5 @@
+//go:build go1.27
+
 package musta
 
 import (
@@ -6,10 +8,10 @@ import (
 	"testing"
 )
 
-func TestNotFail(t *testing.T) {
+func TestMustNotFail(t *testing.T) {
 	t.Run("Success", func(t *testing.T) {
 		tt, lines := setup(t)
-		actual := NotFail(strconv.Atoi("42"))(tt)
+		actual := T(tt).NotFail(strconv.Atoi("42"))
 
 		BeEqual(t, actual, 42)
 		BeDeepEqual(t, lines(), []string{""})
@@ -17,7 +19,7 @@ func TestNotFail(t *testing.T) {
 
 	t.Run("Failure", func(t *testing.T) {
 		tt, lines := setup(t)
-		NotFail(strconv.Atoi("foo"))(tt)
+		T(tt).NotFail(strconv.Atoi("foo"))
 
 		BeDeepEqual(t, lines(), []string{
 			"actual is not nil error:",
@@ -34,10 +36,10 @@ func TestNotFail(t *testing.T) {
 	})
 }
 
-func TestNotFail2(t *testing.T) {
+func TestMustNotFail2(t *testing.T) {
 	t.Run("Success", func(t *testing.T) {
 		tt, lines := setup(t)
-		mediaType, params := NotFail2(mime.ParseMediaType("text/html; charset=utf-8"))(tt)
+		mediaType, params := T(tt).NotFail2(mime.ParseMediaType("text/html; charset=utf-8"))
 
 		BeEqual(t, mediaType, "text/html")
 		BeDeepEqual(t, params, map[string]string{"charset": "utf-8"})
@@ -46,7 +48,7 @@ func TestNotFail2(t *testing.T) {
 
 	t.Run("Failure", func(t *testing.T) {
 		tt, lines := setup(t)
-		NotFail2(mime.ParseMediaType(""))(tt)
+		T(tt).NotFail2(mime.ParseMediaType(""))
 
 		BeDeepEqual(t, lines(), []string{
 			"actual is not nil error:",
@@ -59,10 +61,10 @@ func TestNotFail2(t *testing.T) {
 	})
 }
 
-func TestNotFail3(t *testing.T) {
+func TestMustNotFail3(t *testing.T) {
 	t.Run("Success", func(t *testing.T) {
 		tt, lines := setup(t)
-		value, multibyte, tail := NotFail3(strconv.UnquoteChar(`\u263a!`, 0))(tt)
+		value, multibyte, tail := T(tt).NotFail3(strconv.UnquoteChar(`\u263a!`, 0))
 
 		BeEqual(t, value, '☺')
 		BeTrue(t, multibyte)
@@ -72,7 +74,7 @@ func TestNotFail3(t *testing.T) {
 
 	t.Run("Failure", func(t *testing.T) {
 		tt, lines := setup(t)
-		NotFail3(strconv.UnquoteChar("", 0))(tt)
+		T(tt).NotFail3(strconv.UnquoteChar("", 0))
 
 		BeDeepEqual(t, lines(), []string{
 			"actual is not nil error:",
