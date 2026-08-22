@@ -95,11 +95,18 @@ func CompareGreater[A, E any](tb TB, actual A, expected E, compare func(_ A, _ E
 func NotPanic(tb TB, f func()) (ok bool) {
 	tb.Helper()
 
+	return NotPanicf(tb, f, "")
+}
+
+// NotPanicf checks that f does not panic.
+func NotPanicf(tb TB, f func(), format string, args ...any) (ok bool) {
+	tb.Helper()
+
 	defer func() {
 		tb.Helper()
 
 		r := recover()
-		s := dumpf(tb, "function panicked:\nactual: %[2]s", r, "")
+		s := dumpf(tb, "function panicked:\nactual: %[2]s\n", r, format, args...)
 		ok = assert(tb, r == nil, s)
 	}()
 
@@ -112,12 +119,20 @@ func NotPanic(tb TB, f func()) (ok bool) {
 func PanicSatisfy[A any](tb TB, predicate func(_ A) bool, f func()) (ok bool) {
 	tb.Helper()
 
+	return PanicSatisfyf(tb, predicate, f, "")
+}
+
+// PanicSatisfyf checks that f panics with the value of type A.
+// If predicate is not nil, it also checks that the panic value satisfies it.
+func PanicSatisfyf[A any](tb TB, predicate func(_ A) bool, f func(), format string, args ...any) (ok bool) {
+	tb.Helper()
+
 	defer func() {
 		tb.Helper()
 
 		r := recover()
 		if r == nil {
-			ok = assert(tb, false, sprintf("function did not panic"))
+			ok = assert(tb, false, sprintf("function did not panic\n"+format, args...))
 			return
 		}
 
@@ -126,7 +141,10 @@ func PanicSatisfy[A any](tb TB, predicate func(_ A) bool, f func()) (ok bool) {
 		s := stringer(func() string {
 			tb.Helper()
 
-			s := fmt.Sprintf("actual panic value is not of type %s, but:\nactual: %s", reflect.TypeFor[A](), Dump(tb, r))
+			s := fmt.Sprintf(
+				"actual panic value is not of type %s, but:\nactual: %s\n%s",
+				reflect.TypeFor[A](), Dump(tb, r), fmt.Sprintf(format, args...),
+			)
 			return strings.TrimRight(s, "\n")
 		})
 		if !assert(tb, ok, s) {
@@ -134,7 +152,8 @@ func PanicSatisfy[A any](tb TB, predicate func(_ A) bool, f func()) (ok bool) {
 		}
 
 		if predicate != nil {
-			ok = Satisfy(tb, actual, predicate)
+			s := dumpf(tb, "actual is not satisfied by predicate:\nactual: %[2]s\n", actual, format, args...)
+			ok = assert(tb, predicate(actual), s)
 		}
 	}()
 
