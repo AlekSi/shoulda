@@ -7,8 +7,6 @@ import "github.com/AlekSi/shoulda"
 // TB is a subset of [testing.TB] that is used by this package.
 type TB = shoulda.TB
 
-// With 1.27, we could do musta.With(t).NotFail(strconv.Atoi("42")).
-
 // NotFail returns a function that checks that err is nil and returns actual.
 func NotFail[T any](actual T, err error) func(TB) T {
 	return func(tb TB) T {
