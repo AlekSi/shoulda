@@ -9,7 +9,7 @@ import (
 )
 
 func ExampleMust_NotFail() {
-	actual := With(t).NotFail(strconv.Atoi("42"))
+	actual := T(t).NotFail(strconv.Atoi("42"))
 	fmt.Println(actual)
 
 	// Output:
@@ -17,7 +17,7 @@ func ExampleMust_NotFail() {
 }
 
 func ExampleMust_NotFail2() {
-	mediaType, params := With(t).NotFail2(mime.ParseMediaType("text/html; charset=utf-8"))
+	mediaType, params := T(t).NotFail2(mime.ParseMediaType("text/html; charset=utf-8"))
 	fmt.Printf("%s %v", mediaType, params)
 
 	// Output:
@@ -25,7 +25,7 @@ func ExampleMust_NotFail2() {
 }
 
 func ExampleMust_NotFail3() {
-	value, multibyte, tail := With(t).NotFail3(strconv.UnquoteChar(`\u263a!`, 0))
+	value, multibyte, tail := T(t).NotFail3(strconv.UnquoteChar(`\u263a!`, 0))
 	fmt.Printf("%c %t %q\n", value, multibyte, tail)
 
 	// Output:

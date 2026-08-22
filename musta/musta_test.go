@@ -1,15 +1,15 @@
 package musta
 
 import (
-	"errors"
+	"mime"
+	"strconv"
 	"testing"
 )
 
 func TestNotFail(t *testing.T) {
 	t.Run("Success", func(t *testing.T) {
 		tt, lines := setup(t)
-		f := func() (int, error) { return 42, nil }
-		actual := NotFail(f())(tt)
+		actual := NotFail(strconv.Atoi("42"))(tt)
 
 		BeEqual(t, actual, 42)
 		BeDeepEqual(t, lines(), []string{""})
@@ -17,14 +17,18 @@ func TestNotFail(t *testing.T) {
 
 	t.Run("Failure", func(t *testing.T) {
 		tt, lines := setup(t)
-		NotFail(42, errors.New("boom"))(tt)
+		NotFail(strconv.Atoi("foo"))(tt)
 
 		BeDeepEqual(t, lines(), []string{
 			"actual is not nil error:",
-			"actual: boom",
-			"&errors.errorString{",
-			`  s: "boom",`,
-			"} (*errors.errorString)",
+			`actual: strconv.Atoi: parsing "foo": invalid syntax`,
+			"&strconv.NumError{",
+			`  Func: "Atoi",`,
+			`  Num: "foo",`,
+			"  Err: &errors.errorString{",
+			`    s: "invalid syntax",`,
+			"  },",
+			"} (*strconv.NumError)",
 			"FAIL",
 		})
 	})
@@ -33,23 +37,22 @@ func TestNotFail(t *testing.T) {
 func TestNotFail2(t *testing.T) {
 	t.Run("Success", func(t *testing.T) {
 		tt, lines := setup(t)
-		f := func() (int, string, error) { return 42, "foo", nil }
-		actual1, actual2 := NotFail2(f())(tt)
+		mediaType, params := NotFail2(mime.ParseMediaType("text/html; charset=utf-8"))(tt)
 
-		BeEqual(t, actual1, 42)
-		BeEqual(t, actual2, "foo")
+		BeEqual(t, mediaType, "text/html")
+		BeDeepEqual(t, params, map[string]string{"charset": "utf-8"})
 		BeDeepEqual(t, lines(), []string{""})
 	})
 
 	t.Run("Failure", func(t *testing.T) {
 		tt, lines := setup(t)
-		NotFail2(42, "foo", errors.New("boom"))(tt)
+		NotFail2(mime.ParseMediaType(""))(tt)
 
 		BeDeepEqual(t, lines(), []string{
 			"actual is not nil error:",
-			"actual: boom",
+			"actual: mime: no media type",
 			"&errors.errorString{",
-			`  s: "boom",`,
+			`  s: "mime: no media type",`,
 			"} (*errors.errorString)",
 			"FAIL",
 		})
@@ -59,24 +62,23 @@ func TestNotFail2(t *testing.T) {
 func TestNotFail3(t *testing.T) {
 	t.Run("Success", func(t *testing.T) {
 		tt, lines := setup(t)
-		f := func() (int, string, bool, error) { return 42, "foo", true, nil }
-		actual1, actual2, actual3 := NotFail3(f())(tt)
+		value, multibyte, tail := NotFail3(strconv.UnquoteChar(`\u263a!`, 0))(tt)
 
-		BeEqual(t, actual1, 42)
-		BeEqual(t, actual2, "foo")
-		BeTrue(t, actual3)
+		BeEqual(t, value, '☺')
+		BeTrue(t, multibyte)
+		BeEqual(t, tail, "!")
 		BeDeepEqual(t, lines(), []string{""})
 	})
 
 	t.Run("Failure", func(t *testing.T) {
 		tt, lines := setup(t)
-		NotFail3(42, "foo", true, errors.New("boom"))(tt)
+		NotFail3(strconv.UnquoteChar("", 0))(tt)
 
 		BeDeepEqual(t, lines(), []string{
 			"actual is not nil error:",
-			"actual: boom",
+			"actual: invalid syntax",
 			"&errors.errorString{",
-			`  s: "boom",`,
+			`  s: "invalid syntax",`,
 			"} (*errors.errorString)",
 			"FAIL",
 		})
