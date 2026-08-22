@@ -155,6 +155,43 @@ func TestCompareWith(t *testing.T) {
 	})
 }
 
+func TestCompareWithf(t *testing.T) {
+	t.Run("Function", func(t *testing.T) {
+		tt, lines := setup(t)
+		CompareWithf(tt, 42, 13, cmp.OrderLess, cmp.Compare[int], "extra message: %s, %d", "foo", 42)
+
+		BeDeepEqual(t, lines(), []string{
+			"actual is not less than expected, but greater:",
+			"actual: 42 (int)",
+			"expected: 13 (int)",
+			"diff expected actual",
+			"--- expected",
+			"+++ actual",
+			"@@ -1,1 +1,1 @@",
+			"-13 (int)",
+			"+42 (int)",
+			"extra message: foo, 42",
+			"FAIL",
+		})
+	})
+
+	t.Run("InvalidOrder", func(t *testing.T) {
+		tt, lines := setup(t)
+		var called bool
+		CompareWithf(tt, 13, 42, cmp.Order(42), func(_, _ int) int {
+			called = true
+			return 0
+		}, "extra message: %s, %d", "foo", 42)
+
+		BeFalse(t, called)
+		BeDeepEqual(t, lines(), []string{
+			"invalid cmp.Order(42)",
+			"extra message: foo, 42",
+			"FAIL",
+		})
+	})
+}
+
 func TestCompareEqual(t *testing.T) {
 	t.Run("MethodExpression", func(t *testing.T) {
 		tt, lines := setup(t)
@@ -174,6 +211,25 @@ func TestCompareEqual(t *testing.T) {
 			"+time.Date(2026, 4, 9, 17, 32, 42, 123, time.UTC) (time.Time)",
 			"FAIL",
 		})
+	})
+}
+
+func TestCompareEqualf(t *testing.T) {
+	tt, lines := setup(t)
+	CompareEqualf(tt, 42, 13, cmp.Compare[int], "extra message: %s, %d", "foo", 42)
+
+	BeDeepEqual(t, lines(), []string{
+		"actual is not equal to expected, but greater:",
+		"actual: 42 (int)",
+		"expected: 13 (int)",
+		"diff expected actual",
+		"--- expected",
+		"+++ actual",
+		"@@ -1,1 +1,1 @@",
+		"-13 (int)",
+		"+42 (int)",
+		"extra message: foo, 42",
+		"FAIL",
 	})
 }
 
@@ -199,6 +255,25 @@ func TestCompareLess(t *testing.T) {
 	})
 }
 
+func TestCompareLessf(t *testing.T) {
+	tt, lines := setup(t)
+	CompareLessf(tt, 42, 13, cmp.Compare[int], "extra message: %s, %d", "foo", 42)
+
+	BeDeepEqual(t, lines(), []string{
+		"actual is not less than expected, but greater:",
+		"actual: 42 (int)",
+		"expected: 13 (int)",
+		"diff expected actual",
+		"--- expected",
+		"+++ actual",
+		"@@ -1,1 +1,1 @@",
+		"-13 (int)",
+		"+42 (int)",
+		"extra message: foo, 42",
+		"FAIL",
+	})
+}
+
 func TestCompareGreater(t *testing.T) {
 	t.Run("MethodExpression", func(t *testing.T) {
 		tt, lines := setup(t)
@@ -218,6 +293,25 @@ func TestCompareGreater(t *testing.T) {
 			"+time.Date(2026, 4, 9, 13, 32, 42, 123, time.UTC) (time.Time)",
 			"FAIL",
 		})
+	})
+}
+
+func TestCompareGreaterf(t *testing.T) {
+	tt, lines := setup(t)
+	CompareGreaterf(tt, 13, 42, cmp.Compare[int], "extra message: %s, %d", "foo", 42)
+
+	BeDeepEqual(t, lines(), []string{
+		"actual is not greater than expected, but less:",
+		"actual: 13 (int)",
+		"expected: 42 (int)",
+		"diff expected actual",
+		"--- expected",
+		"+++ actual",
+		"@@ -1,1 +1,1 @@",
+		"-42 (int)",
+		"+13 (int)",
+		"extra message: foo, 42",
+		"FAIL",
 	})
 }
 
