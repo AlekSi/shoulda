@@ -6,9 +6,7 @@ import "errors"
 func Error(tb TB, actual error) bool {
 	tb.Helper()
 
-	s := sprintf("actual is nil error")
-
-	return assert(tb, actual != nil, s)
+	return Errorf(tb, actual, "")
 }
 
 // Errorf checks that actual is a non-nil error.
@@ -24,13 +22,7 @@ func Errorf(tb TB, actual error, format string, args ...any) bool {
 func ErrorIs(tb TB, actual, expected error) bool {
 	tb.Helper()
 
-	s := sprintf(
-		"actual error does not match expected:\nactual: %s\nexpected: %s",
-		dumpf(tb, "%[1]v\n%[2]s", actual, ""),
-		dumpf(tb, "%[1]v\n%[2]s", expected, ""),
-	)
-
-	return assert(tb, errors.Is(actual, expected), s)
+	return ErrorIsf(tb, actual, expected, "")
 }
 
 // ErrorIsf checks that actual matches expected using [errors.Is].
@@ -51,9 +43,7 @@ func ErrorIsf(tb TB, actual, expected error, format string, args ...any) bool {
 func NoError(tb TB, actual error) bool {
 	tb.Helper()
 
-	s := dumpf(tb, "actual is not nil error:\nactual: %[1]v\n%[2]s", actual, "")
-
-	return assert(tb, actual == nil, s)
+	return NoErrorf(tb, actual, "")
 }
 
 // NoErrorf checks that actual is a nil error.
