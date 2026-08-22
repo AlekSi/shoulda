@@ -52,15 +52,23 @@ func SatisfyWithf[A, E any](tb TB, actual A, expected E, predicate func(_ A, _ E
 func CompareWith[A, E any](tb TB, actual A, expected E, order cmp.Order, compare func(_ A, _ E) int) bool {
 	tb.Helper()
 
+	return CompareWithf(tb, actual, expected, order, compare, "")
+}
+
+// CompareWithf checks that compare(actual, expected) returns order.
+func CompareWithf[A, E any](tb TB, actual A, expected E, order cmp.Order, compare func(_ A, _ E) int, format string, args ...any) bool {
+	tb.Helper()
+
 	switch order {
 	case cmp.OrderEqual:
-		return CompareEqual(tb, actual, expected, compare)
+		return CompareEqualf(tb, actual, expected, compare, format, args...)
 	case cmp.OrderLess:
-		return CompareLess(tb, actual, expected, compare)
+		return CompareLessf(tb, actual, expected, compare, format, args...)
 	case cmp.OrderGreater:
-		return CompareGreater(tb, actual, expected, compare)
+		return CompareGreaterf(tb, actual, expected, compare, format, args...)
 	default:
-		return assert(tb, false, sprintf("invalid cmp.%s", order))
+		s := sprintf("%s\n%s", sprintf("invalid cmp.%s", order), sprintf(format, args...))
+		return assert(tb, false, s)
 	}
 }
 
@@ -68,45 +76,78 @@ func CompareWith[A, E any](tb TB, actual A, expected E, order cmp.Order, compare
 func CompareEqual[A, E any](tb TB, actual A, expected E, compare func(_ A, _ E) int) bool {
 	tb.Helper()
 
+	return CompareEqualf(tb, actual, expected, compare, "")
+}
+
+// CompareEqualf checks that compare(actual, expected) returns 0 ([cmp.OrderEqual]).
+func CompareEqualf[A, E any](tb TB, actual A, expected E, compare func(_ A, _ E) int, format string, args ...any) bool {
+	tb.Helper()
+
 	res := compare(actual, expected)
 
-	m := msgDiff(
-		tb,
-		"actual is not equal to expected, but "+cmp.Order(res).String()+":\nactual: %[2]s\nexpected: %[4]s\n%[5]s",
-		actual, expected,
+	s := sprintf(
+		"%s\n%s",
+		msgDiff(
+			tb,
+			"actual is not equal to expected, but "+cmp.Order(res).String()+":\nactual: %[2]s\nexpected: %[4]s\n%[5]s",
+			actual, expected,
+		),
+		sprintf(format, args...),
 	)
 
-	return assert(tb, res == 0, m)
+	return assert(tb, res == 0, s)
 }
 
 // CompareLess checks that compare(actual, expected) returns -1 ([cmp.OrderLess]).
 func CompareLess[A, E any](tb TB, actual A, expected E, compare func(_ A, _ E) int) bool {
 	tb.Helper()
 
+	return CompareLessf(tb, actual, expected, compare, "")
+}
+
+// CompareLessf checks that compare(actual, expected) returns -1 ([cmp.OrderLess]).
+func CompareLessf[A, E any](tb TB, actual A, expected E, compare func(_ A, _ E) int, format string, args ...any) bool {
+	tb.Helper()
+
 	res := compare(actual, expected)
 
-	m := msgDiff(
-		tb,
-		"actual is not less than expected, but "+cmp.Order(res).String()+":\nactual: %[2]s\nexpected: %[4]s\n%[5]s",
-		actual, expected,
+	s := sprintf(
+		"%s\n%s",
+		msgDiff(
+			tb,
+			"actual is not less than expected, but "+cmp.Order(res).String()+":\nactual: %[2]s\nexpected: %[4]s\n%[5]s",
+			actual, expected,
+		),
+		sprintf(format, args...),
 	)
 
-	return assert(tb, res == -1, m)
+	return assert(tb, res == -1, s)
 }
 
 // CompareGreater checks that compare(actual, expected) returns 1 ([cmp.OrderGreater]).
 func CompareGreater[A, E any](tb TB, actual A, expected E, compare func(_ A, _ E) int) bool {
 	tb.Helper()
 
+	return CompareGreaterf(tb, actual, expected, compare, "")
+}
+
+// CompareGreaterf checks that compare(actual, expected) returns 1 ([cmp.OrderGreater]).
+func CompareGreaterf[A, E any](tb TB, actual A, expected E, compare func(_ A, _ E) int, format string, args ...any) bool {
+	tb.Helper()
+
 	res := compare(actual, expected)
 
-	m := msgDiff(
-		tb,
-		"actual is not greater than expected, but "+cmp.Order(res).String()+":\nactual: %[2]s\nexpected: %[4]s\n%[5]s",
-		actual, expected,
+	s := sprintf(
+		"%s\n%s",
+		msgDiff(
+			tb,
+			"actual is not greater than expected, but "+cmp.Order(res).String()+":\nactual: %[2]s\nexpected: %[4]s\n%[5]s",
+			actual, expected,
+		),
+		sprintf(format, args...),
 	)
 
-	return assert(tb, res == +1, m)
+	return assert(tb, res == +1, s)
 }
 
 // NotPanic checks that f does not panic.

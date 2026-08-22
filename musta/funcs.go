@@ -52,11 +52,29 @@ func CompareWith[A, E any](tb TB, actual A, expected E, order cmp.Order, compare
 	}
 }
 
+// CompareWithf checks that compare(actual, expected) returns order.
+func CompareWithf[A, E any](tb TB, actual A, expected E, order cmp.Order, compare func(_ A, _ E) int, format string, args ...any) {
+	tb.Helper()
+
+	if !shoulda.CompareWithf(tb, actual, expected, order, compare, format, args...) {
+		tb.FailNow()
+	}
+}
+
 // CompareEqual checks that compare(actual, expected) returns 0 ([cmp.OrderEqual]).
 func CompareEqual[A, E any](tb TB, actual A, expected E, compare func(_ A, _ E) int) {
 	tb.Helper()
 
 	if !shoulda.CompareEqual(tb, actual, expected, compare) {
+		tb.FailNow()
+	}
+}
+
+// CompareEqualf checks that compare(actual, expected) returns 0 ([cmp.OrderEqual]).
+func CompareEqualf[A, E any](tb TB, actual A, expected E, compare func(_ A, _ E) int, format string, args ...any) {
+	tb.Helper()
+
+	if !shoulda.CompareEqualf(tb, actual, expected, compare, format, args...) {
 		tb.FailNow()
 	}
 }
@@ -70,11 +88,29 @@ func CompareLess[A, E any](tb TB, actual A, expected E, compare func(_ A, _ E) i
 	}
 }
 
+// CompareLessf checks that compare(actual, expected) returns -1 ([cmp.OrderLess]).
+func CompareLessf[A, E any](tb TB, actual A, expected E, compare func(_ A, _ E) int, format string, args ...any) {
+	tb.Helper()
+
+	if !shoulda.CompareLessf(tb, actual, expected, compare, format, args...) {
+		tb.FailNow()
+	}
+}
+
 // CompareGreater checks that compare(actual, expected) returns 1 ([cmp.OrderGreater]).
 func CompareGreater[A, E any](tb TB, actual A, expected E, compare func(_ A, _ E) int) {
 	tb.Helper()
 
 	if !shoulda.CompareGreater(tb, actual, expected, compare) {
+		tb.FailNow()
+	}
+}
+
+// CompareGreaterf checks that compare(actual, expected) returns 1 ([cmp.OrderGreater]).
+func CompareGreaterf[A, E any](tb TB, actual A, expected E, compare func(_ A, _ E) int, format string, args ...any) {
+	tb.Helper()
+
+	if !shoulda.CompareGreaterf(tb, actual, expected, compare, format, args...) {
 		tb.FailNow()
 	}
 }

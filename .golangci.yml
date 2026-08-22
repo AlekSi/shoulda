@@ -25,7 +25,7 @@ linters:
       default: all
       options:
         max-len:
-          length: 130
+          length: 140
         require-doc:
           ignore-unexported: false
         start-with-name:
