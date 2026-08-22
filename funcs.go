@@ -12,7 +12,14 @@ import (
 func Satisfy[A any](tb TB, actual A, predicate func(_ A) bool) bool {
 	tb.Helper()
 
-	s := dumpf(tb, "actual is not satisfied by predicate:\nactual: %[2]s", actual, "")
+	return Satisfyf(tb, actual, predicate, "")
+}
+
+// Satisfyf checks that predicate returns true for actual.
+func Satisfyf[A any](tb TB, actual A, predicate func(_ A) bool, format string, args ...any) bool {
+	tb.Helper()
+
+	s := dumpf(tb, "actual is not satisfied by predicate:\nactual: %[2]s\n", actual, format, args...)
 
 	return assert(tb, predicate(actual), s)
 }
@@ -21,13 +28,24 @@ func Satisfy[A any](tb TB, actual A, predicate func(_ A) bool) bool {
 func SatisfyWith[A, E any](tb TB, actual A, expected E, predicate func(_ A, _ E) bool) bool {
 	tb.Helper()
 
-	m := msgDiff(
-		tb,
-		"actual and expected are not satisfied by predicate:\nactual: %[2]s\nexpected: %[4]s\n%[5]s",
-		actual, expected,
+	return SatisfyWithf(tb, actual, expected, predicate, "")
+}
+
+// SatisfyWithf checks that predicate returns true for actual and expected.
+func SatisfyWithf[A, E any](tb TB, actual A, expected E, predicate func(_ A, _ E) bool, format string, args ...any) bool {
+	tb.Helper()
+
+	s := sprintf(
+		"%s\n%s",
+		msgDiff(
+			tb,
+			"actual and expected are not satisfied by predicate:\nactual: %[2]s\nexpected: %[4]s\n%[5]s",
+			actual, expected,
+		),
+		sprintf(format, args...),
 	)
 
-	return assert(tb, predicate(actual, expected), m)
+	return assert(tb, predicate(actual, expected), s)
 }
 
 // CompareWith checks that compare(actual, expected) returns order.
@@ -152,8 +170,7 @@ func PanicSatisfyf[A any](tb TB, predicate func(_ A) bool, f func(), format stri
 		}
 
 		if predicate != nil {
-			s := dumpf(tb, "actual is not satisfied by predicate:\nactual: %[2]s\n", actual, format, args...)
-			ok = assert(tb, predicate(actual), s)
+			ok = Satisfyf(tb, actual, predicate, format, args...)
 		}
 	}()
 
