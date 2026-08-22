@@ -48,30 +48,6 @@ func SatisfyWithf[A, E any](tb TB, actual A, expected E, predicate func(_ A, _ E
 	return assert(tb, predicate(actual, expected), s)
 }
 
-// CompareWith checks that compare(actual, expected) returns order.
-func CompareWith[A, E any](tb TB, actual A, expected E, order cmp.Order, compare func(_ A, _ E) int) bool {
-	tb.Helper()
-
-	return CompareWithf(tb, actual, expected, order, compare, "")
-}
-
-// CompareWithf checks that compare(actual, expected) returns order.
-func CompareWithf[A, E any](tb TB, actual A, expected E, order cmp.Order, compare func(_ A, _ E) int, format string, args ...any) bool {
-	tb.Helper()
-
-	switch order {
-	case cmp.OrderEqual:
-		return CompareEqualf(tb, actual, expected, compare, format, args...)
-	case cmp.OrderLess:
-		return CompareLessf(tb, actual, expected, compare, format, args...)
-	case cmp.OrderGreater:
-		return CompareGreaterf(tb, actual, expected, compare, format, args...)
-	default:
-		s := sprintf("%s\n%s", sprintf("invalid cmp.%s", order), sprintf(format, args...))
-		return assert(tb, false, s)
-	}
-}
-
 // CompareEqual checks that compare(actual, expected) returns 0 ([cmp.OrderEqual]).
 func CompareEqual[A, E any](tb TB, actual A, expected E, compare func(_ A, _ E) int) bool {
 	tb.Helper()
@@ -218,3 +194,8 @@ func PanicSatisfyf[A any](tb TB, predicate func(_ A) bool, f func(), format stri
 	f()
 	return
 }
+
+// Keep reference for links in documentation comments.
+var (
+	_ cmp.Order = 0
+)

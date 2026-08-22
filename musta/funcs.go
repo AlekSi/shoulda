@@ -43,24 +43,6 @@ func SatisfyWithf[A, E any](tb TB, actual A, expected E, predicate func(_ A, _ E
 	}
 }
 
-// CompareWith checks that compare(actual, expected) returns order.
-func CompareWith[A, E any](tb TB, actual A, expected E, order cmp.Order, compare func(_ A, _ E) int) {
-	tb.Helper()
-
-	if !shoulda.CompareWith(tb, actual, expected, order, compare) {
-		tb.FailNow()
-	}
-}
-
-// CompareWithf checks that compare(actual, expected) returns order.
-func CompareWithf[A, E any](tb TB, actual A, expected E, order cmp.Order, compare func(_ A, _ E) int, format string, args ...any) {
-	tb.Helper()
-
-	if !shoulda.CompareWithf(tb, actual, expected, order, compare, format, args...) {
-		tb.FailNow()
-	}
-}
-
 // CompareEqual checks that compare(actual, expected) returns 0 ([cmp.OrderEqual]).
 func CompareEqual[A, E any](tb TB, actual A, expected E, compare func(_ A, _ E) int) {
 	tb.Helper()
@@ -152,3 +134,8 @@ func PanicSatisfyf[A any](tb TB, predicate func(_ A) bool, f func(), format stri
 		tb.FailNow()
 	}
 }
+
+// Keep reference for links in documentation comments.
+var (
+	_ cmp.Order = 0
+)

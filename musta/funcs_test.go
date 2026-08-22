@@ -135,63 +135,6 @@ func TestSatisfyWithf(t *testing.T) {
 	})
 }
 
-func TestCompareWith(t *testing.T) {
-	t.Run("Function", func(t *testing.T) {
-		tt, lines := setup(t)
-		CompareWith(tt, 42, 13, cmp.OrderLess, cmp.Compare[int])
-
-		BeDeepEqual(t, lines(), []string{
-			"actual is not less than expected, but greater:",
-			"actual: 42 (int)",
-			"expected: 13 (int)",
-			"diff expected actual",
-			"--- expected",
-			"+++ actual",
-			"@@ -1,1 +1,1 @@",
-			"-13 (int)",
-			"+42 (int)",
-			"FAIL",
-		})
-	})
-}
-
-func TestCompareWithf(t *testing.T) {
-	t.Run("Function", func(t *testing.T) {
-		tt, lines := setup(t)
-		CompareWithf(tt, 42, 13, cmp.OrderLess, cmp.Compare[int], "extra message: %s, %d", "foo", 42)
-
-		BeDeepEqual(t, lines(), []string{
-			"actual is not less than expected, but greater:",
-			"actual: 42 (int)",
-			"expected: 13 (int)",
-			"diff expected actual",
-			"--- expected",
-			"+++ actual",
-			"@@ -1,1 +1,1 @@",
-			"-13 (int)",
-			"+42 (int)",
-			"extra message: foo, 42",
-			"FAIL",
-		})
-	})
-
-	t.Run("InvalidOrder", func(t *testing.T) {
-		tt, lines := setup(t)
-		var called bool
-		CompareWithf(tt, 13, 42, cmp.Order(42), func(_, _ int) int {
-			called = true
-			return 0
-		}, "extra message: %s, %d", "foo", 42)
-
-		BeFalse(t, called)
-		BeDeepEqual(t, lines(), []string{
-			"invalid cmp.Order(42)",
-			"extra message: foo, 42",
-			"FAIL",
-		})
-	})
-}
-
 func TestCompareEqual(t *testing.T) {
 	t.Run("MethodExpression", func(t *testing.T) {
 		tt, lines := setup(t)
