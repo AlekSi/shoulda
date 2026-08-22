@@ -6,9 +6,7 @@ package shoulda
 func BeNil(tb TB, actual any) bool {
 	tb.Helper()
 
-	s := dumpf(tb, "actual is not untyped nil, but:\nactual: %[2]s", actual, "")
-
-	return assert(tb, actual == nil, s)
+	return BeNilf(tb, actual, "")
 }
 
 // BeNilf checks that actual is untyped nil.
@@ -28,9 +26,7 @@ func BeNilf(tb TB, actual any, format string, args ...any) bool {
 func NotBeNil(tb TB, actual any) bool {
 	tb.Helper()
 
-	s := sprintf("actual is untyped nil")
-
-	return assert(tb, actual != nil, s)
+	return NotBeNilf(tb, actual, "")
 }
 
 // NotBeNilf checks that actual is not (untyped) nil.
@@ -48,10 +44,7 @@ func NotBeNilf(tb TB, actual any, format string, args ...any) bool {
 func BeZero[T comparable](tb TB, actual T) bool {
 	tb.Helper()
 
-	s := dumpf(tb, "actual is not zero, but:\nactual: %[2]s", actual, "")
-
-	var zero T
-	return assert(tb, actual == zero, s)
+	return BeZerof(tb, actual, "")
 }
 
 // BeZerof checks that actual is the zero value of its type.
@@ -68,10 +61,7 @@ func BeZerof[T comparable](tb TB, actual T, format string, args ...any) bool {
 func NotBeZero[T comparable](tb TB, actual T) bool {
 	tb.Helper()
 
-	s := sprintf("actual is zero")
-
-	var zero T
-	return assert(tb, actual != zero, s)
+	return NotBeZerof(tb, actual, "")
 }
 
 // NotBeZerof checks that actual is not the zero value of its type.
