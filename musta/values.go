@@ -124,11 +124,29 @@ func BeLess[T cmp.Ordered](tb TB, actual, expected T) {
 	}
 }
 
+// BeLessf checks that actual is less than expected according to [cmp.Less].
+func BeLessf[T cmp.Ordered](tb TB, actual, expected T, format string, args ...any) {
+	tb.Helper()
+
+	if !shoulda.BeLessf(tb, actual, expected, format, args...) {
+		tb.FailNow()
+	}
+}
+
 // BeGreater checks that actual is greater than expected according to [cmp.Greater].
 func BeGreater[T cmp.Ordered](tb TB, actual, expected T) {
 	tb.Helper()
 
 	if !shoulda.BeGreater(tb, actual, expected) {
+		tb.FailNow()
+	}
+}
+
+// BeGreaterf checks that actual is greater than expected according to [cmp.Greater].
+func BeGreaterf[T cmp.Ordered](tb TB, actual, expected T, format string, args ...any) {
+	tb.Helper()
+
+	if !shoulda.BeGreaterf(tb, actual, expected, format, args...) {
 		tb.FailNow()
 	}
 }
