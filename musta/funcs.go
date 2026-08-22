@@ -4,6 +4,7 @@ package musta
 
 import (
 	"github.com/AlekSi/shoulda"
+	"github.com/AlekSi/shoulda/cmp"
 )
 
 // Satisfy checks that predicate returns true for actual.
@@ -133,3 +134,8 @@ func PanicSatisfyf[A any](tb TB, predicate func(_ A) bool, f func(), format stri
 		tb.FailNow()
 	}
 }
+
+// Keep reference for links in documentation comments.
+var (
+	_ cmp.Order = 0
+)

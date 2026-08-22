@@ -42,11 +42,16 @@ func {{.Name}}{{.TypeParams}}({{.Params}}) {
 }
 
 {{end}}
+
+{{range .Declarations}}
+{{.}}
+{{end}}
 `))
 
 // templateData contains data for function templates.
 type templateData struct {
-	Functions []funcData
+	Functions    []funcData
+	Declarations []string
 }
 
 // funcData contains data for a single generated wrapper.
@@ -110,7 +115,8 @@ func rewriteFile(path string) (err error) {
 	return
 }
 
-// parseFile collects shoulda functions that should be wrapped by musta.
+// parseFile collects shoulda functions that should be wrapped by musta and
+// copies all other top-level declarations.
 func parseFile(path string) (templateData, error) {
 	fset := token.NewFileSet()
 	file, err := parser.ParseFile(fset, path, nil, parser.ParseComments)
@@ -118,26 +124,30 @@ func parseFile(path string) (templateData, error) {
 		return templateData{}, err
 	}
 
-	var funcs []funcData
+	var data templateData
 	for _, decl := range file.Decls {
-		f, ok := decl.(*ast.FuncDecl)
-		if !ok {
+		if genDecl, ok := decl.(*ast.GenDecl); ok && genDecl.Tok == token.IMPORT {
 			continue
 		}
 
-		if !f.Name.IsExported() {
+		if funcDecl, ok := decl.(*ast.FuncDecl); ok && funcDecl.Name.IsExported() {
+			var fd funcData
+			if fd, err = extractFunction(fset, funcDecl); err != nil {
+				return templateData{}, err
+			}
+
+			data.Functions = append(data.Functions, fd)
 			continue
 		}
 
-		var fd funcData
-		if fd, err = extractFunction(fset, f); err != nil {
+		var b bytes.Buffer
+		if err = printer.Fprint(&b, fset, decl); err != nil {
 			return templateData{}, err
 		}
-
-		funcs = append(funcs, fd)
+		data.Declarations = append(data.Declarations, b.String())
 	}
 
-	return templateData{Functions: funcs}, nil
+	return data, nil
 }
 
 // extractFunction extracts template data from a function.

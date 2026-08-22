@@ -194,3 +194,8 @@ func PanicSatisfyf[A any](tb TB, predicate func(_ A) bool, f func(), format stri
 	f()
 	return
 }
+
+// Keep reference for links in documentation comments.
+var (
+	_ cmp.Order = 0
+)
