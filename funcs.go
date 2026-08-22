@@ -95,16 +95,7 @@ func CompareGreater[A, E any](tb TB, actual A, expected E, compare func(_ A, _ E
 func NotPanic(tb TB, f func()) (ok bool) {
 	tb.Helper()
 
-	defer func() {
-		tb.Helper()
-
-		r := recover()
-		s := dumpf(tb, "function panicked:\nactual: %[2]s", r, "")
-		ok = assert(tb, r == nil, s)
-	}()
-
-	f()
-	return
+	return NotPanicf(tb, f, "")
 }
 
 // NotPanicf checks that f does not panic.
@@ -128,34 +119,7 @@ func NotPanicf(tb TB, f func(), format string, args ...any) (ok bool) {
 func PanicSatisfy[A any](tb TB, predicate func(_ A) bool, f func()) (ok bool) {
 	tb.Helper()
 
-	defer func() {
-		tb.Helper()
-
-		r := recover()
-		if r == nil {
-			ok = assert(tb, false, sprintf("function did not panic"))
-			return
-		}
-
-		var actual A
-		actual, ok = r.(A)
-		s := stringer(func() string {
-			tb.Helper()
-
-			s := fmt.Sprintf("actual panic value is not of type %s, but:\nactual: %s", reflect.TypeFor[A](), Dump(tb, r))
-			return strings.TrimRight(s, "\n")
-		})
-		if !assert(tb, ok, s) {
-			return
-		}
-
-		if predicate != nil {
-			ok = Satisfy(tb, actual, predicate)
-		}
-	}()
-
-	f()
-	return
+	return PanicSatisfyf(tb, predicate, f, "")
 }
 
 // PanicSatisfyf checks that f panics with the value of type A.
