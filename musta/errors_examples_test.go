@@ -5,16 +5,16 @@ package musta
 import "errors"
 
 func ExampleErrorf() {
-	Errorf(t, nil, "extra message: %s, %d", "foo", 42)
+	Errorf(t, nil, "extra message: %s, %d", "foo", 67)
 
 	// Output:
 	// actual is nil error
-	// extra message: foo, 42
+	// extra message: foo, 67
 	// FAIL
 }
 
 func ExampleErrorIsf() {
-	ErrorIsf(t, errors.New("boom"), errors.New("target"), "extra message: %s, %d", "foo", 42)
+	ErrorIsf(t, errors.New("boom"), errors.New("target"), "extra message: %s, %d", "foo", 67)
 
 	// Output:
 	// actual error does not match expected:
@@ -26,12 +26,12 @@ func ExampleErrorIsf() {
 	// &errors.errorString{
 	//   s: "target",
 	// } (*errors.errorString)
-	// extra message: foo, 42
+	// extra message: foo, 67
 	// FAIL
 }
 
 func ExampleNoErrorf() {
-	NoErrorf(t, errors.New("boom"), "extra message: %s, %d", "foo", 42)
+	NoErrorf(t, errors.New("boom"), "extra message: %s, %d", "foo", 67)
 
 	// Output:
 	// actual is not nil error:
@@ -39,6 +39,6 @@ func ExampleNoErrorf() {
 	// &errors.errorString{
 	//   s: "boom",
 	// } (*errors.errorString)
-	// extra message: foo, 42
+	// extra message: foo, 67
 	// FAIL
 }

@@ -24,6 +24,22 @@ func Satisfyf[A any](tb TB, actual A, predicate func(_ A) bool, format string, a
 	return assert(tb, predicate(actual), s)
 }
 
+// NotSatisfy checks that predicate returns false for actual.
+func NotSatisfy[A any](tb TB, actual A, predicate func(_ A) bool) bool {
+	tb.Helper()
+
+	return NotSatisfyf(tb, actual, predicate, "")
+}
+
+// NotSatisfyf checks that predicate returns false for actual.
+func NotSatisfyf[A any](tb TB, actual A, predicate func(_ A) bool, format string, args ...any) bool {
+	tb.Helper()
+
+	s := dumpf(tb, "actual is satisfied by predicate:\nactual: %[2]s\n", actual, format, args...)
+
+	return assert(tb, !predicate(actual), s)
+}
+
 // SatisfyWith checks that predicate returns true for actual and expected.
 func SatisfyWith[A, E any](tb TB, actual A, expected E, predicate func(_ A, _ E) bool) bool {
 	tb.Helper()
@@ -46,6 +62,30 @@ func SatisfyWithf[A, E any](tb TB, actual A, expected E, predicate func(_ A, _ E
 	)
 
 	return assert(tb, predicate(actual, expected), s)
+}
+
+// NotSatisfyWith checks that predicate returns false for actual and expected.
+func NotSatisfyWith[A, E any](tb TB, actual A, expected E, predicate func(_ A, _ E) bool) bool {
+	tb.Helper()
+
+	return NotSatisfyWithf(tb, actual, expected, predicate, "")
+}
+
+// NotSatisfyWithf checks that predicate returns false for actual and expected.
+func NotSatisfyWithf[A, E any](tb TB, actual A, expected E, predicate func(_ A, _ E) bool, format string, args ...any) bool {
+	tb.Helper()
+
+	s := sprintf(
+		"%s\n%s",
+		msgDiff(
+			tb,
+			"actual and expected are satisfied by predicate:\nactual: %[2]s\nexpected: %[4]s\n%[5]s",
+			actual, expected,
+		),
+		sprintf(format, args...),
+	)
+
+	return assert(tb, !predicate(actual, expected), s)
 }
 
 // CompareEqual checks that compare(actual, expected) returns 0 ([cmp.OrderEqual]).

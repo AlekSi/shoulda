@@ -42,11 +42,11 @@ func TestBeFalse(t *testing.T) {
 
 func TestBeFalsef(t *testing.T) {
 	tt, lines := setup(t)
-	BeFalsef(tt, true, "extra message: %s, %d", "foo", 42)
+	BeFalsef(tt, true, "extra message: %s, %d", "foo", 67)
 
 	BeDeepEqual(t, lines(), []string{
 		"actual is not false",
-		"extra message: foo, 42",
+		"extra message: foo, 67",
 		"FAIL",
 	})
 }
@@ -67,11 +67,11 @@ func TestBeTrue(t *testing.T) {
 
 func TestBeTruef(t *testing.T) {
 	tt, lines := setup(t)
-	BeTruef(tt, false, "extra message: %s, %d", "foo", 42)
+	BeTruef(tt, false, "extra message: %s, %d", "foo", 67)
 
 	BeDeepEqual(t, lines(), []string{
 		"actual is not true",
-		"extra message: foo, 42",
+		"extra message: foo, 67",
 		"FAIL",
 	})
 }
@@ -121,7 +121,7 @@ func TestBeDeepEqual(t *testing.T) {
 
 func TestBeDeepEqualf(t *testing.T) {
 	tt, lines := setup(t)
-	BeDeepEqualf(tt, []int{13}, []int64{13}, "extra message: %s, %d", "foo", 42)
+	BeDeepEqualf(tt, []int{13}, []int64{13}, "extra message: %s, %d", "foo", 67)
 
 	BeDeepEqual(t, lines(), []string{
 		"actual is not deep equal to expected:",
@@ -140,7 +140,7 @@ func TestBeDeepEqualf(t *testing.T) {
 		"   13,",
 		"-} ([]int64)",
 		"+} ([]int)",
-		"extra message: foo, 42",
+		"extra message: foo, 67",
 		"FAIL",
 	})
 }
@@ -172,7 +172,7 @@ func TestNotBeDeepEqual(t *testing.T) {
 
 func TestNotBeDeepEqualf(t *testing.T) {
 	tt, lines := setup(t)
-	NotBeDeepEqualf(tt, []int{13}, []int{13}, "extra message: %s, %d", "foo", 42)
+	NotBeDeepEqualf(tt, []int{13}, []int{13}, "extra message: %s, %d", "foo", 67)
 
 	BeDeepEqual(t, lines(), []string{
 		"actual is deep equal to expected:",
@@ -182,7 +182,7 @@ func TestNotBeDeepEqualf(t *testing.T) {
 		"expected: []int{",
 		"  13,",
 		"} ([]int)",
-		"extra message: foo, 42",
+		"extra message: foo, 67",
 		"FAIL",
 	})
 }
@@ -216,7 +216,7 @@ func TestBeEqual(t *testing.T) {
 
 func TestBeEqualf(t *testing.T) {
 	tt, lines := setup(t)
-	BeEqualf(tt, 13, 42, "extra message: %s, %d", "foo", 42)
+	BeEqualf(tt, 13, 42, "extra message: %s, %d", "foo", 67)
 
 	BeDeepEqual(t, lines(), []string{
 		"actual is not equal to expected:",
@@ -228,20 +228,20 @@ func TestBeEqualf(t *testing.T) {
 		"@@ -1,1 +1,1 @@",
 		"-42 (int)",
 		"+13 (int)",
-		"extra message: foo, 42",
+		"extra message: foo, 67",
 		"FAIL",
 	})
 }
 
 func TestNotBeEqualf(t *testing.T) {
 	tt, lines := setup(t)
-	NotBeEqualf(tt, 13, 13, "extra message: %s, %d", "foo", 42)
+	NotBeEqualf(tt, 13, 13, "extra message: %s, %d", "foo", 67)
 
 	BeDeepEqual(t, lines(), []string{
 		"actual is equal to expected:",
 		"actual: 13 (int)",
 		"expected: 13 (int)",
-		"extra message: foo, 42",
+		"extra message: foo, 67",
 		"FAIL",
 	})
 }
@@ -268,7 +268,7 @@ func TestBeLess(t *testing.T) {
 
 func TestBeLessf(t *testing.T) {
 	tt, lines := setup(t)
-	BeLessf(tt, 42, 13, "extra message: %s, %d", "foo", 42)
+	BeLessf(tt, 42, 13, "extra message: %s, %d", "foo", 67)
 
 	BeDeepEqual(t, lines(), []string{
 		"actual is not less than expected:",
@@ -280,7 +280,7 @@ func TestBeLessf(t *testing.T) {
 		"@@ -1,1 +1,1 @@",
 		"-13 (int)",
 		"+42 (int)",
-		"extra message: foo, 42",
+		"extra message: foo, 67",
 		"FAIL",
 	})
 }
@@ -307,7 +307,7 @@ func TestBeGreater(t *testing.T) {
 
 func TestBeGreaterf(t *testing.T) {
 	tt, lines := setup(t)
-	BeGreaterf(tt, 13, 42, "extra message: %s, %d", "foo", 42)
+	BeGreaterf(tt, 13, 42, "extra message: %s, %d", "foo", 67)
 
 	BeDeepEqual(t, lines(), []string{
 		"actual is not greater than expected:",
@@ -319,7 +319,7 @@ func TestBeGreaterf(t *testing.T) {
 		"@@ -1,1 +1,1 @@",
 		"-42 (int)",
 		"+13 (int)",
-		"extra message: foo, 42",
+		"extra message: foo, 67",
 		"FAIL",
 	})
 }

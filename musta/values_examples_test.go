@@ -8,7 +8,7 @@ import "github.com/AlekSi/shoulda/internal"
 var t internal.TestTB
 
 func ExampleBeDeepEqualf() {
-	BeDeepEqualf(t, []int{13}, []int64{13}, "extra message: %s, %d", "foo", 42)
+	BeDeepEqualf(t, []int{13}, []int64{13}, "extra message: %s, %d", "foo", 67)
 
 	// Output:
 	// actual is not deep equal to expected:
@@ -27,12 +27,12 @@ func ExampleBeDeepEqualf() {
 	//    13,
 	// -} ([]int64)
 	// +} ([]int)
-	// extra message: foo, 42
+	// extra message: foo, 67
 	// FAIL
 }
 
 func ExampleBeEqualf() {
-	BeEqualf(t, 13, 42, "extra message: %s, %d", "foo", 42)
+	BeEqualf(t, 13, 42, "extra message: %s, %d", "foo", 67)
 
 	// Output:
 	// actual is not equal to expected:
@@ -44,23 +44,23 @@ func ExampleBeEqualf() {
 	// @@ -1,1 +1,1 @@
 	// -42 (int)
 	// +13 (int)
-	// extra message: foo, 42
+	// extra message: foo, 67
 	// FAIL
 }
 
 func ExampleNotBeEqualf() {
-	NotBeEqualf(t, 13, 13, "extra message: %s, %d", "foo", 42)
+	NotBeEqualf(t, 13, 13, "extra message: %s, %d", "foo", 67)
 
 	// Output:
 	// actual is equal to expected:
 	// actual: 13 (int)
 	// expected: 13 (int)
-	// extra message: foo, 42
+	// extra message: foo, 67
 	// FAIL
 }
 
 func ExampleNotBeDeepEqualf() {
-	NotBeDeepEqualf(t, []int{13}, []int{13}, "extra message: %s, %d", "foo", 42)
+	NotBeDeepEqualf(t, []int{13}, []int{13}, "extra message: %s, %d", "foo", 67)
 
 	// Output:
 	// actual is deep equal to expected:
@@ -70,6 +70,6 @@ func ExampleNotBeDeepEqualf() {
 	// expected: []int{
 	//   13,
 	// } ([]int)
-	// extra message: foo, 42
+	// extra message: foo, 67
 	// FAIL
 }

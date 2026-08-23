@@ -28,11 +28,11 @@ func TestError(t *testing.T) {
 
 func TestErrorf(t *testing.T) {
 	tt, actual := setup(t)
-	Errorf(tt, nil, "extra message: %s, %d", "foo", 42)
+	Errorf(tt, nil, "extra message: %s, %d", "foo", 67)
 
 	BeDeepEqual(t, actual(), []string{
 		"actual is nil error",
-		"extra message: foo, 42",
+		"extra message: foo, 67",
 		"FAIL",
 	})
 }
@@ -91,7 +91,7 @@ func TestErrorIs(t *testing.T) {
 
 func TestErrorIsf(t *testing.T) {
 	tt, actual := setup(t)
-	ErrorIsf(tt, errors.New("boom"), errors.New("target"), "extra message: %s, %d", "foo", 42)
+	ErrorIsf(tt, errors.New("boom"), errors.New("target"), "extra message: %s, %d", "foo", 67)
 
 	BeDeepEqual(t, actual(), []string{
 		"actual error does not match expected:",
@@ -103,7 +103,7 @@ func TestErrorIsf(t *testing.T) {
 		"&errors.errorString{",
 		`  s: "target",`,
 		"} (*errors.errorString)",
-		"extra message: foo, 42",
+		"extra message: foo, 67",
 		"FAIL",
 	})
 }
@@ -133,7 +133,7 @@ func TestNoError(t *testing.T) {
 
 func TestNoErrorf(t *testing.T) {
 	tt, actual := setup(t)
-	NoErrorf(tt, errors.New("boom"), "extra message: %s, %d", "foo", 42)
+	NoErrorf(tt, errors.New("boom"), "extra message: %s, %d", "foo", 67)
 
 	BeDeepEqual(t, actual(), []string{
 		"actual is not nil error:",
@@ -141,7 +141,7 @@ func TestNoErrorf(t *testing.T) {
 		"&errors.errorString{",
 		`  s: "boom",`,
 		`} (*errors.errorString)`,
-		"extra message: foo, 42",
+		"extra message: foo, 67",
 		"FAIL",
 	})
 }
