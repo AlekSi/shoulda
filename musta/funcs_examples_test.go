@@ -50,6 +50,28 @@ func ExampleNotSatisfyf_inline() {
 	// FAIL
 }
 
+func ExampleNotSatisfyf_methodValue() {
+	actual := time.Date(2026, time.April, 9, 17, 32, 42, 123, time.UTC)
+	NotSatisfyf(t, actual, time.Time{}.Before, "extra message: %s, %d", "foo", 42)
+
+	// Output:
+	// actual is satisfied by predicate:
+	// actual: time.Date(2026, 4, 9, 17, 32, 42, 123, time.UTC) (time.Time)
+	// extra message: foo, 42
+	// FAIL
+}
+
+func ExampleNotSatisfyf_methodExpression() {
+	actual := time.Time{}
+	NotSatisfyf(t, actual, time.Time.IsZero, "extra message: %s, %d", "foo", 42)
+
+	// Output:
+	// actual is satisfied by predicate:
+	// actual: time.Date(1, 1, 1, 0, 0, 0, 0, time.UTC) (time.Time)
+	// extra message: foo, 42
+	// FAIL
+}
+
 func ExampleSatisfyWithf_inline() {
 	SatisfyWithf(t, 13, 42, func(x, y int) bool { return x > y }, "extra message: %s, %d", "foo", 42)
 
@@ -116,6 +138,42 @@ func ExampleNotSatisfyWithf_inline() {
 	// @@ -1,1 +1,1 @@
 	// -13 (int)
 	// +42 (int)
+	// extra message: foo, 42
+	// FAIL
+}
+
+func ExampleNotSatisfyWithf_function() {
+	NotSatisfyWithf(t, 42, 13, cmp.Greater, "extra message: %s, %d", "foo", 42)
+
+	// Output:
+	// actual and expected are satisfied by predicate:
+	// actual: 42 (int)
+	// expected: 13 (int)
+	// diff expected actual
+	// --- expected
+	// +++ actual
+	// @@ -1,1 +1,1 @@
+	// -13 (int)
+	// +42 (int)
+	// extra message: foo, 42
+	// FAIL
+}
+
+func ExampleNotSatisfyWithf_methodExpression() {
+	actual := time.Date(2026, time.April, 9, 13, 32, 42, 123, time.UTC)
+	expected := time.Date(2026, time.April, 9, 17, 32, 42, 123, time.UTC)
+	NotSatisfyWithf(t, actual, expected, time.Time.Before, "extra message: %s, %d", "foo", 42)
+
+	// Output:
+	// actual and expected are satisfied by predicate:
+	// actual: time.Date(2026, 4, 9, 13, 32, 42, 123, time.UTC) (time.Time)
+	// expected: time.Date(2026, 4, 9, 17, 32, 42, 123, time.UTC) (time.Time)
+	// diff expected actual
+	// --- expected
+	// +++ actual
+	// @@ -1,1 +1,1 @@
+	// -time.Date(2026, 4, 9, 17, 32, 42, 123, time.UTC) (time.Time)
+	// +time.Date(2026, 4, 9, 13, 32, 42, 123, time.UTC) (time.Time)
 	// extra message: foo, 42
 	// FAIL
 }
