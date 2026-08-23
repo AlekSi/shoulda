@@ -26,12 +26,12 @@ func TestBeZero(t *testing.T) {
 
 func TestBeZerof(t *testing.T) {
 	tt, actual := setup(t)
-	BeZerof(tt, 13, "extra message: %s, %d", "foo", 42)
+	BeZerof(tt, 13, "extra message: %s, %d", "foo", 67)
 
 	BeDeepEqual(t, actual(), []string{
 		"actual is not zero, but:",
 		"actual: 13 (int)",
-		"extra message: foo, 42",
+		"extra message: foo, 67",
 		"FAIL",
 	})
 }
@@ -60,11 +60,11 @@ func TestNotBeZero(t *testing.T) {
 
 func TestNotBeZerof(t *testing.T) {
 	tt, actual := setup(t)
-	NotBeZerof(tt, 0, "extra message: %s, %d", "foo", 42)
+	NotBeZerof(tt, 0, "extra message: %s, %d", "foo", 67)
 
 	BeDeepEqual(t, actual(), []string{
 		"actual is zero",
-		"extra message: foo, 42",
+		"extra message: foo, 67",
 		"FAIL",
 	})
 }

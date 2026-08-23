@@ -12,12 +12,12 @@ import (
 func TestSatisfyf(t *testing.T) {
 	t.Run("Inline", func(t *testing.T) {
 		tt, lines := setup(t)
-		Satisfyf(tt, 13, func(v int) bool { return v > 42 }, "extra message: %s, %d", "foo", 42)
+		Satisfyf(tt, 13, func(v int) bool { return v > 42 }, "extra message: %s, %d", "foo", 67)
 
 		BeDeepEqual(t, lines(), []string{
 			"actual is not satisfied by predicate:",
 			"actual: 13 (int)",
-			"extra message: foo, 42",
+			"extra message: foo, 67",
 			"FAIL",
 		})
 	})
@@ -25,12 +25,12 @@ func TestSatisfyf(t *testing.T) {
 	t.Run("MethodValue", func(t *testing.T) {
 		tt, lines := setup(t)
 		actual := time.Date(2026, time.April, 9, 17, 32, 42, 123, time.UTC)
-		Satisfyf(tt, actual, time.Now().Before, "extra message: %s, %d", "foo", 42)
+		Satisfyf(tt, actual, time.Now().Before, "extra message: %s, %d", "foo", 67)
 
 		BeDeepEqual(t, lines(), []string{
 			"actual is not satisfied by predicate:",
 			"actual: time.Date(2026, 4, 9, 17, 32, 42, 123, time.UTC) (time.Time)",
-			"extra message: foo, 42",
+			"extra message: foo, 67",
 			"FAIL",
 		})
 	})
@@ -38,12 +38,12 @@ func TestSatisfyf(t *testing.T) {
 	t.Run("MethodExpression", func(t *testing.T) {
 		tt, lines := setup(t)
 		actual := time.Date(2026, time.April, 9, 17, 32, 42, 123, time.UTC)
-		Satisfyf(tt, actual, time.Time.IsZero, "extra message: %s, %d", "foo", 42)
+		Satisfyf(tt, actual, time.Time.IsZero, "extra message: %s, %d", "foo", 67)
 
 		BeDeepEqual(t, lines(), []string{
 			"actual is not satisfied by predicate:",
 			"actual: time.Date(2026, 4, 9, 17, 32, 42, 123, time.UTC) (time.Time)",
-			"extra message: foo, 42",
+			"extra message: foo, 67",
 			"FAIL",
 		})
 	})
@@ -52,12 +52,12 @@ func TestSatisfyf(t *testing.T) {
 func TestNotSatisfyf(t *testing.T) {
 	t.Run("Inline", func(t *testing.T) {
 		tt, lines := setup(t)
-		NotSatisfyf(tt, 13, func(v int) bool { return v < 42 }, "extra message: %s, %d", "foo", 42)
+		NotSatisfyf(tt, 13, func(v int) bool { return v < 42 }, "extra message: %s, %d", "foo", 67)
 
 		BeDeepEqual(t, lines(), []string{
 			"actual is satisfied by predicate:",
 			"actual: 13 (int)",
-			"extra message: foo, 42",
+			"extra message: foo, 67",
 			"FAIL",
 		})
 	})
@@ -65,12 +65,12 @@ func TestNotSatisfyf(t *testing.T) {
 	t.Run("MethodValue", func(t *testing.T) {
 		tt, lines := setup(t)
 		actual := time.Date(2026, time.April, 9, 17, 32, 42, 123, time.UTC)
-		NotSatisfyf(tt, actual, time.Now().After, "extra message: %s, %d", "foo", 42)
+		NotSatisfyf(tt, actual, time.Now().After, "extra message: %s, %d", "foo", 67)
 
 		BeDeepEqual(t, lines(), []string{
 			"actual is satisfied by predicate:",
 			"actual: time.Date(2026, 4, 9, 17, 32, 42, 123, time.UTC) (time.Time)",
-			"extra message: foo, 42",
+			"extra message: foo, 67",
 			"FAIL",
 		})
 	})
@@ -78,12 +78,12 @@ func TestNotSatisfyf(t *testing.T) {
 	t.Run("MethodExpression", func(t *testing.T) {
 		tt, lines := setup(t)
 		actual := time.Time{}
-		NotSatisfyf(tt, actual, time.Time.IsZero, "extra message: %s, %d", "foo", 42)
+		NotSatisfyf(tt, actual, time.Time.IsZero, "extra message: %s, %d", "foo", 67)
 
 		BeDeepEqual(t, lines(), []string{
 			"actual is satisfied by predicate:",
 			"actual: time.Date(1, 1, 1, 0, 0, 0, 0, time.UTC) (time.Time)",
-			"extra message: foo, 42",
+			"extra message: foo, 67",
 			"FAIL",
 		})
 	})
@@ -92,7 +92,7 @@ func TestNotSatisfyf(t *testing.T) {
 func TestSatisfyWithf(t *testing.T) {
 	t.Run("Inline", func(t *testing.T) {
 		tt, lines := setup(t)
-		SatisfyWithf(tt, 13, 42, func(x, y int) bool { return x > y }, "extra message: %s, %d", "foo", 42)
+		SatisfyWithf(tt, 13, 42, func(x, y int) bool { return x > y }, "extra message: %s, %d", "foo", 67)
 
 		BeDeepEqual(t, lines(), []string{
 			"actual and expected are not satisfied by predicate:",
@@ -104,14 +104,14 @@ func TestSatisfyWithf(t *testing.T) {
 			"@@ -1,1 +1,1 @@",
 			"-42 (int)",
 			"+13 (int)",
-			"extra message: foo, 42",
+			"extra message: foo, 67",
 			"FAIL",
 		})
 	})
 
 	t.Run("Function", func(t *testing.T) {
 		tt, lines := setup(t)
-		SatisfyWithf(tt, 13, 42, cmp.Greater, "extra message: %s, %d", "foo", 42)
+		SatisfyWithf(tt, 13, 42, cmp.Greater, "extra message: %s, %d", "foo", 67)
 
 		BeDeepEqual(t, lines(), []string{
 			"actual and expected are not satisfied by predicate:",
@@ -123,7 +123,7 @@ func TestSatisfyWithf(t *testing.T) {
 			"@@ -1,1 +1,1 @@",
 			"-42 (int)",
 			"+13 (int)",
-			"extra message: foo, 42",
+			"extra message: foo, 67",
 			"FAIL",
 		})
 	})
@@ -132,7 +132,7 @@ func TestSatisfyWithf(t *testing.T) {
 		tt, lines := setup(t)
 		actual := time.Date(2026, time.April, 9, 17, 32, 42, 123, time.UTC)
 		expected := time.Date(2026, time.April, 9, 17, 32, 42, 123, time.FixedZone("My", 4*int(time.Hour.Seconds())))
-		SatisfyWithf(tt, actual, expected, time.Time.Before, "extra message: %s, %d", "foo", 42)
+		SatisfyWithf(tt, actual, expected, time.Time.Before, "extra message: %s, %d", "foo", 67)
 
 		BeDeepEqual(t, lines(), []string{
 			"actual and expected are not satisfied by predicate:",
@@ -144,7 +144,7 @@ func TestSatisfyWithf(t *testing.T) {
 			"@@ -1,1 +1,1 @@",
 			"-time.Date(2026, 4, 9, 13, 32, 42, 123, time.UTC) (time.Time)",
 			"+time.Date(2026, 4, 9, 17, 32, 42, 123, time.UTC) (time.Time)",
-			"extra message: foo, 42",
+			"extra message: foo, 67",
 			"FAIL",
 		})
 	})
@@ -153,7 +153,7 @@ func TestSatisfyWithf(t *testing.T) {
 func TestNotSatisfyWithf(t *testing.T) {
 	t.Run("Inline", func(t *testing.T) {
 		tt, lines := setup(t)
-		NotSatisfyWithf(tt, 42, 13, func(x, y int) bool { return x > y }, "extra message: %s, %d", "foo", 42)
+		NotSatisfyWithf(tt, 42, 13, func(x, y int) bool { return x > y }, "extra message: %s, %d", "foo", 67)
 
 		BeDeepEqual(t, lines(), []string{
 			"actual and expected are satisfied by predicate:",
@@ -165,14 +165,14 @@ func TestNotSatisfyWithf(t *testing.T) {
 			"@@ -1,1 +1,1 @@",
 			"-13 (int)",
 			"+42 (int)",
-			"extra message: foo, 42",
+			"extra message: foo, 67",
 			"FAIL",
 		})
 	})
 
 	t.Run("Function", func(t *testing.T) {
 		tt, lines := setup(t)
-		NotSatisfyWithf(tt, 42, 13, cmp.Greater, "extra message: %s, %d", "foo", 42)
+		NotSatisfyWithf(tt, 42, 13, cmp.Greater, "extra message: %s, %d", "foo", 67)
 
 		BeDeepEqual(t, lines(), []string{
 			"actual and expected are satisfied by predicate:",
@@ -184,7 +184,7 @@ func TestNotSatisfyWithf(t *testing.T) {
 			"@@ -1,1 +1,1 @@",
 			"-13 (int)",
 			"+42 (int)",
-			"extra message: foo, 42",
+			"extra message: foo, 67",
 			"FAIL",
 		})
 	})
@@ -193,7 +193,7 @@ func TestNotSatisfyWithf(t *testing.T) {
 		tt, lines := setup(t)
 		actual := time.Date(2026, time.April, 9, 13, 32, 42, 123, time.UTC)
 		expected := time.Date(2026, time.April, 9, 17, 32, 42, 123, time.UTC)
-		NotSatisfyWithf(tt, actual, expected, time.Time.Before, "extra message: %s, %d", "foo", 42)
+		NotSatisfyWithf(tt, actual, expected, time.Time.Before, "extra message: %s, %d", "foo", 67)
 
 		BeDeepEqual(t, lines(), []string{
 			"actual and expected are satisfied by predicate:",
@@ -205,7 +205,7 @@ func TestNotSatisfyWithf(t *testing.T) {
 			"@@ -1,1 +1,1 @@",
 			"-time.Date(2026, 4, 9, 17, 32, 42, 123, time.UTC) (time.Time)",
 			"+time.Date(2026, 4, 9, 13, 32, 42, 123, time.UTC) (time.Time)",
-			"extra message: foo, 42",
+			"extra message: foo, 67",
 			"FAIL",
 		})
 	})
@@ -235,7 +235,7 @@ func TestCompareEqual(t *testing.T) {
 
 func TestCompareEqualf(t *testing.T) {
 	tt, lines := setup(t)
-	CompareEqualf(tt, 42, 13, cmp.Compare[int], "extra message: %s, %d", "foo", 42)
+	CompareEqualf(tt, 42, 13, cmp.Compare[int], "extra message: %s, %d", "foo", 67)
 
 	BeDeepEqual(t, lines(), []string{
 		"actual is not equal to expected, but greater:",
@@ -247,7 +247,7 @@ func TestCompareEqualf(t *testing.T) {
 		"@@ -1,1 +1,1 @@",
 		"-13 (int)",
 		"+42 (int)",
-		"extra message: foo, 42",
+		"extra message: foo, 67",
 		"FAIL",
 	})
 }
@@ -276,7 +276,7 @@ func TestCompareLess(t *testing.T) {
 
 func TestCompareLessf(t *testing.T) {
 	tt, lines := setup(t)
-	CompareLessf(tt, 42, 13, cmp.Compare[int], "extra message: %s, %d", "foo", 42)
+	CompareLessf(tt, 42, 13, cmp.Compare[int], "extra message: %s, %d", "foo", 67)
 
 	BeDeepEqual(t, lines(), []string{
 		"actual is not less than expected, but greater:",
@@ -288,7 +288,7 @@ func TestCompareLessf(t *testing.T) {
 		"@@ -1,1 +1,1 @@",
 		"-13 (int)",
 		"+42 (int)",
-		"extra message: foo, 42",
+		"extra message: foo, 67",
 		"FAIL",
 	})
 }
@@ -317,7 +317,7 @@ func TestCompareGreater(t *testing.T) {
 
 func TestCompareGreaterf(t *testing.T) {
 	tt, lines := setup(t)
-	CompareGreaterf(tt, 13, 42, cmp.Compare[int], "extra message: %s, %d", "foo", 42)
+	CompareGreaterf(tt, 13, 42, cmp.Compare[int], "extra message: %s, %d", "foo", 67)
 
 	BeDeepEqual(t, lines(), []string{
 		"actual is not greater than expected, but less:",
@@ -329,7 +329,7 @@ func TestCompareGreaterf(t *testing.T) {
 		"@@ -1,1 +1,1 @@",
 		"-42 (int)",
 		"+13 (int)",
-		"extra message: foo, 42",
+		"extra message: foo, 67",
 		"FAIL",
 	})
 }
@@ -357,19 +357,19 @@ func TestNotPanic(t *testing.T) {
 func TestNotPanicf(t *testing.T) {
 	t.Run("NoPanic", func(t *testing.T) {
 		tt, lines := setup(t)
-		NotPanicf(tt, func() {}, "extra message: %s, %d", "foo", 42)
+		NotPanicf(tt, func() {}, "extra message: %s, %d", "foo", 67)
 
 		BeDeepEqual(t, lines(), []string{""})
 	})
 
 	t.Run("Panic", func(t *testing.T) {
 		tt, lines := setup(t)
-		NotPanicf(tt, func() { panic("boom") }, "extra message: %s, %d", "foo", 42)
+		NotPanicf(tt, func() { panic("boom") }, "extra message: %s, %d", "foo", 67)
 
 		BeDeepEqual(t, lines(), []string{
 			"function panicked:",
 			`actual: "boom" (string)`,
-			"extra message: foo, 42",
+			"extra message: foo, 67",
 			"FAIL",
 		})
 	})
@@ -488,18 +488,18 @@ func TestPanicSatisfy(t *testing.T) {
 func TestPanicSatisfyf(t *testing.T) {
 	t.Run("NoPanic", func(t *testing.T) {
 		tt, lines := setup(t)
-		PanicSatisfyf[any](tt, nil, func() {}, "extra message: %s, %d", "foo", 42)
+		PanicSatisfyf[any](tt, nil, func() {}, "extra message: %s, %d", "foo", 67)
 
 		BeDeepEqual(t, lines(), []string{
 			"function did not panic",
-			"extra message: foo, 42",
+			"extra message: foo, 67",
 			"FAIL",
 		})
 	})
 
 	t.Run("Panic", func(t *testing.T) {
 		tt, lines := setup(t)
-		PanicSatisfyf[any](tt, nil, func() { panic("boom") }, "extra message: %s, %d", "foo", 42)
+		PanicSatisfyf[any](tt, nil, func() { panic("boom") }, "extra message: %s, %d", "foo", 67)
 
 		BeDeepEqual(t, lines(), []string{""})
 	})
@@ -507,12 +507,12 @@ func TestPanicSatisfyf(t *testing.T) {
 	t.Run("PredicateFail", func(t *testing.T) {
 		tt, lines := setup(t)
 		PanicSatisfyf(tt, func(string) bool { return false }, func() { panic("boom") },
-			"extra message: %s, %d", "foo", 42)
+			"extra message: %s, %d", "foo", 67)
 
 		BeDeepEqual(t, lines(), []string{
 			"actual is not satisfied by predicate:",
 			`actual: "boom" (string)`,
-			"extra message: foo, 42",
+			"extra message: foo, 67",
 			"FAIL",
 		})
 	})
@@ -520,12 +520,12 @@ func TestPanicSatisfyf(t *testing.T) {
 	t.Run("WrongType", func(t *testing.T) {
 		tt, lines := setup(t)
 		PanicSatisfyf(tt, func(int) bool { return true }, func() { panic("boom") },
-			"extra message: %s, %d", "foo", 42)
+			"extra message: %s, %d", "foo", 67)
 
 		BeDeepEqual(t, lines(), []string{
 			"actual panic value is not of type int, but:",
 			`actual: "boom" (string)`,
-			"extra message: foo, 42",
+			"extra message: foo, 67",
 			"FAIL",
 		})
 	})

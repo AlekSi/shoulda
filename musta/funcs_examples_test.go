@@ -9,71 +9,71 @@ import (
 )
 
 func ExampleSatisfyf_inline() {
-	Satisfyf(t, 13, func(v int) bool { return v > 42 }, "extra message: %s, %d", "foo", 42)
+	Satisfyf(t, 13, func(v int) bool { return v > 42 }, "extra message: %s, %d", "foo", 67)
 
 	// Output:
 	// actual is not satisfied by predicate:
 	// actual: 13 (int)
-	// extra message: foo, 42
+	// extra message: foo, 67
 	// FAIL
 }
 
 func ExampleSatisfyf_methodValue() {
 	actual := time.Date(2026, time.April, 9, 17, 32, 42, 123, time.UTC)
-	Satisfyf(t, actual, time.Now().Before, "extra message: %s, %d", "foo", 42)
+	Satisfyf(t, actual, time.Now().Before, "extra message: %s, %d", "foo", 67)
 
 	// Output:
 	// actual is not satisfied by predicate:
 	// actual: time.Date(2026, 4, 9, 17, 32, 42, 123, time.UTC) (time.Time)
-	// extra message: foo, 42
+	// extra message: foo, 67
 	// FAIL
 }
 
 func ExampleSatisfyf_methodExpression() {
 	actual := time.Date(2026, time.April, 9, 17, 32, 42, 123, time.UTC)
-	Satisfyf(t, actual, time.Time.IsZero, "extra message: %s, %d", "foo", 42)
+	Satisfyf(t, actual, time.Time.IsZero, "extra message: %s, %d", "foo", 67)
 
 	// Output:
 	// actual is not satisfied by predicate:
 	// actual: time.Date(2026, 4, 9, 17, 32, 42, 123, time.UTC) (time.Time)
-	// extra message: foo, 42
+	// extra message: foo, 67
 	// FAIL
 }
 
 func ExampleNotSatisfyf_inline() {
-	NotSatisfyf(t, 13, func(v int) bool { return v < 42 }, "extra message: %s, %d", "foo", 42)
+	NotSatisfyf(t, 13, func(v int) bool { return v < 42 }, "extra message: %s, %d", "foo", 67)
 
 	// Output:
 	// actual is satisfied by predicate:
 	// actual: 13 (int)
-	// extra message: foo, 42
+	// extra message: foo, 67
 	// FAIL
 }
 
 func ExampleNotSatisfyf_methodValue() {
 	actual := time.Date(2026, time.April, 9, 17, 32, 42, 123, time.UTC)
-	NotSatisfyf(t, actual, time.Time{}.Before, "extra message: %s, %d", "foo", 42)
+	NotSatisfyf(t, actual, time.Time{}.Before, "extra message: %s, %d", "foo", 67)
 
 	// Output:
 	// actual is satisfied by predicate:
 	// actual: time.Date(2026, 4, 9, 17, 32, 42, 123, time.UTC) (time.Time)
-	// extra message: foo, 42
+	// extra message: foo, 67
 	// FAIL
 }
 
 func ExampleNotSatisfyf_methodExpression() {
 	actual := time.Time{}
-	NotSatisfyf(t, actual, time.Time.IsZero, "extra message: %s, %d", "foo", 42)
+	NotSatisfyf(t, actual, time.Time.IsZero, "extra message: %s, %d", "foo", 67)
 
 	// Output:
 	// actual is satisfied by predicate:
 	// actual: time.Date(1, 1, 1, 0, 0, 0, 0, time.UTC) (time.Time)
-	// extra message: foo, 42
+	// extra message: foo, 67
 	// FAIL
 }
 
 func ExampleSatisfyWithf_inline() {
-	SatisfyWithf(t, 13, 42, func(x, y int) bool { return x > y }, "extra message: %s, %d", "foo", 42)
+	SatisfyWithf(t, 13, 42, func(x, y int) bool { return x > y }, "extra message: %s, %d", "foo", 67)
 
 	// Output:
 	// actual and expected are not satisfied by predicate:
@@ -85,12 +85,12 @@ func ExampleSatisfyWithf_inline() {
 	// @@ -1,1 +1,1 @@
 	// -42 (int)
 	// +13 (int)
-	// extra message: foo, 42
+	// extra message: foo, 67
 	// FAIL
 }
 
 func ExampleSatisfyWithf_function() {
-	SatisfyWithf(t, 13, 42, cmp.Greater, "extra message: %s, %d", "foo", 42)
+	SatisfyWithf(t, 13, 42, cmp.Greater, "extra message: %s, %d", "foo", 67)
 
 	// Output:
 	// actual and expected are not satisfied by predicate:
@@ -102,14 +102,14 @@ func ExampleSatisfyWithf_function() {
 	// @@ -1,1 +1,1 @@
 	// -42 (int)
 	// +13 (int)
-	// extra message: foo, 42
+	// extra message: foo, 67
 	// FAIL
 }
 
 func ExampleSatisfyWithf_methodExpression() {
 	actual := time.Date(2026, time.April, 9, 17, 32, 42, 123, time.UTC)
 	expected := time.Date(2026, time.April, 9, 17, 32, 42, 123, time.FixedZone("My", 4*int(time.Hour.Seconds())))
-	SatisfyWithf(t, actual, expected, time.Time.Before, "extra message: %s, %d", "foo", 42)
+	SatisfyWithf(t, actual, expected, time.Time.Before, "extra message: %s, %d", "foo", 67)
 
 	// Output:
 	// actual and expected are not satisfied by predicate:
@@ -121,12 +121,12 @@ func ExampleSatisfyWithf_methodExpression() {
 	// @@ -1,1 +1,1 @@
 	// -time.Date(2026, 4, 9, 13, 32, 42, 123, time.UTC) (time.Time)
 	// +time.Date(2026, 4, 9, 17, 32, 42, 123, time.UTC) (time.Time)
-	// extra message: foo, 42
+	// extra message: foo, 67
 	// FAIL
 }
 
 func ExampleNotSatisfyWithf_inline() {
-	NotSatisfyWithf(t, 42, 13, func(x, y int) bool { return x > y }, "extra message: %s, %d", "foo", 42)
+	NotSatisfyWithf(t, 42, 13, func(x, y int) bool { return x > y }, "extra message: %s, %d", "foo", 67)
 
 	// Output:
 	// actual and expected are satisfied by predicate:
@@ -138,12 +138,12 @@ func ExampleNotSatisfyWithf_inline() {
 	// @@ -1,1 +1,1 @@
 	// -13 (int)
 	// +42 (int)
-	// extra message: foo, 42
+	// extra message: foo, 67
 	// FAIL
 }
 
 func ExampleNotSatisfyWithf_function() {
-	NotSatisfyWithf(t, 42, 13, cmp.Greater, "extra message: %s, %d", "foo", 42)
+	NotSatisfyWithf(t, 42, 13, cmp.Greater, "extra message: %s, %d", "foo", 67)
 
 	// Output:
 	// actual and expected are satisfied by predicate:
@@ -155,14 +155,14 @@ func ExampleNotSatisfyWithf_function() {
 	// @@ -1,1 +1,1 @@
 	// -13 (int)
 	// +42 (int)
-	// extra message: foo, 42
+	// extra message: foo, 67
 	// FAIL
 }
 
 func ExampleNotSatisfyWithf_methodExpression() {
 	actual := time.Date(2026, time.April, 9, 13, 32, 42, 123, time.UTC)
 	expected := time.Date(2026, time.April, 9, 17, 32, 42, 123, time.UTC)
-	NotSatisfyWithf(t, actual, expected, time.Time.Before, "extra message: %s, %d", "foo", 42)
+	NotSatisfyWithf(t, actual, expected, time.Time.Before, "extra message: %s, %d", "foo", 67)
 
 	// Output:
 	// actual and expected are satisfied by predicate:
@@ -174,14 +174,14 @@ func ExampleNotSatisfyWithf_methodExpression() {
 	// @@ -1,1 +1,1 @@
 	// -time.Date(2026, 4, 9, 17, 32, 42, 123, time.UTC) (time.Time)
 	// +time.Date(2026, 4, 9, 13, 32, 42, 123, time.UTC) (time.Time)
-	// extra message: foo, 42
+	// extra message: foo, 67
 	// FAIL
 }
 
 func ExampleCompareEqualf_methodExpression() {
 	actual := time.Date(2026, time.April, 9, 17, 32, 42, 123, time.UTC)
 	expected := time.Date(2026, time.April, 9, 17, 32, 42, 123, time.FixedZone("My", 4*int(time.Hour.Seconds())))
-	CompareEqualf(t, actual, expected, time.Time.Compare, "extra message: %s, %d", "foo", 42)
+	CompareEqualf(t, actual, expected, time.Time.Compare, "extra message: %s, %d", "foo", 67)
 
 	// Output:
 	// actual is not equal to expected, but greater:
@@ -193,29 +193,29 @@ func ExampleCompareEqualf_methodExpression() {
 	// @@ -1,1 +1,1 @@
 	// -time.Date(2026, 4, 9, 13, 32, 42, 123, time.UTC) (time.Time)
 	// +time.Date(2026, 4, 9, 17, 32, 42, 123, time.UTC) (time.Time)
-	// extra message: foo, 42
+	// extra message: foo, 67
 	// FAIL
 }
 
 func ExampleNotPanicf() {
-	NotPanicf(t, func() { panic("boom") }, "extra message: %s, %d", "foo", 42)
+	NotPanicf(t, func() { panic("boom") }, "extra message: %s, %d", "foo", 67)
 
 	// Output:
 	// function panicked:
 	// actual: "boom" (string)
-	// extra message: foo, 42
+	// extra message: foo, 67
 	// FAIL
 }
 
 func ExamplePanicSatisfyf_methodExpression() {
 	PanicSatisfyf(t, time.Time.IsZero, func() {
 		panic(time.Date(2026, time.April, 9, 17, 32, 42, 123, time.UTC))
-	}, "extra message: %s, %d", "foo", 42)
+	}, "extra message: %s, %d", "foo", 67)
 
 	// Output:
 	// actual is not satisfied by predicate:
 	// actual: time.Date(2026, 4, 9, 17, 32, 42, 123, time.UTC) (time.Time)
-	// extra message: foo, 42
+	// extra message: foo, 67
 	// FAIL
 }
 
@@ -226,7 +226,7 @@ func ExamplePanicSatisfyf_assertion() {
 		return true
 	}, func() {
 		panic(time.Date(2026, time.April, 9, 17, 32, 42, 123, time.UTC))
-	}, "extra message: %s, %d", "foo", 42)
+	}, "extra message: %s, %d", "foo", 67)
 
 	// Output:
 	// actual is not equal to expected, but greater:
