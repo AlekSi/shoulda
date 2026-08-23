@@ -209,12 +209,12 @@ func TestNotSatisfyWithf(t *testing.T) {
 	})
 }
 
-func TestCompareEqual(t *testing.T) {
+func TestCompareEqualf(t *testing.T) {
 	t.Run("MethodExpression", func(t *testing.T) {
 		tt, lines := setup(t)
 		actual := time.Date(2026, time.April, 9, 17, 32, 42, 123, time.UTC)
 		expected := time.Date(2026, time.April, 9, 17, 32, 42, 123, time.FixedZone("My", 4*int(time.Hour.Seconds())))
-		CompareEqual(tt, actual, expected, time.Time.Compare)
+		CompareEqualf(tt, actual, expected, time.Time.Compare, "extra message: %s, %d", "foo", 67)
 
 		BeDeepEqual(t, lines(), []string{
 			"actual is not equal to expected, but greater:",
@@ -226,36 +226,37 @@ func TestCompareEqual(t *testing.T) {
 			"@@ -1,1 +1,1 @@",
 			"-time.Date(2026, 4, 9, 13, 32, 42, 123, time.UTC) (time.Time)",
 			"+time.Date(2026, 4, 9, 17, 32, 42, 123, time.UTC) (time.Time)",
+			"extra message: foo, 67",
+			"FAIL",
+		})
+	})
+
+	t.Run("Format", func(t *testing.T) {
+		tt, lines := setup(t)
+		CompareEqualf(tt, 42, 13, cmp.Compare[int], "extra message: %s, %d", "foo", 67)
+
+		BeDeepEqual(t, lines(), []string{
+			"actual is not equal to expected, but greater:",
+			"actual: 42 (int)",
+			"expected: 13 (int)",
+			"diff expected actual",
+			"--- expected",
+			"+++ actual",
+			"@@ -1,1 +1,1 @@",
+			"-13 (int)",
+			"+42 (int)",
+			"extra message: foo, 67",
 			"FAIL",
 		})
 	})
 }
 
-func TestCompareEqualf(t *testing.T) {
-	tt, lines := setup(t)
-	CompareEqualf(tt, 42, 13, cmp.Compare[int], "extra message: %s, %d", "foo", 67)
-
-	BeDeepEqual(t, lines(), []string{
-		"actual is not equal to expected, but greater:",
-		"actual: 42 (int)",
-		"expected: 13 (int)",
-		"diff expected actual",
-		"--- expected",
-		"+++ actual",
-		"@@ -1,1 +1,1 @@",
-		"-13 (int)",
-		"+42 (int)",
-		"extra message: foo, 67",
-		"FAIL",
-	})
-}
-
-func TestCompareLess(t *testing.T) {
+func TestCompareLessf(t *testing.T) {
 	t.Run("MethodExpression", func(t *testing.T) {
 		tt, lines := setup(t)
 		actual := time.Date(2026, time.April, 9, 17, 32, 42, 123, time.UTC)
 		expected := time.Date(2026, time.April, 9, 17, 32, 42, 123, time.FixedZone("My", 4*int(time.Hour.Seconds())))
-		CompareLess(tt, actual, expected, time.Time.Compare)
+		CompareLessf(tt, actual, expected, time.Time.Compare, "extra message: %s, %d", "foo", 67)
 
 		BeDeepEqual(t, lines(), []string{
 			"actual is not less than expected, but greater:",
@@ -267,36 +268,37 @@ func TestCompareLess(t *testing.T) {
 			"@@ -1,1 +1,1 @@",
 			"-time.Date(2026, 4, 9, 13, 32, 42, 123, time.UTC) (time.Time)",
 			"+time.Date(2026, 4, 9, 17, 32, 42, 123, time.UTC) (time.Time)",
+			"extra message: foo, 67",
+			"FAIL",
+		})
+	})
+
+	t.Run("Format", func(t *testing.T) {
+		tt, lines := setup(t)
+		CompareLessf(tt, 42, 13, cmp.Compare[int], "extra message: %s, %d", "foo", 67)
+
+		BeDeepEqual(t, lines(), []string{
+			"actual is not less than expected, but greater:",
+			"actual: 42 (int)",
+			"expected: 13 (int)",
+			"diff expected actual",
+			"--- expected",
+			"+++ actual",
+			"@@ -1,1 +1,1 @@",
+			"-13 (int)",
+			"+42 (int)",
+			"extra message: foo, 67",
 			"FAIL",
 		})
 	})
 }
 
-func TestCompareLessf(t *testing.T) {
-	tt, lines := setup(t)
-	CompareLessf(tt, 42, 13, cmp.Compare[int], "extra message: %s, %d", "foo", 67)
-
-	BeDeepEqual(t, lines(), []string{
-		"actual is not less than expected, but greater:",
-		"actual: 42 (int)",
-		"expected: 13 (int)",
-		"diff expected actual",
-		"--- expected",
-		"+++ actual",
-		"@@ -1,1 +1,1 @@",
-		"-13 (int)",
-		"+42 (int)",
-		"extra message: foo, 67",
-		"FAIL",
-	})
-}
-
-func TestCompareGreater(t *testing.T) {
+func TestCompareGreaterf(t *testing.T) {
 	t.Run("MethodExpression", func(t *testing.T) {
 		tt, lines := setup(t)
 		actual := time.Date(2026, time.April, 9, 17, 32, 42, 123, time.FixedZone("My", 4*int(time.Hour.Seconds())))
 		expected := time.Date(2026, time.April, 9, 17, 32, 42, 123, time.UTC)
-		CompareGreater(tt, actual, expected, time.Time.Compare)
+		CompareGreaterf(tt, actual, expected, time.Time.Compare, "extra message: %s, %d", "foo", 67)
 
 		BeDeepEqual(t, lines(), []string{
 			"actual is not greater than expected, but less:",
@@ -308,45 +310,26 @@ func TestCompareGreater(t *testing.T) {
 			"@@ -1,1 +1,1 @@",
 			"-time.Date(2026, 4, 9, 17, 32, 42, 123, time.UTC) (time.Time)",
 			"+time.Date(2026, 4, 9, 13, 32, 42, 123, time.UTC) (time.Time)",
+			"extra message: foo, 67",
 			"FAIL",
 		})
 	})
-}
 
-func TestCompareGreaterf(t *testing.T) {
-	tt, lines := setup(t)
-	CompareGreaterf(tt, 13, 42, cmp.Compare[int], "extra message: %s, %d", "foo", 67)
-
-	BeDeepEqual(t, lines(), []string{
-		"actual is not greater than expected, but less:",
-		"actual: 13 (int)",
-		"expected: 42 (int)",
-		"diff expected actual",
-		"--- expected",
-		"+++ actual",
-		"@@ -1,1 +1,1 @@",
-		"-42 (int)",
-		"+13 (int)",
-		"extra message: foo, 67",
-		"FAIL",
-	})
-}
-
-func TestNotPanic(t *testing.T) {
-	t.Run("NoPanic", func(t *testing.T) {
+	t.Run("Format", func(t *testing.T) {
 		tt, lines := setup(t)
-		NotPanic(tt, func() {})
-
-		BeDeepEqual(t, lines(), []string{""})
-	})
-
-	t.Run("Panic", func(t *testing.T) {
-		tt, lines := setup(t)
-		NotPanic(tt, func() { panic("boom") })
+		CompareGreaterf(tt, 13, 42, cmp.Compare[int], "extra message: %s, %d", "foo", 67)
 
 		BeDeepEqual(t, lines(), []string{
-			"function panicked:",
-			`actual: "boom" (string)`,
+			"actual is not greater than expected, but less:",
+			"actual: 13 (int)",
+			"expected: 42 (int)",
+			"diff expected actual",
+			"--- expected",
+			"+++ actual",
+			"@@ -1,1 +1,1 @@",
+			"-42 (int)",
+			"+13 (int)",
+			"extra message: foo, 67",
 			"FAIL",
 		})
 	})
@@ -371,113 +354,22 @@ func TestNotPanicf(t *testing.T) {
 			"FAIL",
 		})
 	})
-}
 
-func TestPanicSatisfy(t *testing.T) {
-	t.Run("NoPanic", func(t *testing.T) {
+	t.Run("FormatNoPanic", func(t *testing.T) {
 		tt, lines := setup(t)
-		PanicSatisfy[any](tt, nil, func() {})
-
-		BeDeepEqual(t, lines(), []string{
-			"function did not panic",
-			"FAIL",
-		})
-	})
-
-	t.Run("Panic", func(t *testing.T) {
-		tt, lines := setup(t)
-		PanicSatisfy[any](tt, nil, func() { panic("boom") })
+		NotPanicf(tt, func() {}, "extra message: %s, %d", "foo", 67)
 
 		BeDeepEqual(t, lines(), []string{""})
 	})
 
-	t.Run("Predicate", func(t *testing.T) {
+	t.Run("FormatPanic", func(t *testing.T) {
 		tt, lines := setup(t)
-		var actual string
-		PanicSatisfy(tt, func(r string) bool {
-			actual = r
-			return true
-		}, func() { panic("boom") })
+		NotPanicf(tt, func() { panic("boom") }, "extra message: %s, %d", "foo", 67)
 
-		BeEqual(t, actual, "boom")
-		BeDeepEqual(t, lines(), []string{""})
-	})
-
-	t.Run("PredicateFail", func(t *testing.T) {
-		tt, lines := setup(t)
-		var actual string
-		PanicSatisfy(tt, func(r string) bool {
-			actual = r
-			return false
-		}, func() { panic("boom") })
-
-		BeEqual(t, actual, "boom")
 		BeDeepEqual(t, lines(), []string{
-			"actual is not satisfied by predicate:",
+			"function panicked:",
 			`actual: "boom" (string)`,
-			"FAIL",
-		})
-	})
-
-	t.Run("Assertion", func(t *testing.T) {
-		tt, lines := setup(t)
-		var called bool
-		PanicSatisfy(tt, func(r string) bool {
-			called = true
-			BeEqual(tt, r, "boom") // no return to work with musta
-			return true
-		}, func() { panic("boom") })
-
-		BeTrue(t, called)
-		BeDeepEqual(t, lines(), []string{""})
-	})
-
-	t.Run("AssertionFail", func(t *testing.T) {
-		tt, lines := setup(t)
-		var called bool
-		PanicSatisfy(tt, func(r string) bool {
-			called = true
-			NotBeEqual(tt, r, "boom") // no return to work with musta
-			return true
-		}, func() { panic("boom") })
-
-		BeTrue(t, called)
-		BeDeepEqual(t, lines(), []string{
-			"actual is equal to expected:",
-			`actual: "boom" (string)`,
-			`expected: "boom" (string)`,
-			"FAIL",
-		})
-	})
-
-	t.Run("WrongType", func(t *testing.T) {
-		tt, lines := setup(t)
-		var called bool
-		PanicSatisfy(tt, func(r int) bool {
-			called = true
-			return true
-		}, func() { panic("boom") })
-
-		BeFalse(t, called)
-		BeDeepEqual(t, lines(), []string{
-			"actual panic value is not of type int, but:",
-			`actual: "boom" (string)`,
-			"FAIL",
-		})
-	})
-
-	t.Run("WrongInterfaceType", func(t *testing.T) {
-		tt, lines := setup(t)
-		var called bool
-		PanicSatisfy(tt, func(r error) bool {
-			called = true
-			return true
-		}, func() { panic("boom") })
-
-		BeFalse(t, called)
-		BeDeepEqual(t, lines(), []string{
-			"actual panic value is not of type error, but:",
-			`actual: "boom" (string)`,
+			"extra message: foo, 67",
 			"FAIL",
 		})
 	})
@@ -502,10 +394,124 @@ func TestPanicSatisfyf(t *testing.T) {
 		BeDeepEqual(t, lines(), []string{""})
 	})
 
+	t.Run("Predicate", func(t *testing.T) {
+		tt, lines := setup(t)
+		var actual string
+		PanicSatisfyf(tt, func(r string) bool {
+			actual = r
+			return true
+		}, func() { panic("boom") }, "extra message: %s, %d", "foo", 67)
+
+		BeEqual(t, actual, "boom")
+		BeDeepEqual(t, lines(), []string{""})
+	})
+
 	t.Run("PredicateFail", func(t *testing.T) {
 		tt, lines := setup(t)
-		PanicSatisfyf(tt, func(string) bool { return false }, func() { panic("boom") },
-			"extra message: %s, %d", "foo", 67)
+		var actual string
+		PanicSatisfyf(tt, func(r string) bool {
+			actual = r
+			return false
+		}, func() { panic("boom") }, "extra message: %s, %d", "foo", 67)
+
+		BeEqual(t, actual, "boom")
+		BeDeepEqual(t, lines(), []string{
+			"actual is not satisfied by predicate:",
+			`actual: "boom" (string)`,
+			"extra message: foo, 67",
+			"FAIL",
+		})
+	})
+
+	t.Run("Assertion", func(t *testing.T) {
+		tt, lines := setup(t)
+		var called bool
+		PanicSatisfyf(tt, func(r string) bool {
+			called = true
+			BeEqual(tt, r, "boom") // no return to work with musta
+			return true
+		}, func() { panic("boom") }, "extra message: %s, %d", "foo", 67)
+
+		BeTrue(t, called)
+		BeDeepEqual(t, lines(), []string{""})
+	})
+
+	t.Run("AssertionFail", func(t *testing.T) {
+		tt, lines := setup(t)
+		var called bool
+		PanicSatisfyf(tt, func(r string) bool {
+			called = true
+			NotBeEqual(tt, r, "boom") // no return to work with musta
+			return true
+		}, func() { panic("boom") }, "extra message: %s, %d", "foo", 67)
+
+		BeTrue(t, called)
+		BeDeepEqual(t, lines(), []string{
+			"actual is equal to expected:",
+			`actual: "boom" (string)`,
+			`expected: "boom" (string)`,
+			"FAIL",
+		})
+	})
+
+	t.Run("WrongType", func(t *testing.T) {
+		tt, lines := setup(t)
+		var called bool
+		PanicSatisfyf(tt, func(r int) bool {
+			called = true
+			return true
+		}, func() { panic("boom") }, "extra message: %s, %d", "foo", 67)
+
+		BeFalse(t, called)
+		BeDeepEqual(t, lines(), []string{
+			"actual panic value is not of type int, but:",
+			`actual: "boom" (string)`,
+			"extra message: foo, 67",
+			"FAIL",
+		})
+	})
+
+	t.Run("WrongInterfaceType", func(t *testing.T) {
+		tt, lines := setup(t)
+		var called bool
+		PanicSatisfyf(tt, func(r error) bool {
+			called = true
+			return true
+		}, func() { panic("boom") }, "extra message: %s, %d", "foo", 67)
+
+		BeFalse(t, called)
+		BeDeepEqual(t, lines(), []string{
+			"actual panic value is not of type error, but:",
+			`actual: "boom" (string)`,
+			"extra message: foo, 67",
+			"FAIL",
+		})
+	})
+
+	t.Run("NoPanic", func(t *testing.T) {
+		tt, lines := setup(t)
+		PanicSatisfyf[any](tt, nil, func() {}, "extra message: %s, %d", "foo", 67)
+
+		BeDeepEqual(t, lines(), []string{
+			"function did not panic",
+			"extra message: foo, 67",
+			"FAIL",
+		})
+	})
+
+	t.Run("Panic", func(t *testing.T) {
+		tt, lines := setup(t)
+		PanicSatisfyf[any](tt, nil, func() { panic("boom") }, "extra message: %s, %d", "foo", 67)
+
+		BeDeepEqual(t, lines(), []string{""})
+	})
+
+	t.Run("PredicateFail", func(t *testing.T) {
+		tt, lines := setup(t)
+		PanicSatisfyf(
+			tt, func(string) bool { return false }, func() { panic("boom") },
+			"extra message: %s, %d", "foo", 67,
+		)
 
 		BeDeepEqual(t, lines(), []string{
 			"actual is not satisfied by predicate:",
@@ -517,8 +523,10 @@ func TestPanicSatisfyf(t *testing.T) {
 
 	t.Run("WrongType", func(t *testing.T) {
 		tt, lines := setup(t)
-		PanicSatisfyf(tt, func(int) bool { return true }, func() { panic("boom") },
-			"extra message: %s, %d", "foo", 67)
+		PanicSatisfyf(
+			tt, func(int) bool { return true }, func() { panic("boom") },
+			"extra message: %s, %d", "foo", 67,
+		)
 
 		BeDeepEqual(t, lines(), []string{
 			"actual panic value is not of type int, but:",

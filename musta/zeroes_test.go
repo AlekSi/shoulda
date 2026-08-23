@@ -4,67 +4,70 @@ package musta
 
 import "testing"
 
-func TestBeZero(t *testing.T) {
+func TestBeZerof(t *testing.T) {
 	t.Run("Simple", func(t *testing.T) {
 		tt, actual := setup(t)
-		BeZero(tt, 13)
+		BeZerof(tt, 13, "extra message: %s, %d", "foo", 67)
 
 		BeDeepEqual(t, actual(), []string{
 			"actual is not zero, but:",
 			"actual: 13 (int)",
+			"extra message: foo, 67",
 			"FAIL",
 		})
 	})
 
 	t.Run("Nil", func(t *testing.T) {
 		tt, actual := setup(t)
-		BeZero(tt, (*int)(nil))
+		BeZerof(tt, (*int)(nil), "extra message: %s, %d", "foo", 67)
 
 		BeDeepEqual(t, actual(), []string{""})
 	})
-}
 
-func TestBeZerof(t *testing.T) {
-	tt, actual := setup(t)
-	BeZerof(tt, 13, "extra message: %s, %d", "foo", 67)
-
-	BeDeepEqual(t, actual(), []string{
-		"actual is not zero, but:",
-		"actual: 13 (int)",
-		"extra message: foo, 67",
-		"FAIL",
-	})
-}
-
-func TestNotBeZero(t *testing.T) {
-	t.Run("Simple", func(t *testing.T) {
+	t.Run("Format", func(t *testing.T) {
 		tt, actual := setup(t)
-		NotBeZero(tt, 0)
+		BeZerof(tt, 13, "extra message: %s, %d", "foo", 67)
 
 		BeDeepEqual(t, actual(), []string{
-			"actual is zero",
-			"FAIL",
-		})
-	})
-
-	t.Run("Nil", func(t *testing.T) {
-		tt, actual := setup(t)
-		NotBeZero(tt, (*int)(nil))
-
-		BeDeepEqual(t, actual(), []string{
-			"actual is zero",
+			"actual is not zero, but:",
+			"actual: 13 (int)",
+			"extra message: foo, 67",
 			"FAIL",
 		})
 	})
 }
 
 func TestNotBeZerof(t *testing.T) {
-	tt, actual := setup(t)
-	NotBeZerof(tt, 0, "extra message: %s, %d", "foo", 67)
+	t.Run("Simple", func(t *testing.T) {
+		tt, actual := setup(t)
+		NotBeZerof(tt, 0, "extra message: %s, %d", "foo", 67)
 
-	BeDeepEqual(t, actual(), []string{
-		"actual is zero",
-		"extra message: foo, 67",
-		"FAIL",
+		BeDeepEqual(t, actual(), []string{
+			"actual is zero",
+			"extra message: foo, 67",
+			"FAIL",
+		})
+	})
+
+	t.Run("Nil", func(t *testing.T) {
+		tt, actual := setup(t)
+		NotBeZerof(tt, (*int)(nil), "extra message: %s, %d", "foo", 67)
+
+		BeDeepEqual(t, actual(), []string{
+			"actual is zero",
+			"extra message: foo, 67",
+			"FAIL",
+		})
+	})
+
+	t.Run("Format", func(t *testing.T) {
+		tt, actual := setup(t)
+		NotBeZerof(tt, 0, "extra message: %s, %d", "foo", 67)
+
+		BeDeepEqual(t, actual(), []string{
+			"actual is zero",
+			"extra message: foo, 67",
+			"FAIL",
+		})
 	})
 }
