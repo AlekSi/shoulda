@@ -25,6 +25,24 @@ func Satisfyf[A any](tb TB, actual A, predicate func(_ A) bool, format string, a
 	}
 }
 
+// NotSatisfy checks that predicate returns false for actual.
+func NotSatisfy[A any](tb TB, actual A, predicate func(_ A) bool) {
+	tb.Helper()
+
+	if !shoulda.NotSatisfy(tb, actual, predicate) {
+		tb.FailNow()
+	}
+}
+
+// NotSatisfyf checks that predicate returns false for actual.
+func NotSatisfyf[A any](tb TB, actual A, predicate func(_ A) bool, format string, args ...any) {
+	tb.Helper()
+
+	if !shoulda.NotSatisfyf(tb, actual, predicate, format, args...) {
+		tb.FailNow()
+	}
+}
+
 // SatisfyWith checks that predicate returns true for actual and expected.
 func SatisfyWith[A, E any](tb TB, actual A, expected E, predicate func(_ A, _ E) bool) {
 	tb.Helper()
@@ -39,6 +57,24 @@ func SatisfyWithf[A, E any](tb TB, actual A, expected E, predicate func(_ A, _ E
 	tb.Helper()
 
 	if !shoulda.SatisfyWithf(tb, actual, expected, predicate, format, args...) {
+		tb.FailNow()
+	}
+}
+
+// NotSatisfyWith checks that predicate returns false for actual and expected.
+func NotSatisfyWith[A, E any](tb TB, actual A, expected E, predicate func(_ A, _ E) bool) {
+	tb.Helper()
+
+	if !shoulda.NotSatisfyWith(tb, actual, expected, predicate) {
+		tb.FailNow()
+	}
+}
+
+// NotSatisfyWithf checks that predicate returns false for actual and expected.
+func NotSatisfyWithf[A, E any](tb TB, actual A, expected E, predicate func(_ A, _ E) bool, format string, args ...any) {
+	tb.Helper()
+
+	if !shoulda.NotSatisfyWithf(tb, actual, expected, predicate, format, args...) {
 		tb.FailNow()
 	}
 }

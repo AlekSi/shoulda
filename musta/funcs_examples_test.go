@@ -40,6 +40,16 @@ func ExampleSatisfyf_methodExpression() {
 	// FAIL
 }
 
+func ExampleNotSatisfyf_inline() {
+	NotSatisfyf(t, 13, func(v int) bool { return v < 42 }, "extra message: %s, %d", "foo", 42)
+
+	// Output:
+	// actual is satisfied by predicate:
+	// actual: 13 (int)
+	// extra message: foo, 42
+	// FAIL
+}
+
 func ExampleSatisfyWithf_inline() {
 	SatisfyWithf(t, 13, 42, func(x, y int) bool { return x > y }, "extra message: %s, %d", "foo", 42)
 
@@ -89,6 +99,23 @@ func ExampleSatisfyWithf_methodExpression() {
 	// @@ -1,1 +1,1 @@
 	// -time.Date(2026, 4, 9, 13, 32, 42, 123, time.UTC) (time.Time)
 	// +time.Date(2026, 4, 9, 17, 32, 42, 123, time.UTC) (time.Time)
+	// extra message: foo, 42
+	// FAIL
+}
+
+func ExampleNotSatisfyWithf_inline() {
+	NotSatisfyWithf(t, 42, 13, func(x, y int) bool { return x > y }, "extra message: %s, %d", "foo", 42)
+
+	// Output:
+	// actual and expected are satisfied by predicate:
+	// actual: 42 (int)
+	// expected: 13 (int)
+	// diff expected actual
+	// --- expected
+	// +++ actual
+	// @@ -1,1 +1,1 @@
+	// -13 (int)
+	// +42 (int)
 	// extra message: foo, 42
 	// FAIL
 }
