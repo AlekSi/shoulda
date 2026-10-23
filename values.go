@@ -79,14 +79,14 @@ func NotBeDeepEqualf(tb TB, actual, expected any, format string, args ...any) bo
 }
 
 // BeEqual checks that actual and expected are equal according to [cmp.Equal].
-func BeEqual[T bool | cmp.Ordered](tb TB, actual, expected T) bool {
+func BeEqual[T ~bool | cmp.Ordered](tb TB, actual, expected T) bool {
 	tb.Helper()
 
 	return BeEqualf(tb, actual, expected, "")
 }
 
 // BeEqualf checks that actual and expected are equal according to [cmp.Equal].
-func BeEqualf[T bool | cmp.Ordered](tb TB, actual, expected T, format string, args ...any) bool {
+func BeEqualf[T ~bool | cmp.Ordered](tb TB, actual, expected T, format string, args ...any) bool {
 	tb.Helper()
 
 	s := sprintf(
@@ -99,14 +99,14 @@ func BeEqualf[T bool | cmp.Ordered](tb TB, actual, expected T, format string, ar
 }
 
 // NotBeEqual checks that actual and expected are not equal according to [cmp.Equal].
-func NotBeEqual[T bool | cmp.Ordered](tb TB, actual, expected T) bool {
+func NotBeEqual[T ~bool | cmp.Ordered](tb TB, actual, expected T) bool {
 	tb.Helper()
 
 	return NotBeEqualf(tb, actual, expected, "")
 }
 
 // NotBeEqualf checks that actual and expected are not equal according to [cmp.Equal].
-func NotBeEqualf[T bool | cmp.Ordered](tb TB, actual, expected T, format string, args ...any) bool {
+func NotBeEqualf[T ~bool | cmp.Ordered](tb TB, actual, expected T, format string, args ...any) bool {
 	tb.Helper()
 
 	s := sprintf(
