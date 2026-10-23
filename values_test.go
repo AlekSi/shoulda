@@ -212,6 +212,25 @@ func TestBeEqualf(t *testing.T) {
 		})
 	})
 
+	t.Run("Bool", func(t *testing.T) {
+		tt, lines := setup(t)
+		BeEqualf(tt, false, true, "extra message: %s, %d", "foo", 67)
+
+		BeDeepEqual(t, lines(), []string{
+			"actual is not equal to expected:",
+			"actual: false (bool)",
+			"expected: true (bool)",
+			"diff expected actual",
+			"--- expected",
+			"+++ actual",
+			"@@ -1,1 +1,1 @@",
+			"-true (bool)",
+			"+false (bool)",
+			"extra message: foo, 67",
+			"FAIL",
+		})
+	})
+
 	t.Run("NaN", func(t *testing.T) {
 		tt, lines := setup(t)
 		BeEqualf(tt, math.NaN(), math.NaN(), "extra message: %s, %d", "foo", 67)
@@ -240,16 +259,32 @@ func TestBeEqualf(t *testing.T) {
 }
 
 func TestNotBeEqualf(t *testing.T) {
-	tt, lines := setup(t)
-	NotBeEqualf(tt, 13, 13, "extra message: %s, %d", "foo", 67)
+	t.Run("Simple", func(t *testing.T) {
+		tt, lines := setup(t)
+		NotBeEqualf(tt, 13, 13, "extra message: %s, %d", "foo", 67)
 
-	BeDeepEqual(t, lines(), []string{
-		"actual is equal to expected:",
-		"actual: 13 (int)",
-		"expected: 13 (int)",
-		"extra message: foo, 67",
-		"FAIL",
+		BeDeepEqual(t, lines(), []string{
+			"actual is equal to expected:",
+			"actual: 13 (int)",
+			"expected: 13 (int)",
+			"extra message: foo, 67",
+			"FAIL",
+		})
 	})
+
+	t.Run("Bool", func(t *testing.T) {
+		tt, lines := setup(t)
+		NotBeEqualf(tt, false, false, "extra message: %s, %d", "foo", 67)
+
+		BeDeepEqual(t, lines(), []string{
+			"actual is equal to expected:",
+			"actual: false (bool)",
+			"expected: false (bool)",
+			"extra message: foo, 67",
+			"FAIL",
+		})
+	})
+
 }
 
 func TestBeLessf(t *testing.T) {
