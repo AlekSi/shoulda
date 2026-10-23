@@ -284,7 +284,6 @@ func TestNotBeEqualf(t *testing.T) {
 			"FAIL",
 		})
 	})
-
 }
 
 func TestBeLessf(t *testing.T) {

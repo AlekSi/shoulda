@@ -80,7 +80,7 @@ func NotBeDeepEqualf(tb TB, actual, expected any, format string, args ...any) {
 }
 
 // BeEqual checks that actual and expected are equal according to [cmp.Equal].
-func BeEqual[T cmp.Ordered](tb TB, actual, expected T) {
+func BeEqual[T bool | cmp.Ordered](tb TB, actual, expected T) {
 	tb.Helper()
 
 	if !shoulda.BeEqual(tb, actual, expected) {
@@ -89,7 +89,7 @@ func BeEqual[T cmp.Ordered](tb TB, actual, expected T) {
 }
 
 // BeEqualf checks that actual and expected are equal according to [cmp.Equal].
-func BeEqualf[T cmp.Ordered](tb TB, actual, expected T, format string, args ...any) {
+func BeEqualf[T bool | cmp.Ordered](tb TB, actual, expected T, format string, args ...any) {
 	tb.Helper()
 
 	if !shoulda.BeEqualf(tb, actual, expected, format, args...) {
@@ -98,7 +98,7 @@ func BeEqualf[T cmp.Ordered](tb TB, actual, expected T, format string, args ...a
 }
 
 // NotBeEqual checks that actual and expected are not equal according to [cmp.Equal].
-func NotBeEqual[T cmp.Ordered](tb TB, actual, expected T) {
+func NotBeEqual[T bool | cmp.Ordered](tb TB, actual, expected T) {
 	tb.Helper()
 
 	if !shoulda.NotBeEqual(tb, actual, expected) {
@@ -107,7 +107,7 @@ func NotBeEqual[T cmp.Ordered](tb TB, actual, expected T) {
 }
 
 // NotBeEqualf checks that actual and expected are not equal according to [cmp.Equal].
-func NotBeEqualf[T cmp.Ordered](tb TB, actual, expected T, format string, args ...any) {
+func NotBeEqualf[T bool | cmp.Ordered](tb TB, actual, expected T, format string, args ...any) {
 	tb.Helper()
 
 	if !shoulda.NotBeEqualf(tb, actual, expected, format, args...) {
