@@ -31,7 +31,7 @@ type Ordered = cmp.Ordered
 // Equal reports whether x is equal to y.
 // For floating-point types, a NaN is considered equal to a NaN,
 // and -0.0 is equal to 0.0.
-func Equal[T Ordered](x, y T) bool {
+func Equal[T ~bool | Ordered](x, y T) bool {
 	// It is tempting to use comparable instead of Ordered,
 	// but see https://github.com/golang/go/issues/70161
 
@@ -89,7 +89,7 @@ func Compare[T Ordered](x, y T) int {
 // This will always return false if T is not floating-point.
 //
 // It is the same as [cmp.isNaN].
-func isNaN[T Ordered](x T) bool {
+func isNaN[T ~bool | Ordered](x T) bool {
 	return x != x
 }
 
